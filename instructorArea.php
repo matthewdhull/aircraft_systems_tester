@@ -2,7 +2,7 @@
 
 <html>
 	<head>
-		<title>Experimental Instructor Area</title>
+		<title>BETA Instructor Area</title>
 		
 			<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
 			<script src="calculation.js" type="text/javascript"></script>
@@ -343,9 +343,11 @@
 							if($(this).hasClass('arrow-right') == true){
 								$(this).removeClass('arrow-right');
 								$(this).addClass('arrow-down');
+								$(this).next('div').css("display", "block");
 							}else{	
 								$(this).removeClass('arrow-down');
 								$(this).addClass('arrow-right');
+								$(this).next('div').css("display", "none");
 							}
 						});
 					}
@@ -358,12 +360,12 @@
 								$("#infoDiv").append("<table id='infoTable'><tr><td>Review Questions</td><td>Date</td><td>Course Type</td><td>Password</td><td>Class Average</td></tr></table>");
 								var htmlToAdd = "";
 								$.each(data, function(key,value){
-									$("#infoTable").append("<tr><td><button id='t"+value.genTestID+"'>Questions</button></td><td>"+value.genDate+"</td><td>"+value.course_type+"</td><td><i>"+value.testPassword+"</i></td><td>"+value.avg+"</td></tr><tr><td>Per Category Averages for Class: <div class='triangle arrow-right'></div></td></tr><tr><td><div class='purple'><ul>");
+									$("#infoTable").append("<tr><td><button id='t"+value.genTestID+"'>Questions</button></td><td>"+value.genDate+"</td><td>"+value.course_type+"</td><td><i>"+value.testPassword+"</i></td><td>"+value.avg+"</td></tr><tr><td>Per Category Averages for Class:</td></tr><tr><td><div class='avgList'><div class='triangle arrow-right'></div><div class='purple'><ul>");
 									$.each(value.perSubcatAnalysis, function(key,value){
-										$("#infoTable ul:last").append("<li>"+key.toUpperCase()+" Average Score: "+value+"%</li>");
+										$("#infoTable ul:last").append("<li>"+key.toUpperCase()+" - "+value+"%</li>");
 			
 									});
-									$("#infoTable").append("</ul></div></td></tr>");
+									$("#infoTable").append("</ul></div></div></td></tr>");
 								});							
 								
 								bindViewQuestionEvents();
