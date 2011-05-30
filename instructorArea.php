@@ -2,7 +2,7 @@
 
 <html>
 	<head>
-		<title>BETA Instructor Area</title>
+		<title>Instructor Area</title>
 		
 			<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
 			<script src="calculation.js" type="text/javascript"></script>
