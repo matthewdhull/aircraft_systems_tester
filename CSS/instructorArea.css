@@ -112,12 +112,12 @@ h4 {
 	width: 900px;
 }
 
-.purple {
+.cornflowerBlue {
 	display: none;
 	height: auto;
 	width: auto;
 	color: #fff;
-	background-color: purple;
+	background-color: #a1a6d2;
 	border: 1px solid #fff;
 }
 
@@ -127,6 +127,7 @@ h4 {
 }
 
 .arrow {
+	margin-bottom: 3px;
 }
 
 .arrow-right {
@@ -135,7 +136,7 @@ h4 {
         border-top: 15px solid transparent;
         border-bottom: 15px solid transparent;
 
-        border-left: 15px solid green;
+        border-left: 15px solid #5c5f79;
 }
 
 .arrow-down {
@@ -144,7 +145,7 @@ h4 {
         border-left: 15px solid transparent;
         border-right: 15px solid transparent;
 
-        border-top: 15px solid #f00;
+        border-top: 15px solid #5c5f79;
 }
 
 
