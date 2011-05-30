@@ -1,9 +1,8 @@
 <!DOCTYPE HTML>
 
-<!-- a little git edit! -->
 <html>
 	<head>
-		<title>Instructor Area</title>
+		<title>Experimental Instructor Area</title>
 		
 			<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
 			<script src="calculation.js" type="text/javascript"></script>
