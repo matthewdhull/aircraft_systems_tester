@@ -360,7 +360,7 @@
 								$("#infoDiv").append("<table id='infoTable'><tr><td>Review Questions</td><td>Date</td><td>Course Type</td><td>Password</td><td>Class Average</td></tr></table>");
 								var htmlToAdd = "";
 								$.each(data, function(key,value){
-									$("#infoTable").append("<tr><td><button id='t"+value.genTestID+"'>Questions</button></td><td>"+value.genDate+"</td><td>"+value.course_type+"</td><td><i>"+value.testPassword+"</i></td><td>"+value.avg+"</td></tr><tr><td>Per Category Averages for Class:</td></tr><tr><td><div class='avgList'><div class='triangle arrow-right'></div><div class='purple'><ul>");
+									$("#infoTable").append("<tr><td><button id='t"+value.genTestID+"'>Questions</button></td><td>"+value.genDate+"</td><td>"+value.course_type+"</td><td><i>"+value.testPassword+"</i></td><td>"+value.avg+"</td></tr><tr><td>Per Category Averages for Class:</td></tr><tr><td><div class='avgList'><div class='triangle arrow-right'></div><div class='cornflowerBlue'><ul>");
 									$.each(value.perSubcatAnalysis, function(key,value){
 										$("#infoTable ul:last").append("<li>"+key.toUpperCase()+" - "+value+"%</li>");
 			
