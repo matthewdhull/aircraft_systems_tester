@@ -1,0 +1,248 @@
+
+@import url("common.css");
+
+button, button#beginExam {
+	height: 29px;
+	color: #fff;
+	background-color: #757895;
+	font-size: 15px;
+	border: 1px solid #dedede;
+	border-bottom-color: #8d92b5;
+}
+
+
+
+#loginDiv {
+	position:  relative;
+	top: 120px;
+	width: 420px;
+	height: 320px;
+	padding:  25px;
+	margin-left: auto;
+	margin-right:  auto;
+	border-top: 10px solid #c9cacc;
+	border-color: #eee;
+	background-color: #e8ebeb;
+}
+
+#loginTable {
+	margin-left: auto;
+	margin-right:  auto;
+	margin-top: auto;
+	margin-bottom: auto;
+	
+}
+
+#loginTable td {
+	width: 210px;
+}
+
+#loginForm{
+	color: #7b7c7c;
+}
+
+#beginExam {
+	width: 120px;
+	height: 25px;
+}
+
+#questionDiv, #gradeExamDiv, #examResults {
+	width: 750px;
+	border: #c9cacc 1px solid;
+
+}
+
+#questionDiv {
+	padding: 20px;
+	margin-top: 100px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#examNavigationTable {
+    margin-top: 30px;
+}
+
+#questionChoicesDiv{
+	height: 105px;
+	border: none;
+}
+
+#questionsMarked, #questionsUnanswered, #reviewQuestions {
+	position: absolute;
+	margin-left: auto;
+	margin-right:  auto;
+	left: 0px;
+	right: 0px;
+	top: 600px;
+	color: #eaeaea;
+	width: 321px;
+	height: 220px;
+}
+
+#questionsMarked, #questionsMarkedTab {
+	background-color: #757895;	
+}
+
+#questionsUnanswered, #questionsUnansweredTab {
+	background-color: #424242;
+}
+
+#reviewQuestions, #reviewQuestionsTab {
+	background-color: #b95f3d;
+}
+
+
+#tabs{
+	width: 321px;
+	background-color: inherit;
+	position: absolute;
+	margin-left: auto;
+	margin-right: auto;
+	left: 0px;
+	right: 0px;
+	top: 570px;
+	border: none;
+	
+}
+
+
+#questionsUnansweredTab, #questionsMarkedTab, #reviewQuestionsTab{
+	height: 30px;
+	width: 107px;
+	color: white;
+	text-align: center;
+	line-height: 30px;
+	font-family: "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
+	cursor: pointer ;
+	-webkit-transition: all 0.3s ease-in-out;
+	-moz-transition: all 0.3s ease-in-out;
+	-o-transition: all 0.3s ease-in-out;
+	transition: all 0.3s ease-in-out;
+}
+
+
+
+#questionsUnansweredTab{
+	float: left;
+}
+
+
+#questionsMarkedTab{
+	float: left;
+}
+
+#reviewQuestionsTab {
+	float: left;
+	visibility:  hidden;
+}
+
+#questionsUnansweredTab:hover, #questionsMarkedTab:hover, #reviewQuestionsTab:hover {
+	color: #b1b3b3;
+} 
+
+#questionsMarked, #reviewQuestions {
+	visibility: hidden;
+}
+
+#questionMarked div{
+	background-color: #6fe6eb;
+}
+
+#questionsUnanswered div {
+	background-color: #909191;
+}
+
+#questionsMarked div, #questionsUnanswered div, #reviewQuestions div {
+	border: 1px solid #d5d5d5;
+	width: 30px;
+	height: 20px;
+	text-align: center;
+	position: absolute;
+	font-family: "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
+	cursor: pointer ;
+	background-color: rgba(0,0,0,0);
+}
+
+
+
+#questionsMarked div:hover, #questionsUnanswered div:hover {
+	color: #b1b3b3;
+	-webkit-transition: all 0.3s ease-in-out;
+	-moz-transition: all 0.3s ease-in-out;
+	-o-transition: all 0.3s ease-in-out;
+	transition: all 0.3s ease-in-out;
+} 
+
+#gradeExamDiv {
+	margin-left: auto;
+	margin-right: auto;
+    margin-top: 20px;
+    padding: 20px;
+    height: 80px;
+}
+
+#gradeButton {
+	position: absolute;
+	margin-left: auto;
+	margin-right: auto;
+	left: 0px;
+	right: 0px;
+    background-color: #AFB1C2;
+    color: #2a2c3a;
+    border: none;
+    width: 156px;
+}
+
+#gradeTestMessage {
+	margin-left: auto;
+	margin-rigth: auto;
+	margin-top: 60px;
+	text-align: center;
+	font-size: 70%;
+}
+
+#examResults{
+	position: absolute;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 20px;
+	left: 0px;
+	right: 0px;
+	padding-left: 20px;
+	padding-right: 20px;
+	font-size: 90%;
+}
+
+#overridePasswordDiv {
+		visibility: hidden;
+		position: absolute;
+		background-color: #bcc1f0;
+		color: #fff;
+		width: 155px;
+		right: 270px;
+		top: 347px;
+		z-index: 100;
+}
+
+.triangleBox {
+    color: #000000;
+    margin: 1em 0 3em;
+    padding: 15px;
+    position: relative;
+	
+}
+
+.triangleBox:after {
+	content:"";
+	position:absolute;
+	top:-25px; /* value = - border-top-width - border-bottom-width */
+	left:50px; /* controls horizontal position */
+	border-width: 0px 25px 25px 0; /* vary these values to change the angle of the vertex */
+	border-style:solid;
+	border-color:#bcc1f0 transparent;
+    /* reduce the damage in FF3.0 */
+    display:block; 
+    width:0;
+}
+

@@ -1,0 +1,27 @@
+* {
+	font-family: "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
+}
+
+
+body {
+	background-color: #f3f3f3;
+}
+
+#navigationBar {
+	position: absolute;
+	top: 8px;
+	left: 160px;
+	width: 400px;
+	
+}
+
+
+#navigationBar li {
+	display: inline;
+	list-style-type: none;
+}
+
+#navigationBar li button {
+	width: auto;
+}
+

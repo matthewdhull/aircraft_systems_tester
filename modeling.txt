@@ -1,0 +1,80 @@
+<questions>
+questionID (int) = auto_increment	category(char) = systems	subcategory(char) = "electrical"	type(char) = "mc"		correct_answer(char) = "2"		ans_x(char) = "1"	ans_y(char) = "4"	ans_z(char) = "0"
+
+<wordings:> (goes with <questions>)
+questionID (int) (ofQuestion)  wording_id    	wording
+1								a				"how many batteries"
+1								b				"how many ni-cad batteries"
+
+
+
+
+
+____________________________________________________________________
+
+<test_model>
+
+course_type(char)	length (int)
+	SY9					100
+	
+
+
+<topic_distribution> (goes with <test_model>)
+
+course_type(char)	topic(char)		num_questions
+	SY9				"electrical"		20
+	
+	SY9				"powerplant"		15
+	
+	SY9				"pneumatics"		17
+	
+	
+air_condition
+acft_gen 
+apu
+autopilot 
+crew_awareness 
+elec
+emerg_equip
+fire_prot 
+flt_control
+fuel
+hydraulics
+ice_rain_prot
+ldg_gear_brk
+lighting
+limitations
+oxy
+pneum
+powerplant
+pressurization
+profiles
+radar
+stall_prot
+mandatory
+	
+	
+	
+
+<test>
+
+testID(int)	course_type(char)  length(int)	%true/false vs. multiple choice(float)	date(date)
+	2			SY9				  100			50/50								1/14/2011
+	3			UPG				  50			25/75								1//31/2011
+				 
+
+
+
+<test_questions>
+
+testID	questionID(char)  	wordingUsed(char)		
+   2		23					elec1a		
+			45					pplant23b
+			207					pneum10a		
+
+
+
+
+
+
+

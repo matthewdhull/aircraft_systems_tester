@@ -1,0 +1,150 @@
+@import url("common.css");
+
+button {
+	width: 120px;
+	height: 30px;
+}
+
+#instructorTasks select {
+	width: 100px;
+}
+
+li {
+	list-style: none;
+}
+
+
+table {
+	width: 775px;
+	margin-top: 5px;
+	margin-left: auto;
+	margin-right: auto;
+	left: 0px;
+	right: 0px;
+}	
+
+h4 {
+	text-align: center;
+}
+
+.center {
+	position: absolute;
+	margin-left: auto;
+	margin-right: auto;
+	left: 0px;
+	right: 0px;
+}
+
+#loginDiv, table {
+	border: #c9cacc 1px solid;
+}
+				
+#loginDiv {
+	position: absolute;
+	top: 150px;
+	width: 330px;
+	height: 180px;
+	padding: 10px;
+}
+
+#loginDiv table {
+	border: none;
+	width: auto;
+}
+
+#loginMessage, #loggedInMessage {
+	font-size: 80%;
+}
+
+#logoutDiv {
+	position: absolute;
+	left: 70%;
+	top: 5px;
+	margin-right: 10px;
+	background-color: transparent;
+	color: #f5f6fc;
+}
+
+#logoutDiv ul{
+	list-style-type: none;
+	display: inline;
+}
+
+#logoutDiv a{
+	text-decoration: none;
+	color: #414357;
+	font-style: italic;
+	font-size: 90%;
+}
+
+#instructorTasks {
+	position: absolute;
+	top: 80px;
+	height: 360px;
+}
+#adminTasks {
+	position: absolute;
+	top: 440px;
+	height: 250px;
+}
+
+#reportTable {
+	padding: 5px;
+}
+
+#reportTable:before {
+	content: "Generate test reports";
+}
+
+#infoDiv {
+	position: absolute;
+	margin-top: 20px;	
+	margin-left: auto;
+	margin-right: auto;	
+	left: 0px;
+	right: 0px;
+	width: 1000px;
+	top: 730px;
+}
+
+#infoDiv table {
+	margin-top: 50px;
+	width: 900px;
+}
+
+.purple {
+	height: auto;
+	width: auto;
+	color: #fff;
+	background-color: purple;
+	border: 1px solid #fff;
+}
+
+.avgList {
+	dislay:none;
+}
+
+.arrow {
+}
+
+.arrow-right {
+        width: 0;
+        height: 0;
+        border-top: 15px solid transparent;
+        border-bottom: 15px solid transparent;
+
+        border-left: 15px solid green;
+}
+
+.arrow-down {
+        width: 0;
+        height: 0;
+        border-left: 15px solid transparent;
+        border-right: 15px solid transparent;
+
+        border-top: 15px solid #f00;
+}
+
+
+
+

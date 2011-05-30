@@ -1,0 +1,31 @@
+
+
+#header, #headerTitle {
+	font-family: "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
+}
+
+#header {
+	height: 75px;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	background-color: #AFB1C2;
+	border-left: none;
+	border-right: none;
+	border-top: none;
+	border-bottom: 5px solid #5C5F79;
+}
+
+#headerTitle{
+	position: absolute;
+	height: 50px;
+	top: 10px;
+	left: 10px;
+	width: 250px;
+	background-color: inherit;
+	border: none;
+	color: #f5f6fc;
+	font-size: 248%;
+}
+

@@ -1,0 +1,70 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+
+	<style type="text/css">
+		#blocks {
+			background-color: red;
+			height: 250px;
+			width: 250px;
+			position:relative;
+		}
+		#container{
+			height: 255px;
+			width: 255px;
+
+		}
+		
+		.elem {
+			background-color: blue;
+			color:white;
+			border: 1px solid #d5d5d5;
+			height:25px;
+			width:25px;
+		}
+	</style>
+	<script type="text/javascript" src="jquery.js"></script>
+	<script type="text/javascript" src="jquery.isotope.min.js"></script>
+	
+	<script type="text/javascript">
+		$(document).ready(function(){
+			
+			
+						
+			for(var i = 0; i < 10; i++){
+				$("#container").append("<div class='elem'>"+(i+1)+"</div>");
+			}
+		
+			$("#container").isotope({
+				  // options
+				  itemSelector : '.elem',
+				  layoutMode : 'masonry'
+			});
+			
+			$('#container').isotope({
+				animationOptions: {
+				duration: 750,
+				easing: 'linear',
+				queue: false
+			   }
+			});
+			
+			
+			$("#remove").click(function(){
+				$("#container").isotope( 'remove', $("#container :first-child"));
+				$("#container").isotope('reLayout');
+			});
+		});
+	</script>
+	<title>isotopeTest</title>
+</head>
+
+<body>
+	<div id="blocks">
+		<div id="container">
+		</div>
+	</div>
+	<button id="remove">Remove</button>
+</body>
+
+</html>

@@ -1,0 +1,106 @@
+@import url("common.css");
+
+#createAndBuildTestsDiv {
+	position: relative;
+	top: 70px;
+	left: 0px;
+	width: 560px;
+	height: 1000px;
+	min-width: 560px;
+	overflow: hidden;
+	border-right: 5px solid #5c5f79;
+	text-indent: 7px;
+}
+
+#modelResults {
+	position: absolute;
+	top: 80px;
+	left: 580px;
+	width: 48%;
+	min-width: 470px;
+	height: 770px;
+	overflow-y: scroll;
+	background-attachment: fixed;
+}
+
+.modelTable {
+	position:relative;
+	float: left;
+	border: 1px solid #5c5f79;
+	margin-left: 10px;
+	margin-top: 15px;
+	margin-bottom: 10px;
+}
+
+button {
+	height: 30px;
+}
+
+select {
+	width: 100px;
+}
+
+#selectModeledTestDiv, #createTest, #testModelingDiv {
+	position: absolute;
+	padding: 5px;
+}
+
+#selectModeledTestDiv{
+	top: 10px;
+	height: 120px;
+	width: 160px;
+}
+
+#createTest{
+	top: 125px;
+	height: 300px;
+	width: 545px;	
+}
+
+#createTest input {
+	display: block;
+	height: 20px;
+	margin: 3px;
+		font: 18px "Times New Roman", Times, serif;
+}
+
+
+
+#createTest label {
+	color: #6c6c6c;
+	font-size: 13px;
+}
+
+#testModelingDiv{
+	margin-top: 490px;
+	height: 455px;
+}
+
+#progressBar {
+	visibility: hidden;
+	background: url(../images/ajax-loader.gif) no-repeat;
+	position: absolute;
+	top: 210px;
+	left: 85px;
+	width: 215px;
+	height: 20px;
+}
+
+
+#createdTestResults:before {
+	content:  "Result:";
+}
+
+#createdTestResults {
+	display: none;
+	margin: 5px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	padding-left: 10px;
+	padding-right: 10px;
+	background-color: #cecece;
+	width: 450px;
+	height: 120px;
+	color: #454545;
+}
+

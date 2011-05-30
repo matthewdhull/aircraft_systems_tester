@@ -1,0 +1,52 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf350
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\margl1440\margr1440\vieww16960\viewh14620\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+
+\f0\fs24 \cf0 \
+O - Provide ability to variate password timeouts.  Need to solve problem where a student's test is destroyed and it must be re-produced.\
+\
+O - Provide FAQ on the instructor Area\
+\
+O - Security? SSL?\
+\
+O - Per class reports must discriminate against 2 or more instructors if they exist on the same date.\
+\
+O - manual entry of results needed.  \
+\
+O - Paper test should be able to generate answer key.  \
+\
+IP - Provide In progress animations that allow visual queues when a request/action is complete. Need to add to the progress bar for test grading\
+\
+IP -  Excel or .csv export feature. - Generate a report on excel and reverse engineer it.\
+\
+C - Disable delete button for a test model when a non-admin selects it. -DONE 5/24\
+\
+C - password generator needed to avoid duplicates.  - DONE, passwordGenerator.php generates unique passwords and checks against existing passwords. 5/22\
+\
+C - login security.  After a login attempt is successful, a temp log should should record the result.  If the student fails to login, they need to provide the answer to a security question.   The security question shall be paired with the password and only permits access a second time.  An instructor shall give the answer to the security question to login after a first time.  \
+\
+Example: \
+	1.  Student logs in (success recorded).\
+	2.  Browser mis-hap occurs, requiring re-login.\
+	3.  Student attempts login a second time.  The re-login is registered as an attempt and as a result, the security question dialogue box appears.  The student must now obtain the answer to the question or type in the override password.  Only the instructor can provide the answer to the question/override password to login a second time.  DONE - 5/22\
+\
+C - Update test timeout message.  DONE - 5/19\
+\
+C -  eject question feature - admin only: DONE 3/30\
+\
+C  - admins see ALL test averages and per student - DONE but needs formatting to be consistent with FC-10 format. 3/30\
+\
+C  - student login page  -  update cal codes - DONE\
+\
+C  - navigation buttons for admins/instructors - DONE 3/31\
+\
+C  - Allow admins to view all tests generated/ Generation of Paper tests.\
+\
+C  - Form validation for login. - DONE 3/31\
+\
+C - Change individual student report to have updated date picker & admin rights. DONE 3/31.  Admins generate any report, instructors only generate what they have administered\
+\
+\
+}

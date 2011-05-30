@@ -1,0 +1,58 @@
+create table createdTests (
+genTestID int unsigned not null auto_increment primary key,
+testModelID int unsigned not null,
+genDate date not null,
+course_type char(10) not null,
+length int unsigned not null
+);
+
+create table usedQuestions (
+genTestID int unsigned not null primary key,
+questionID char(10) not null
+);
+
+create table studentTestRecords(
+recordID int unsigned not null auto_increment primary key ,
+employeeNo char(10) not null,
+firstName char(50) not null,
+lastName char(50) not null,
+classDate date not null,
+testDate date not null,
+instructorID char(10) not null,
+syllabus char(25) not null,
+qualCode char(25) not null,
+genTestID int unsigned not null,
+retrain bool not null,
+result char(25) not null,
+score int unsigned not null
+);
+
+
+create table testResults (
+resultID int unsigned not null auto_increment primary key,
+employeeNo char(10) not null,
+genTestID int(10) unsigned not null,
+questionID int(10) unsigned not null,
+correct bool not null
+);
+
+
+create table instructors (
+instructorID int unsigned not null auto_increment primary key,
+employeeNo char(10) not null,
+firstName char(50) not null,
+lastName char(50) not null,
+password char(255) not null,
+admin bool not null
+)
+
+//group by correct,incorrect
+SELECT questions.subcategory, testResults.questionID, testResults.correct FROM questions, testResults WHERE genTestID = 62 AND questions.questionID = testResults.questionID AND employeeNo = "G5688" 
+
+
+//group by average.
+SELECT questions.subcategory, testResults.questionID, TRUNCATE((avg(testResults.correct) * 100),2) FROM questions, testResults WHERE genTestID = 62 AND questions.questionID = testResults.questionID AND employeeNo = "G5688" GROUP BY questions.subcategory ORDER BY TRUNCATE((avg(testResults.correct) * 100),2)
+
+SELECT qi.subcategory, qi.questionText, qi.a, qi.b, qi.c, qi.d, qi.answerKey FROM usedQuestions AS qi, testResults as tr  WHERE qi.genTestID = tr.genTestID AND qi.questionID = tr.questionID AND tr.correct = 0 AND tr.genTestID = 60 AND tr.employeeNO =  "W4231" ORDER BY qi.subcategory
+
+]
