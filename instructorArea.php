@@ -710,7 +710,7 @@
 				</td>
 			</tr>
 			<tr>	
-				<td><button id="csvFile">Export</button></td>
+				<td><button id="csvFile" disabled="disabled">Export</button></td>
 				<td>Export cumulative data (.csv)</td>
 			</tr>
 			<tr>
