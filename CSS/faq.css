@@ -3,3 +3,36 @@
 #faQuestions {
 	margin-top: 120px;	
 }
+
+.arrow {
+	position: relative;
+	display: inline-block;
+	margin-bottom: -5px;
+}
+
+.arrow-right {
+        width: 0;
+        height: 0;
+        border-top: 9px solid transparent;
+        border-bottom: 9px solid transparent 	;
+
+        border-left: 9px solid #5c5f79;
+}
+
+.arrow-down {
+        width: 0;
+        height: 0;
+        border-left: 9px solid transparent;
+        border-right: 9px solid transparent;
+
+        border-top: 9px solid #5c5f79;
+}
+
+
+.bold {
+	font-weight: bold;
+}
+
+.answer {
+	display: none;
+}
