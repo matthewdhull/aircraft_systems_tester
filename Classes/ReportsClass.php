@@ -286,6 +286,54 @@ class Reports {
 			
 		}	
 		
+		//returns all studentTestRecords for .csv (not json)
+		public static function cumulativeTestStats(){
+			$statsReport = array();
+			$columnNames = array("Employee Number", "Name", "Class Date", "Test Date", "Instructor", "Syllabus", "Qual Code", "Retrain", "Result", "Score");
+			array_push($statsReport, $columnNames);
+					
+			include "XJTestDBConnect.php";
+			$con = mysql_connect($host,$usn, $password);
+			if (!$con){
+			  die('Could not connect: ' . mysql_error());
+			 }
+			
+			mysql_select_db($database, $con);
+			
+			$getStats = "SELECT employeeNo, firstName, lastName, classDate, testDate, instructorID, syllabus, qualCode, retrain, result, score FROM studentTestRecords";
+			
+			$statsResult = mysql_query($getStats);
+			if(!$statsResult) {
+				die("could not get stats ($getStats) ".mysql_error());
+			}
+			
+			while($row = mysql_fetch_array($statsResult)){
+				$employeeNo = $row['employeeNo'];
+				$name = $row['firstName']." ".$row['lastName'];
+				$classDate = $row['classDate'];
+				$testDate = $row['testDate'];
+				$instructor = $row['instructorID'];
+				$syllabus = $row['syllabus'];
+				$qualCode = $row['qualCode'];
+				$decodedRetrain = "no";
+				if($row['retrain'] == 1){
+					$decodedRetrain = "yes";
+				}
+				$retrain = $decodedRetrain;
+				$result = $row['result'];
+				$score = $row['score'];
+				$studentTestRecord = array($employeeNo, $name, $classDate, $testDate, $instructor, $syllabus, $qualCode, $retrain, $result, $score);
+				array_push($statsReport, $studentTestRecord);
+			}
+			
+			mysql_close($con);
+			
+			return $statsReport;
+		}
+		
+		
+		
+		
 		public static function showAllScores($year, $orgType, $orgSpec){
 			$statsReport = array();
 		

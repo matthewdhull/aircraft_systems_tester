@@ -22,6 +22,7 @@
 					var isAdmin = false;
 					var empNo = $("#employeeNo");
 					var pwd = $("#loginPassword");
+
 					var instructorDivHTML = "<div id='editInstructorDiv'><table><tr><td>Submit</td><td>Delete</td><td>Employee No</td><td>First Name</td><td>Last Name</td><td>Password</td><td>Admin?</td></tr><tr><td><button id='updateInstructorInfo'>Submit</button></td><td><button id='deleteInstructorInfo'>Delete</button></td><td><input id='editInstructorID' type='text'></input></td><td><input id='editFirstName'  type='text'></input></td><td><input id='editLastName' type='text'></input></td><td><input id='editPassWord'  type=text'></input></td><td><input id='editAdmin'  type='checkbox'></input></td></tr></table></div>";
 					
 					function clearInfo(){
@@ -403,7 +404,10 @@
 						
 					});
 					
-					$("#viewAllScores").click(function(){
+					$("#viewAllScores").click(function(e){
+						e.preventDefault();
+						window.location.href = "downloadables/testFile.csv";
+						
 						var sortBy = $("#sortBy").val();
 						var sortSpec = $("#sortSpecifics").val();
 						var desiredYear = $("#desiredYear").val();
@@ -426,8 +430,6 @@
 							$('html, body').animate({
 							    scrollTop: $("#infoDiv").offset().top
 							}, 1000);								
-							
-							
 						},"json");
 						
 					});
@@ -542,6 +544,12 @@
 							},"json");
 						});
 					}
+					
+					//make .csv file available for download
+					$("#csvFile").click(function(e){
+						e.preventDefault();
+						window.location.href = "downloadables/download.php";
+					});
 					
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////			
 //																																				  //
@@ -684,7 +692,7 @@
 	<h4>Admin Tasks</h4>
 		<table>
 			<tr>
-				<td><button id="viewAllScores">View</button></td>
+				<td><button id="viewAllScores">View</button><a id="csvFile" href="#">download</a></td>
 				<td>All Test Scores</td>
 				<td>Sort Criteria</td>
 				<td>Year</td>
