@@ -692,7 +692,7 @@
 	<h4>Admin Tasks</h4>
 		<table>
 			<tr>
-				<td><button id="viewAllScores">View</button><a id="csvFile" href="#">download</a></td>
+				<td><button id="viewAllScores">View</button></td>
 				<td>All Test Scores</td>
 				<td>Sort Criteria</td>
 				<td>Year</td>
@@ -709,14 +709,10 @@
 					</select>
 				</td>
 			</tr>
-<!--
-			<tr>
-				<td><button id="scoreByClass">Class Score</button></td>
-				<td>View all scores for a specific class.</td>
-				<td>Test Date</td>
-				<td><select id="testDates"></select></td>
+			<tr>	
+				<td><button id="csvFile">Export</button></td>
+				<td>Export cumulative data (.csv)</td>
 			</tr>
--->
 			<tr>
 				<td><button id="qCRUD">Questions</button></td>
 				<td>Create, read, update, and delete questions</td>
