@@ -1,8 +1,4 @@
 <?php
-/*
-session_start();
-session_cache_limiter("no-cache");
-*/
 
 include "../Classes/ReportsClass.php";
 
