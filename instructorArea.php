@@ -406,7 +406,6 @@
 					
 					$("#viewAllScores").click(function(e){
 						e.preventDefault();
-						window.location.href = "downloadables/testFile.csv";
 						
 						var sortBy = $("#sortBy").val();
 						var sortSpec = $("#sortSpecifics").val();
