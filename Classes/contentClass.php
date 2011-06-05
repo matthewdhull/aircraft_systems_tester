@@ -30,12 +30,15 @@ class ContentSnippets {
 				$(document).ready(function(){
 						$("#instructorAreaNav").click(function(){
 							window.location = "instructorArea.php";
+							return false;
 						});			
 						$("#testModelingNav").click(function(){
 							window.location = "testCRUD.php";
+							return false;
 						});			
 						$("#questionModelingNav").click(function(){
 							window.location = "questionCRUD.php";
+							return false;
 						});			
 						
 
