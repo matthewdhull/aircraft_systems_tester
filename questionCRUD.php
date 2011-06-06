@@ -126,6 +126,7 @@
 							//console.log(data);
 							$.each(data, function(key, value){
 								$("#edit_type").val(value.type).trigger("change");
+								$("#edit_subcategory").val(value.subcategory);
 								$("#edit_question_text").val(value.question_a);
 								$("#edit_alternate_wording").val(value.question_b);
 								$("#edit_correct_ans").val(value.correct_answer);
@@ -184,6 +185,7 @@
 		$("#edit_question_button").click(function(){
 			var qID =  $("#editID").val();
 			var tp = $("#edit_type").val();
+			var sc = $("#edit_subcategory").val();
 			var newText = $("#edit_question_text").val();
 			var newAltnText = $("#edit_alternate_wording").val();
 			var newCorrectAns = $("#edit_correct_ans").val();
@@ -196,6 +198,7 @@
 			$.post("PHPScripts/updateQuestion.php",{
 				questionID: qID,
 				type: tp,
+				subcategory: sc,
 				wording_a: newText,
 				wording_b: newAltnText,
 				correct_ans: newCorrectAns,
@@ -423,7 +426,7 @@
 		}
 		
 		function populateERJSystemChoices() {
-			$("#subcategory, #questionCategory").append("<option value='air_condition'>Air Conditioning</option><option value='acft_gen'>Aircraft General</option><option value='apu'>APU</option><option value='autopilot'>Autopilot</option><option value='crew_awareness'>Crew Awareness</option><option value='elec'>Electrical</option><option value='emerg_equip'>Emergency Equipment</option><option value='fire_prot'>Fire Protection</option><option value='flt_control'>Flight Controls</option><option value='fuel'>Fuel</option><option value='hydraulics'>Hydraulics</option><option value='ice_rain_prot'>Ice/Rain Protection</option><option value='ldg_gear_brk'>Landing Gear/Brakes</option><option value='lighting'>Lighting</option><option value='limitations'>Limitations</option><option value='oxy'>Oxygen</option><option value='pneum'>Pneumatics</option><option value='powerplant'>Powerplant</option><option value='pressurization'>Pressurization</option><option value='profiles'>Profiles</option><option value='radar'>Radar</option><option value='stall_prot'>Stall Protection</option><option value='mandatory'>Mandatory</option>");
+			$("#subcategory, #questionCategory, #edit_subcategory").append("<option value='air_condition'>Air Conditioning</option><option value='acft_gen'>Aircraft General</option><option value='apu'>APU</option><option value='autopilot'>Autopilot</option><option value='crew_awareness'>Crew Awareness</option><option value='elec'>Electrical</option><option value='emerg_equip'>Emergency Equipment</option><option value='fire_prot'>Fire Protection</option><option value='flt_control'>Flight Controls</option><option value='fuel'>Fuel</option><option value='hydraulics'>Hydraulics</option><option value='ice_rain_prot'>Ice/Rain Protection</option><option value='ldg_gear_brk'>Landing Gear/Brakes</option><option value='lighting'>Lighting</option><option value='limitations'>Limitations</option><option value='oxy'>Oxygen</option><option value='pneum'>Pneumatics</option><option value='powerplant'>Powerplant</option><option value='pressurization'>Pressurization</option><option value='profiles'>Profiles</option><option value='radar'>Radar</option><option value='stall_prot'>Stall Protection</option><option value='mandatory'>Mandatory</option>");
 		}
 		
 		$("#toggleSwitch").click(function(){
@@ -565,6 +568,12 @@
 									<option value="nc">none correct</option>
 								</select>
 							</td>
+						</tr>
+						<tr>
+							<td>Subcategory: </td>
+							<td><select id="edit_subcategory">
+								<?php /*Pre-populated with options*/ ?>
+							</select></td>
 						</tr>
 					</table>
 					<table>
