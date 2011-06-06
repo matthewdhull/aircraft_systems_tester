@@ -159,7 +159,7 @@ class Question {
 	}
 	
 	
-		public static function questionFromID($id){
+	public static function questionFromID($id){
 			//echo "new question for ".$id." ";
 		$question = new Question(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 		$question->questionID = $id;
@@ -439,13 +439,12 @@ class Question {
 		mysql_select_db($database, $con);	
 
 		
-		$updateQuestionQuery = "UPDATE `questions` SET `type` = '".$this->type."', `correct_answer` = '".$this->correct_answer."',
-		`alt_correct_answer` = '".$this->alt_correct_answer."', `last_correct_answer` = '".$this->last_correct_answer."', `ans_x` = '".$this->wrong_answers[0]."', `ans_y` = '".$this->wrong_answers[1]."', `ans_z` = '".$this->wrong_answers[2]."', `question_a` = '".$this->question_wordings['a']."', `question_b` = '".$this->question_wordings['b']."' WHERE `questionID` = ".$questionID."";
+		$updateQuestionQuery = "UPDATE `questions` SET `type` = '".$this->type."', `subcategory` = '".$this->subcategory."', `correct_answer` = '".$this->correct_answer."', `alt_correct_answer` = '".$this->alt_correct_answer."', `last_correct_answer` = '".$this->last_correct_answer."', `ans_x` = '".$this->wrong_answers[0]."', `ans_y` = '".$this->wrong_answers[1]."', `ans_z` = '".$this->wrong_answers[2]."', `question_a` = '".$this->question_wordings['a']."', `question_b` = '".$this->question_wordings['b']."' WHERE `questionID` = ".$questionID."";
 		
 		$updateQuestionResult = mysql_query($updateQuestionQuery);
 		
 		if(!$updateQuestionResult) {
-			echo "Could not successfully run query ($questionsQuery) from DB: " . mysql_error();
+			die ("Could update question with: ($questionsQuery) from DB: " . mysql_error());
 		}
 		mysql_close($con);
 	
@@ -532,6 +531,7 @@ class Question {
 		while($row = mysql_fetch_array($questionResult)) {
 			$questionAttr['questionID'] = $row['questionID'];
 			$questionAttr['type'] = $row['type'];
+			$questionAttr['subcategory'] = $row['subcategory'];
 			$questionAttr['question_a'] = $row['question_a'];
 			$questionAttr['question_b'] = $row['question_b'];
 			$questionAttr['correct_answer'] = $row['correct_answer'];

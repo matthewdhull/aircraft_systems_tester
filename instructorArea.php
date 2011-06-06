@@ -252,11 +252,14 @@
 						window.location = "questionCRUD.php";
 					});
 					
-					
 					$("#faqButton").click(function(){
 						window.location = "faq.php";
 					});
 					
+					$("#takeTestButton").click(function(){
+						window.location = "examCMS.php";
+					});			
+
 					
 					//this pulls the questionID and testID of a question to eject. Ejecting a question will result in the question being marked as answered correctly for all students who took the test.  Results will then be re-calculated.  
 					function bindEjectQuestionEvents(){
@@ -382,10 +385,6 @@
 					
 					
 					
-					$("#takeTestButton").click(function(){
-						window.location = "examCMS.php";
-					});			
-
 
 					$("#testReport").click(function(){
 						var openNewWindow;
@@ -406,7 +405,6 @@
 					
 					$("#viewAllScores").click(function(e){
 						e.preventDefault();
-						
 						var sortBy = $("#sortBy").val();
 						var sortSpec = $("#sortSpecifics").val();
 						var desiredYear = $("#desiredYear").val();

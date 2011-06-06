@@ -399,7 +399,6 @@
 							<td><select id="viewModeledTestByType">
 									<option value="SY9">SY9</option>
 									<option value="UPG">UPG</option>
-									<option value="BI">BI</option>
 							</select></td>
 						</tr>
 						<tr>
@@ -439,7 +438,6 @@
 									<select id="courseType">
 										<option value="SY9">SY9</option>
 										<option value="UPG">UPG</option>
-										<option value="BI">BI</option>
 									</select>
 								</td>
 							</tr>

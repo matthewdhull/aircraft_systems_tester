@@ -3,7 +3,7 @@
 	<head>
 		<title>Exam</title>
 		<script src="jquery.js" type="text/javascript"></script>
-		<script src="shufflePlugin.js" type="text/javascript"></script>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
 		<style type="text/css">
 			@import url("CSS/examCMS.css");
 		</style>

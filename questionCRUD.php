@@ -1,9 +1,9 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE HTML>
 <html>
 <head>
 	<title>Question Modeling</title>
 	
-	<script src="jquery.js" type="text/javascript"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
 	<style type='text/css'>
 		@import url("CSS/questionCRUD.css");
 	</style>
@@ -20,6 +20,7 @@
 			var CREATE = "create";
 			var isAdmin = false;
 			var switchPosition = "CREATE";
+			var currentSubcategory = "none";
 			
 			$("#adminAreaOnly").css("visibility", "hidden");
 		
@@ -57,8 +58,7 @@
 				var incorrect_x = $("#incorrect_ans_x").val();
 				var incorrect_y = $("#incorrect_ans_y").val();
 				var incorrect_z = $("#incorrect_ans_z").val(); 
-				
-				/* alert(questionType + "\n " + cat + "\n " + subcat + "\n " + question_text + "\n " + corr_ans + "\n " + incorrect_x + "\n " + incorrect_y + "\n " + incorrect_z); */
+
 				$.post("PHPScripts/newQuestion.php", {
 					type: questionType,
 					category: cat,
@@ -72,7 +72,6 @@
 					ans_y: incorrect_y,
 					ans_z: incorrect_z
 				}, function(data){
-					//console.log(data);
 				}, "json");
 				
 				$("#question_text, #alternate_wording, #correct_ans, #alt_correct_ans, #last_correct_ans, #incorrect_ans_x, #incorrect_ans_y,#incorrect_ans_z").val(""); 
@@ -127,6 +126,7 @@
 							//console.log(data);
 							$.each(data, function(key, value){
 								$("#edit_type").val(value.type).trigger("change");
+								$("#edit_subcategory").val(value.subcategory);
 								$("#edit_question_text").val(value.question_a);
 								$("#edit_alternate_wording").val(value.question_b);
 								$("#edit_correct_ans").val(value.correct_answer);
@@ -163,11 +163,11 @@
 		$("#view_questions_button").click(function(){
 			
 				var questionCategory = $("#questionCategory").val();
+				currentSubcategory = questionCategory;
 				$("#questions_from_subcategory table").remove();
 			$.post("PHPScripts/viewQuestions.php", {
 				subcategory: questionCategory
 			}, function(data) {
-				//console.log(data);
 		 		$.each(data, function(key,value){
 	 				$("#questions_from_subcategory").append("<table class='singleQuestion' id='t"+value.questionID+"'><tr><td><button value='edit' id='e"+value.questionID+"'>Edit</button><button value='delete' id='d"+value.questionID+"'>Delete</button></td></tr><tr><td>Question Type:</td><td>"+value.type+"</td></tr><tr><td>Question Wording A:</td><td>"+value.question_a+"</td></tr><tr><td>Question Wording B:</td><td>"+value.question_b+"</td></tr><tr><td>Correct Answer:</td><td>"+value.correct_answer+"</td></tr><tr><td>Alternate Correct Answer:</td><td>"+value.alt_correct_answer+"</td></tr><tr><td>Last Correct Answer:</td><td>"+value.last_correct_answer+"</td></tr><tr><td>Answer X:</td><td>"+value.ans_x+"</td></tr><tr><td>Answer Y:</td><td>"+value.ans_y+"</td></tr><tr><td>Answer Z:</td><td>"+value.ans_z+"</td></tr></table>");
 	 			});
@@ -185,6 +185,7 @@
 		$("#edit_question_button").click(function(){
 			var qID =  $("#editID").val();
 			var tp = $("#edit_type").val();
+			var sc = $("#edit_subcategory").val();
 			var newText = $("#edit_question_text").val();
 			var newAltnText = $("#edit_alternate_wording").val();
 			var newCorrectAns = $("#edit_correct_ans").val();
@@ -197,6 +198,7 @@
 			$.post("PHPScripts/updateQuestion.php",{
 				questionID: qID,
 				type: tp,
+				subcategory: sc,
 				wording_a: newText,
 				wording_b: newAltnText,
 				correct_ans: newCorrectAns,
@@ -423,6 +425,10 @@
 			}
 		}
 		
+		function populateERJSystemChoices() {
+			$("#subcategory, #questionCategory, #edit_subcategory").append("<option value='air_condition'>Air Conditioning</option><option value='acft_gen'>Aircraft General</option><option value='apu'>APU</option><option value='autopilot'>Autopilot</option><option value='crew_awareness'>Crew Awareness</option><option value='elec'>Electrical</option><option value='emerg_equip'>Emergency Equipment</option><option value='fire_prot'>Fire Protection</option><option value='flt_control'>Flight Controls</option><option value='fuel'>Fuel</option><option value='hydraulics'>Hydraulics</option><option value='ice_rain_prot'>Ice/Rain Protection</option><option value='ldg_gear_brk'>Landing Gear/Brakes</option><option value='lighting'>Lighting</option><option value='limitations'>Limitations</option><option value='oxy'>Oxygen</option><option value='pneum'>Pneumatics</option><option value='powerplant'>Powerplant</option><option value='pressurization'>Pressurization</option><option value='profiles'>Profiles</option><option value='radar'>Radar</option><option value='stall_prot'>Stall Protection</option><option value='mandatory'>Mandatory</option>");
+		}
+		
 		$("#toggleSwitch").click(function(){
 			toggleSwitch();
 		});
@@ -432,8 +438,8 @@
 		
 		
 
-		checkLoginStatus();		
-		
+		checkLoginStatus();
+		populateERJSystemChoices();		
 		
 	});
 	
@@ -485,29 +491,7 @@
 						<tr>
 							<td>Subcategory: </td>
 							<td> <select id="subcategory" name="subcategory">
-									<option value="air_condition">Air Conditioning</option>
-									<option value="acft_gen">Aircraft General</option>
-									<option value="apu">APU</option>
-									<option value="autopilot">Autopilot</option>
-									<option value="crew_awareness">Crew Awareness</option>
-									<option value="elec">Electrical</option>
-									<option value="emerg_equip">Emergency Equipment</option>
-									<option value="fire_prot">Fire Protection</option>
-									<option value="flt_control">Flight Controls</option>
-									<option value="fuel">Fuel</option>
-									<option value="hydraulics">Hydraulics</option>
-									<option value="ice_rain_prot">Ice/Rain Protection</option>
-									<option value="ldg_gear_brk">Landing Gear/Brakes</option>
-									<option value="lighting">Lighting</option>
-									<option value="limitations">Limitations</option>
-									<option value="oxy">Oxygen</option>
-									<option value="pneum">Pneumatics</option>
-									<option value="powerplant">Powerplant</option>
-									<option value="pressurization">Pressurization</option>
-									<option value="profiles">Profiles</option>
-									<option value="radar">Radar</option>
-									<option value="stall_prot">Stall Protection</option>
-									<option value="mandatory">Mandatory</option>
+									<?php /* auto-populated with system choices. */ ?>
 								</select> 
 							</td>
 						</tr>
@@ -585,6 +569,12 @@
 								</select>
 							</td>
 						</tr>
+						<tr>
+							<td>Subcategory: </td>
+							<td><select id="edit_subcategory">
+								<?php /*Pre-populated with options*/ ?>
+							</select></td>
+						</tr>
 					</table>
 					<table>
 						<tr>
@@ -650,29 +640,7 @@
 					<tr>
 						<td>Subcategory: </td>
 						<td> <select id="questionCategory" name="questionCategory">
-								<option value="air_condition">Air Conditioning</option>
-								<option value="acft_gen">Aircraft General</option>
-								<option value="apu">APU</option>
-								<option value="autopilot">Autopilot</option>
-								<option value="crew_awareness">Crew Awareness</option>
-								<option value="elec">Electrical</option>
-								<option value="emerg_equip">Emergency Equipment</option>
-								<option value="fire_prot">Fire Protection</option>
-								<option value="flt_control">Flight Controls</option>
-								<option value="fuel">Fuel</option>
-								<option value="hydraulics">Hydraulics</option>
-								<option value="ice_rain_prot">Ice/Rain Protection</option>
-								<option value="ldg_gear_brk">Landing Gear/Brakes</option>
-								<option value="lighting">Lighting</option>
-								<option value="limitations">Limitations</option>
-								<option value="oxy">Oxygen</option>
-								<option value="pneum">Pneumatics</option>
-								<option value="powerplant">Powerplant</option>
-								<option value="pressurization">Pressurization</option>
-								<option value="profiles">Profiles</option>
-								<option value="radar">Radar</option>
-								<option value="stall_prot">Stall Protection</option>
-								<option value="mandatory">Mandatory</option>
+							<?php /* auto-populated with system choices. */ ?>
 							</select> 
 						</td>
 					</tr>
