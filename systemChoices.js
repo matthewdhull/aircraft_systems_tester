@@ -1,7 +1,74 @@
-function populateERJSystemChoices() {
-			$("#subcategory, #questionCategory, #edit_subcategory").append("<option value='air_condition'>Air Conditioning</option><option value='acft_gen'>Aircraft General</option><option value='apu'>APU</option><option value='autopilot'>Autopilot</option><option value='crew_awareness'>Crew Awareness</option><option value='elec'>Electrical</option><option value='emerg_equip'>Emergency Equipment</option><option value='fire_prot'>Fire Protection</option><option value='flt_control'>Flight Controls</option><option value='fuel'>Fuel</option><option value='hydraulics'>Hydraulics</option><option value='ice_rain_prot'>Ice/Rain Protection</option><option value='ldg_gear_brk'>Landing Gear/Brakes</option><option value='lighting'>Lighting</option><option value='limitations'>Limitations</option><option value='oxy'>Oxygen</option><option value='pneum'>Pneumatics</option><option value='powerplant'>Powerplant</option><option value='pressurization'>Pressurization</option><option value='profiles'>Profiles</option><option value='radar'>Radar</option><option value='stall_prot'>Stall Protection</option><option value='mandatory'>Mandatory</option>");
+
+var erjSystems = {
+	 'air_condition' : "Air Conditioning",
+	'acft_gen' : "Aircraft General",
+	'apu' : "APU",
+	'autopilot' : "Autopilot",
+	'crew_awareness' : "Crew Awareness",
+	'elec' : "Electrical",
+	'emerg_equip' : "Emergency Equipment",
+	'fire_prot' : "Fire Protection",
+	'flt_control' : "Flight Controls",
+	'fuel' : "Fuel",
+	'hydraulics' : "Hydraulics",
+	'ice_rain_prot' : "Ice/Rain Protection",
+	'ldg_gear_brk' : "Landing Gear/Brakes",
+	'lighting' : "Lighting",
+	'limitations' : "Limitations",
+	'oxy' : "Oxygen",
+	'pneum' : "Pneumatics",
+	'powerplant' : "Powerplant",
+	'pressurization' : "Pressurization",
+	'profiles' : "Profiles",
+	'radar' : "Radar",
+	'stall_prot' : "Stall Protection",
+	'mandatory' : "Mandatory"
+};						
+
+var crjSystems = {
+	'acft_gen' : "Aircraft General",
+	'oxy' : "Oxygen",
+	'powerplant ' : "Powerplant",
+	'elec' : "Electrical",
+	'pneum' : "Pneumatics",
+	'ecs' : "ECS",
+	'ecs ' : "APU",
+	'hydraulics' : "Hydraulics",
+	'ldg_gear_brk' : "Landing Gear/Brakes",
+	'flt_control_stall_prot' : " Flight Controls/Stall Protection",
+	'fuel' : "Fuel",
+	'comm' : "Communications",
+	'flight_instruments' : "Flight Instruments",
+	'nav' : "Navigation",
+	'afcs' : "AFCS",
+	'aural_vis_warn' : "Aural/Visual Warnings",
+	'fire_ovht_det' : "Fire /Overheat Detection",
+	'lighting' : "Lighting",
+	'water_waste' : "Water and Waste",
+	'ice_rain' : "Ice/Rain",
+	'doors' : "Doors",
+};	
+
+// generates an option list for a drop-down menu for the selected dictionary. Intended for embedding options into a <select></select> element.
+function populateSystemChoicesWithSystem(system){
+	var optionList = "";
+	$.each(system, function(key,value){
+		optionList += "<option value='"+key+"'>"+value+"</option>";
+	});
+	
+	return optionList;
 }
-		
+
+//convenience wrapper for the ERJ Systems option list.
+function populateERJSystemChoices(){
+		var choices = populateSystemChoicesWithSystem(erjSystems);
+		$("#subcategory, #questionCategory, #edit_subcategory").append(choices);
+}
+
+
+//convenience wrapper for the CRJ Systems option list.
 function populateCRJSystemChoices(){
-			$("#subcategory, #questionCategory, #edit_subcategory").append("<option value='acft_gen'>Aircraft General</option><option value='oxy'>Oxygen</option><option value='powerplant'>Powerplant</option><option value='elec'>Electrical</option><option value='pneum'>Pneumatics</option><option value='ecs'>ECS</option><option value='ecs'>APU</option><option value='hydraulics'>Hydraulics</option><option value='ldg_gear_brk'>Landing Gear and Brakes</option><option value='flt_control_stall_prot'>Flight Controls and Stall Protection</option><option value='fuel'> Fuel</option><option value='comm'>Communications</option><option value='flight_instruments'>Flight Instruments</option><option value='nav'>Navigation</option><option value='afcs'>AFCS</option><option value='aural_vis_warn'>Aural  and Visual Warnings</option><option value='fire_ovht_det'>Fire and Overheat Detection</option><option value='lighting'>Lighting</option><option value='water_waste'>Water and Waste</option><option value='ice_rain'>Ice and Rain</option><option value='doors'>Doors</option>");
+		var choices = populateSystemChoicesWithSystem(crjSystems);
+		$("#subcategory, #questionCategory, #edit_subcategory").append(choices);
 }
+
