@@ -1,9 +1,0 @@
-Content-type: application/csv
-Content-Disposition: attachment; filename=figures.csv
-Pragma: no-cache
-Expires: 0
-
-"number", "name"\n
-"0","Matthew"\n
-"1","Bob"\n
-"2","Caroline"\n

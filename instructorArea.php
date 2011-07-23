@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-
+<!-- REFACTORING -->
 <html>
 	<head>
 		<title>Instructor Area</title>
@@ -608,6 +608,7 @@
 					checkLoginStatus();
 					$("#sortBy").change().removeAttr("disabled");
 					$("#testDates").removeAttr("disabled");
+					$("#reportTypeSelect").trigger("change");					
 
 				});
 				
@@ -666,8 +667,8 @@
 		<table id="reportTable">
 			<tr>
 				<td><select id="reportTypeSelect">
-					<option value="byStudentEmployeeID">Single Student Report</option>
 					<option value="byClass">Class Report (FC-10)</option>
+					<option value="byStudentEmployeeID">Single Student Report</option>					
 				</select></td>
 
 				 <td><label for="testDateMDY">Test Date </label></td>
