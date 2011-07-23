@@ -1,5 +1,4 @@
 <!DOCTYPE HTML>
-<!-- REFACTORING -->
 <html>
 	<head>
 		<title>Instructor Area</title>
