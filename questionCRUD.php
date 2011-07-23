@@ -4,6 +4,7 @@
 	<title>Question Modeling</title>
 	
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+	<script src="systemChoices.js"></script>
 	<style type='text/css'>
 		@import url("CSS/questionCRUD.css");
 	</style>
@@ -424,11 +425,7 @@
 				$("#createTitle").click();
 			}
 		}
-		
-		function populateERJSystemChoices() {
-			$("#subcategory, #questionCategory, #edit_subcategory").append("<option value='air_condition'>Air Conditioning</option><option value='acft_gen'>Aircraft General</option><option value='apu'>APU</option><option value='autopilot'>Autopilot</option><option value='crew_awareness'>Crew Awareness</option><option value='elec'>Electrical</option><option value='emerg_equip'>Emergency Equipment</option><option value='fire_prot'>Fire Protection</option><option value='flt_control'>Flight Controls</option><option value='fuel'>Fuel</option><option value='hydraulics'>Hydraulics</option><option value='ice_rain_prot'>Ice/Rain Protection</option><option value='ldg_gear_brk'>Landing Gear/Brakes</option><option value='lighting'>Lighting</option><option value='limitations'>Limitations</option><option value='oxy'>Oxygen</option><option value='pneum'>Pneumatics</option><option value='powerplant'>Powerplant</option><option value='pressurization'>Pressurization</option><option value='profiles'>Profiles</option><option value='radar'>Radar</option><option value='stall_prot'>Stall Protection</option><option value='mandatory'>Mandatory</option>");
-		}
-		
+				
 		$("#toggleSwitch").click(function(){
 			toggleSwitch();
 		});
