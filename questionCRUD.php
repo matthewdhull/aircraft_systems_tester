@@ -23,6 +23,10 @@
 			var switchPosition = "CREATE";
 			var currentSubcategory = "none";
 			
+			var ERJ = "erj";
+			var CRJ = "crj";
+			var acftSwitchPosition = "ERJ";
+			
 			$("#adminAreaOnly").css("visibility", "hidden");
 		
 			function clearScreenForLogout(){
@@ -34,7 +38,7 @@
 			
 				$.post("PHPScripts/admin/instructorLogin.php",
 					 function(data){
-						isAdmin = data.admin;
+						isAdmin = data.admin;	
 						if(data.loggedIn == true){
 							if(isAdmin == true){
 								$("#adminAreaOnly").css("visibility", "visible");
@@ -390,6 +394,13 @@
 
 		});
 		
+		$("#erjTitle").click(function(){
+		});
+		
+		$("#crjTitle").click(function(){
+		});
+		
+		
 		$("#editTitle").click(function(){
 			$(this).css("color", "#00d36c");
 			$("#createTitle").css("color", "#d9d9d9");
@@ -416,7 +427,8 @@
 			switchPosition = "CREATE";
 		
 		});
-
+		
+		
 		function toggleSwitch(){
 			if(switchPosition == "CREATE"){
 				$("#editTitle").click();
@@ -448,11 +460,25 @@
 </head>
 <body>
 	<?php
-		ContentSnippets::doHeader();
+		$addendum = " : ERJ";
+		ContentSnippets::doHeader($addendum);
 		ContentSnippets::doNavigationBar();
 	?>
 	<div id="adminAreaOnly">
-		<div id="questionCUDArea"
+		<div id="questionCUDArea">
+
+
+			<div id="toggleAcftQuestionArea">
+				<h4 id="erjTitle">ERJ</h4>
+				<div id="acftToggleSwitch">
+					<div id="acftSwitch">
+						<div id="acftArrow" class="arrow-left"></div>
+					</div>
+				</div>
+				<h4 id="crjTitle">CRJ</h4>
+			</div>
+
+			
 			<div id="toggleEditModeArea">
 				<h4 id="createTitle">CREATE</h4>
 				<div id="toggleSwitch">
@@ -462,6 +488,7 @@
 				</div>
 				<h4 id="editTitle">EDIT</h4>
 			</div>
+			
 			<div id="createQuestionArea"
 				<form id="new_question_form" action="" method="post">
 					<table>
