@@ -11,8 +11,9 @@ class ContentSnippets {
 	} 
 	
 	
-	public static function doHeader(){
-		echo "<style type='text/css'>@import url('CSS/header.css');</style><div id='header'><div id='headerTitle'>SJTester</div></div>";
+	//takes one string arg so that the title may be customized.  
+	public static function doHeader($addendum=null){
+		echo "<style type='text/css'>@import url('CSS/header.css');</style><div id='header'><div id='headerTitle'>SJTester".$addendum."</div></div>";
 	}
 	
 	public static function showFavicon() {
