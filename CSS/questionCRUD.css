@@ -16,8 +16,17 @@
 }
 
 
+#toggleAcftQuestionArea {
+	position: absolute;
+	top: 0px;
+	height: 40px;
+	width: 245px;
+	line-height: 0;
+}
+
 #toggleEditModeArea {
 	position: absolute;
+	left: 210px;	
 	top: 0px;
 	height: 40px;
 	width: 245px;
@@ -29,13 +38,13 @@
 	cursor: pointer;
 }
 
-#editTitle {
+#editTitle, #crjTitle {
 	float: left;
 	margin-left: 10px;
 	color: #d9d9d9;
 }
 
-#createTitle {
+#createTitle, #erjTitle {
 	float: left;
 	margin-left: 10px;
 	margin-right: 10px;
@@ -43,7 +52,7 @@
 }
 
 
-#toggleSwitch{
+#acftToggleSwitch, #toggleSwitch{
 	margin-top: 5px;
 	float: left;
 	height: 31px;
@@ -53,7 +62,7 @@
 	cursor: pointer;
 }
 
-#switch{
+#acftSwitch, #switch{
 	margin-top: 2px;
 	margin-left: 2px;
 	height: 26px;
@@ -94,7 +103,7 @@ select {
 	width: 157px;
 }
 
-#arrow {
+#acftArrow, #arrow {
 	margin-top: 2px;
 	margin-left: 6px;
 

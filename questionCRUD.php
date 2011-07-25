@@ -1,4 +1,4 @@
-<!DOCTYPE HTML>
+ <!DOCTYPE HTML>
 <html>
 <head>
 	<title>Question Modeling</title>
@@ -395,9 +395,23 @@
 		});
 		
 		$("#erjTitle").click(function(){
+			$(this).css("color", "#00d36c");
+			$("#crjTitle").css("color", "#d9d9d9");
+			$("#acftSwitch").animate({"margin-left": '2px'},'fast');
+			$("#acftArrow").removeClass("arrow-right").addClass("arrow-left").css("margin-right", "6px");			
+			$("#headerTitle").html("SJTester : ERJ");											
+			acftSwitchPosition = "ERJ";
+			populateERJSystemChoices();
 		});
 		
 		$("#crjTitle").click(function(){
+			$(this).css("color", "#00d36c");
+			$("#erjTitle").css("color", "#d9d9d9");
+			$("#acftSwitch").animate({"margin-left": '71px'}, 'fast');			
+			$("#acftArrow").removeClass("arrow-left").addClass("arrow-right").css("margin-left", "8px");
+			$("#headerTitle").html("SJTester : CRJ");											
+			acftSwitchPosition = "CRJ";
+			populateCRJSystemChoices();					
 		});
 		
 		
@@ -429,6 +443,16 @@
 		});
 		
 		
+		function acftToggleSwitch(){
+			if(acftSwitchPosition == "ERJ"){
+				$("#crjTitle").click();
+			}
+			else if(acftSwitchPosition == "CRJ"){
+				$("#erjTitle").click();
+			}
+		
+		}
+		
 		function toggleSwitch(){
 			if(switchPosition == "CREATE"){
 				$("#editTitle").click();
@@ -438,8 +462,15 @@
 			}
 		}
 				
+				
+		<?php/*If the user clicks either of the following divs, it will trigger a change in the edit/create mode, erj/crj mode*/?>		
+		
 		$("#toggleSwitch").click(function(){
 			toggleSwitch();
+		});
+		
+		$("#acftToggleSwitch").click(function(){
+			acftToggleSwitch();
 		});
 		
 		

@@ -1,4 +1,4 @@
-
+// The following variables dictionaries that contain the master system category lists for the erj / crj.  
 var erjSystems = {
 	 'air_condition' : "Air Conditioning",
 	'acft_gen' : "Aircraft General",
@@ -59,16 +59,21 @@ function populateSystemChoicesWithSystem(system){
 	return optionList;
 }
 
-//convenience wrapper for the ERJ Systems option list.
+/*
+Convenience wrappers for the ERJ/CRJ Systems option list.  This function removes existing choices and replaces them with options appropriate to the 
+selected acft type.  These are used in questionCRUD.php.
+*/
+
 function populateERJSystemChoices(){
 		var choices = populateSystemChoicesWithSystem(erjSystems);
+		$("#subcategory option, #questionCategory option, #edit_subcategory option").remove();
 		$("#subcategory, #questionCategory, #edit_subcategory").append(choices);
 }
 
 
-//convenience wrapper for the CRJ Systems option list.
 function populateCRJSystemChoices(){
 		var choices = populateSystemChoicesWithSystem(crjSystems);
+		$("#subcategory option, #questionCategory option, #edit_subcategory option").remove();		
 		$("#subcategory, #questionCategory, #edit_subcategory").append(choices);
 }
 
