@@ -59,6 +59,9 @@ create table SPO (
 	spo_name char(250) not null
 );
 
+//shows entire list of TPO & SPO's aggregated.
+select tpo.tpo_number, tpo.tpo_name, spo.spo_number, spo.spo_name from tpo, spo where spo.tpo_id = tpo.tpo_id
+
 
 
 //group by correct,incorrect

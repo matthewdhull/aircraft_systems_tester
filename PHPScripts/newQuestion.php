@@ -5,6 +5,7 @@ include '../Classes/testClass.php';
 $type = $_POST['type'];
 $category = $_POST['category'];
 $subcategory = $_POST['subcategory'];
+$spo = $_POST['spo'];
 $wording_a = $_POST['wording_a'];
 $wording_b = $_POST['wording_b'];
 $correct_ans = $_POST['correct_ans'];
