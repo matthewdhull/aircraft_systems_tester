@@ -1,4 +1,5 @@
 // The following variables dictionaries that contain the master system category lists for the erj / crj.  
+// This dictionary is currently loaded in questionCRUD.php
 var erjSystems = {
 	 'air_condition' : "Air Conditioning",
 	'acft_gen' : "Aircraft General",

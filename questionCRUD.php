@@ -479,7 +479,8 @@
 		
 
 		checkLoginStatus();
-		populateERJSystemChoices();		
+		populateERJSystemChoices();
+		populateERJSPOChoices();		
 		
 	});
 	
@@ -548,6 +549,13 @@
 							<td> <select id="subcategory" name="subcategory">
 									<?php /* auto-populated with system choices. */ ?>
 								</select> 
+							</td>
+						</tr>
+						<tr>
+							<td>SPO:</td>
+							<td><select id="spo">
+									<?php/*Auto-populated with SPO list*/?>
+								</select>
 							</td>
 						</tr>
 						
