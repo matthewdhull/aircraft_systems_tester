@@ -55,6 +55,7 @@
 				var questionType = $("#type").val();
 				var cat = $("#category").val();
 				var subcat = $("#subcategory").val();
+				var spoV = $("#spo").val();
 				var question_text = $("#question_text").val();
 				var alternate_wording = $("#alternate_wording").val();
 				var corr_ans = $("#correct_ans").val();
@@ -68,6 +69,7 @@
 					type: questionType,
 					category: cat,
 					subcategory: subcat,
+					spo: spoV,
 					wording_a: question_text,
 					wording_b: alternate_wording,
 					correct_ans: corr_ans,
@@ -132,6 +134,7 @@
 							$.each(data, function(key, value){
 								$("#edit_type").val(value.type).trigger("change");
 								$("#edit_subcategory").val(value.subcategory);
+								$("#edit_spo").val(valu.spo);
 								$("#edit_question_text").val(value.question_a);
 								$("#edit_alternate_wording").val(value.question_b);
 								$("#edit_correct_ans").val(value.correct_answer);
@@ -174,7 +177,7 @@
 				subcategory: questionCategory
 			}, function(data) {
 		 		$.each(data, function(key,value){
-	 				$("#questions_from_subcategory").append("<table class='singleQuestion' id='t"+value.questionID+"'><tr><td><button value='edit' id='e"+value.questionID+"'>Edit</button><button value='delete' id='d"+value.questionID+"'>Delete</button></td></tr><tr><td>Question Type:</td><td>"+value.type+"</td></tr><tr><td>Question Wording A:</td><td>"+value.question_a+"</td></tr><tr><td>Question Wording B:</td><td>"+value.question_b+"</td></tr><tr><td>Correct Answer:</td><td>"+value.correct_answer+"</td></tr><tr><td>Alternate Correct Answer:</td><td>"+value.alt_correct_answer+"</td></tr><tr><td>Last Correct Answer:</td><td>"+value.last_correct_answer+"</td></tr><tr><td>Answer X:</td><td>"+value.ans_x+"</td></tr><tr><td>Answer Y:</td><td>"+value.ans_y+"</td></tr><tr><td>Answer Z:</td><td>"+value.ans_z+"</td></tr></table>");
+	 				$("#questions_from_subcategory").append("<table class='singleQuestion' id='t"+value.questionID+"'><tr><td><button value='edit' id='e"+value.questionID+"'>Edit</button><button value='delete' id='d"+value.questionID+"'>Delete</button></td></tr><tr><td>Question Type:</td><td>"+value.type+"</td></tr><tr><td>SPO:</td><td>"+value.spo+"</td></tr><tr><td>Question Wording A:</td><td>"+value.question_a+"</td></tr><tr><td>Question Wording B:</td><td>"+value.question_b+"</td></tr><tr><td>Correct Answer:</td><td>"+value.correct_answer+"</td></tr><tr><td>Alternate Correct Answer:</td><td>"+value.alt_correct_answer+"</td></tr><tr><td>Last Correct Answer:</td><td>"+value.last_correct_answer+"</td></tr><tr><td>Answer X:</td><td>"+value.ans_x+"</td></tr><tr><td>Answer Y:</td><td>"+value.ans_y+"</td></tr><tr><td>Answer Z:</td><td>"+value.ans_z+"</td></tr></table>");
 	 			});
 	 			
 	 			//allows user to click 'edit' button and edit question information.
@@ -191,6 +194,7 @@
 			var qID =  $("#editID").val();
 			var tp = $("#edit_type").val();
 			var sc = $("#edit_subcategory").val();
+			var spoV = $("#edit_spo").val();
 			var newText = $("#edit_question_text").val();
 			var newAltnText = $("#edit_alternate_wording").val();
 			var newCorrectAns = $("#edit_correct_ans").val();
@@ -204,6 +208,7 @@
 				questionID: qID,
 				type: tp,
 				subcategory: sc,
+				spo: spoV,
 				wording_a: newText,
 				wording_b: newAltnText,
 				correct_ans: newCorrectAns,
@@ -638,6 +643,14 @@
 								<?php /*Pre-populated with options*/ ?>
 							</select></td>
 						</tr>
+						<tr>
+							<td>SPO:</td>
+							<td><select id="edit_spo">
+									<?php/*Auto-populated with SPO list*/?>
+								</select>
+							</td>
+						</tr>
+						
 					</table>
 					<table>
 						<tr>

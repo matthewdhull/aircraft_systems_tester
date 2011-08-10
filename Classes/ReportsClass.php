@@ -168,16 +168,17 @@ class Reports {
 							
 							
 							//get the amount of correct/incorrect questions per subcategory used.
-							$getCorrectAmount = "SELECT questions.subcategory, SUM(testResults.correct) FROM testResults, questions WHERE testResults.questionID = questions.questionID AND genTestID = ".$aTest['genTestID']." AND questions.subcategory = '".$subcategory."'";
+							$getCorrectAmount = "SELECT questions.subcategory, SUM(testResults.correct), COUNT(testResults.correct) FROM testResults, questions WHERE testResults.questionID = questions.questionID AND genTestID = ".$aTest['genTestID']." AND questions.subcategory = '".$subcategory."'";	
+							
 							$correctAmount = mysql_query($getCorrectAmount);
 							if(!$correctAmount){
 								die("could not run correctAmount query ($correctAmount) ".mysql_error());
 							}
 							while($correctRow = mysql_fetch_array($correctAmount)){
 								$correctCount = $correctRow['SUM(testResults.correct)'];
-							}
+								$totalQsAskedForCat = $correctRow['COUNT(testResults.correct)'];
+							} 
 							
-							$totalQsAskedForCat = $aTest['testsIssued'] * $qAmountForCategory;
 							if($totalQsAskedForCat != 0){
 								$percentageForCat = (int)(($correctCount * 100) / $totalQsAskedForCat);
 								$subcategoriesArr[$subcategory] = $percentageForCat;
