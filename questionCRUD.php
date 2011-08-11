@@ -134,7 +134,7 @@
 							$.each(data, function(key, value){
 								$("#edit_type").val(value.type).trigger("change");
 								$("#edit_subcategory").val(value.subcategory);
-								$("#edit_spo").val(valu.spo);
+								$("#edit_spo").val(value.spo);
 								$("#edit_question_text").val(value.question_a);
 								$("#edit_alternate_wording").val(value.question_b);
 								$("#edit_correct_ans").val(value.correct_answer);
