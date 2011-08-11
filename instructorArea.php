@@ -38,7 +38,7 @@
 					function clearScreenForLogout(){
 						clearLoginFields();
 						clearInfo();
-						$("#instructorTasks, #adminTasks, #infoDiv, #logoutDiv").css("visibility", "hidden");
+						$("#instructorTasks, #adminTasks, #infoDiv, #logoutDiv, #studentEmployeeRow").css("visibility", "hidden");
 					}
 					
 					function clearManageInsructorFields(){
