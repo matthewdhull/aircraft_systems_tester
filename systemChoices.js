@@ -120,7 +120,6 @@ function populateCRJSystemChoices(){
 
 function populateERJSPOChoices(){
 	var choices = populateSPOChoices(erj_SPO);
-	console.log(choices);
 	$("#spo option, #edit_spo option").remove();
 	$("#spo, #edit_spo").append(choices);
 	
