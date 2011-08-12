@@ -60,7 +60,7 @@ create table SPO (
 );
 
 //shows entire list of TPO & SPO's aggregated.
-select tpo.tpo_number, tpo.tpo_name, spo.spo_number, spo.spo_name from tpo, spo where spo.tpo_id = tpo.tpo_id
+select TPO.tpo_number, TPO.tpo_name, SPO.spo_number, SPO.spo_name from TPO, SPO where SPO.tpo_id = TPO.tpo_id
 
 
 
