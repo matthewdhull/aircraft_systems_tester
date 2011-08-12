@@ -44,7 +44,25 @@ firstName char(50) not null,
 lastName char(50) not null,
 password char(255) not null,
 admin bool not null
-)
+);
+
+create table TPO  (
+	tpo_id int unsigned not null auto_increment primary key,
+	tpo_number  char(25),
+	tpo_name char(250) not null
+);
+
+create table SPO (
+	spo_id int unsigned not null auto_increment primary key,
+	tpo_id int unsigned not null,
+	spo_number char(25),
+	spo_name char(250) not null
+);
+
+//shows entire list of TPO & SPO's aggregated.
+select TPO.tpo_number, TPO.tpo_name, SPO.spo_number, SPO.spo_name from TPO, SPO where SPO.tpo_id = TPO.tpo_id
+
+
 
 //group by correct,incorrect
 SELECT questions.subcategory, testResults.questionID, testResults.correct FROM questions, testResults WHERE genTestID = 62 AND questions.questionID = testResults.questionID AND employeeNo = "G5688" 
