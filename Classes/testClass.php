@@ -472,7 +472,7 @@ class Question {
 		
 		mysql_select_db($database, $con);	
 		
-		$questionsQuery = "SELECT * FROM `questions` WHERE `subcategory` = '".$subcategory."'";
+		$questionsQuery = "select questions.questionID, questions.category, questions.subcategory, questions.spo, SPO.spo_name, questions.type, questions.correct_answer, questions.alt_correct_answer, questions.last_correct_answer, questions.ans_x, questions.ans_y, questions.ans_z, questions.question_a, questions.question_b from questions, SPO where questions.spo = SPO.spo_number and questions.subcategory = '".$subcategory."'";		
 		
 		$questionsResult = mysql_query($questionsQuery);
 
@@ -486,7 +486,7 @@ class Question {
 			$questionAttr = array();
 			$questionAttr['questionID'] = $row['questionID'];
 			$questionAttr['type'] = $row['type'];
-			$questionAttr['spo'] = $row['spo'];
+			$questionAttr['spo'] = $row['spo']." - ".$row['spo_name'];
 			$questionAttr['question_a'] = $row['question_a'];
 			$questionAttr['question_b'] = $row['question_b'];
 			$questionAttr['correct_answer'] = $row['correct_answer'];
