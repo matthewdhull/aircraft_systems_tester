@@ -2,8 +2,8 @@
 <html>
 	<head>
 		<title>Exam</title>
-		<script src="jquery.js" type="text/javascript"></script>
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+		<script src="shufflePlugin.js"></script>				
 		<style type="text/css">
 			@import url("CSS/examCMS.css");
 		</style>
@@ -186,10 +186,10 @@
 				
 				<?php /*detect marking/unmarking of a question.*/?>
 				$("#markQuestion").change(function(){
-					if($(this).attr("checked") === true){
+					if($("#markQuestion").is(':checked')){
 						markQuestionForIndex(true, currentIndex);
 					}
-					else {
+					else if(!$("#markQuestion").is(':checked')){
 						markQuestionForIndex(false, currentIndex);
 					}
 					
@@ -897,7 +897,7 @@
 				<table id="examNavigationTable">
 					<tr>
 						<td><label for="markQuestion">Mark:</label></td>
-						<td><input id="markQuestion" name="markQuestion" type="checkbox"></input></td>
+						<td><input id="markQuestion" type="checkbox"></input></td>
 					</tr>
 					<tr>
 						
