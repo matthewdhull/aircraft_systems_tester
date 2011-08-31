@@ -303,7 +303,7 @@
 										clearInfo();
 										
 										
-										if(isAdmin === true){
+/* 										if(isAdmin === true){ */
 											
 											//each object contains a listing of the question asked AS IT WAS GENERATED for the test being reviewed.  
 											$.each(data.testQuestions, function(key,value){
@@ -321,7 +321,7 @@
 											}
 										
 											bindEjectQuestionEvents();
-										} // end of if(isAdmin == TRUE)
+/* 										} // end of if(isAdmin == TRUE) */
 										
 										
 										else {
