@@ -324,6 +324,7 @@
 /* 										} // end of if(isAdmin == TRUE) */
 										
 										
+/*
 										else {
 											//each object contains a listing of the question asked AS IT WAS GENERATED for the test being reviewed.  
 											$.each(data.testQuestions, function(key,value){
@@ -332,6 +333,7 @@
 											});
 										
 										}
+*/
 										
 										colorRows();
 										

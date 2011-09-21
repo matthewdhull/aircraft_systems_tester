@@ -673,7 +673,7 @@
 					var fn = $("#firstName").val();
 					var ln = $("#lastName").val();
 					var en = $("#employeeNo").val();
-					if((fn != "") && (ln != "") && (en.length == 5 || en.length == 7)){	
+					if((fn != "") && (ln != "") && (en.length == 5) && (/^[0-9]+$/.test(en))){	
 						$("#beginExam").removeAttr("disabled");
 						$("#logonMessage").html("");
 					}
@@ -721,7 +721,7 @@
 						<td><label>Class Date</label></td>
 					</tr>
 					<tr>
-						<td><input id="employeeNo" name="employeeNo" type="text" size="25"></input></td>
+						<td><input id="employeeNo" name="employeeNo" type="text" size="25" maxlength="5"></input></td>
 						<td><select id="classDateMonth">
 								<option value="1">1</option>
 								<option value="2">2</option>
