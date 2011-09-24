@@ -862,7 +862,7 @@ class Reports {
 			}
 			
 			//get list of SPO's used for the test (identified by genTestID)
-			$spoQuery = "SELECT DISTINCT questions.spo, spo.spo_name FROM usedQuestions, spo, questions WHERE usedQuestions.genTestID = ".$genTestID." AND usedQuestions.questionID = questions.questionID AND questions.spo = spo.spo_number";
+			$spoQuery = "SELECT DISTINCT questions.spo, SPO.spo_name FROM usedQuestions, SPO, questions WHERE usedQuestions.genTestID = ".$genTestID." AND usedQuestions.questionID = questions.questionID AND questions.spo = SPO.spo_number";
 			$spoResult = mysql_query($spoQuery, $con);
 			if(!$spoResult) {
 				die("Could not run query ($spoQuery) ".mysql_error());
