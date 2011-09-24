@@ -673,6 +673,7 @@
 					var fn = $("#firstName").val();
 					var ln = $("#lastName").val();
 					var en = $("#employeeNo").val();
+					//ensure that fields are NOT empty, employee id is 5 NUMBERS only.  
 					if((fn != "") && (ln != "") && (en.length == 5) && (/^[0-9]+$/.test(en))){	
 						$("#beginExam").removeAttr("disabled");
 						$("#logonMessage").html("");

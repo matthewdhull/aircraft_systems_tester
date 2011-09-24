@@ -6,8 +6,9 @@ button {
 }
 
 #instructorTasks select {
-	width: 100px;
+	width: 160px;
 }
+
 
 li {
 	list-style: none;

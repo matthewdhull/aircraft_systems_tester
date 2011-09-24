@@ -12,7 +12,7 @@
 		<style type="text/css">
 			@import url("CSS/faq.css");
 		</style>
-		<script src="jquery.js" type="text/javascript"></script>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
 		<script type="text/javascript">
 			$(document).ready(function(){
 			

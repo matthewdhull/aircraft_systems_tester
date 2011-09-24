@@ -33,7 +33,6 @@ if(isset($_SESSION['name'])){
 		echo Reports::createdTests($instructorEmpNo);
 	}
 	
-	
 	elseif($option == "getQuestionsForTestID"){
 		echo Reports::questionsForTest($testID);
 	}
@@ -75,8 +74,15 @@ if(isset($_SESSION['name'])){
 		echo Reports::getTestDatesForInstructor($instructorEmployeeNo);
 	}
 	
+	elseif($option == "getInstructorsForDate"){
+		echo Reports::getInstructorsForTestDate($testDate);
+	}
+	
 	elseif($option == "getScoresForClass"){
 		echo Reports::getScoresForClass($testDate);
+	}
+	elseif($option == "getSpoAnalysisForClass"){
+		echo Reports::spoAnalysisForClass($testDate, $idForInstructor);
 	}
 }
 

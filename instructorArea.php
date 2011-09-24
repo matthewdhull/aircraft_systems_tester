@@ -47,7 +47,7 @@
 					}
 					
 					function colorRows(){
-						$("#infoDiv table tr:odd, #infoDiv li:odd").css("background-color", "#d8dbdb");
+						$("#infoDiv table tr:odd, #infoDiv li:odd").css("background-color", "#eaeaea");
 						$("#infoDiv table td[value='Unsatisfactory']").css("color", "red");
 						
 					}
@@ -84,7 +84,10 @@
 									$("#testDateMDY").append("<option value='"+value+"'>"+value+"</option>");
 								});
 								
+								$("#testDateMDY").trigger("change");									
+								
 							}, "json");
+							
 						}
 						else {
 							$.post("PHPScripts/admin/getReports.php",{
@@ -172,23 +175,58 @@
 								newPage.document.write(content);
 								newPage.document.close();
 							}, "json");
-					
-						
-						
 					}
+					
+					function getSPOAnalysisForClass(testDateForClass, administeringInstructorID) {
+						var htmlToAdd = "";
+						var theOption = "getSpoAnalysisForClass";
+						$.post("PHPScripts/admin/getReports.php", {
+							option: theOption,
+							testDate: testDateForClass,
+							instructorEmpNo: administeringInstructorID
+						}, function(data){
+							clearInfo();
+							htmlToAdd += "<table><tr><td>SPO</td><td>Description</td><td>Score</td></tr>";
+							$.each(data, function(key,value){
+								htmlToAdd += "<tr><td>"+value.spo_number+"</td><td>"+value.spo_name+"</td><td>"+value.percentage+"%</td></tr>";
+							});
+							htmlToAdd += "</table>";
+							$("#infoDiv").append(htmlToAdd);
+							colorRows();							
+							$('html, body').animate({
+							    scrollTop: $("#infoDiv").offset().top
+							}, 1000);		
+
+						},"json");
+					}			
 					
 					
 					$("#reportTypeSelect").change(function(){
 						var employeeNoTableRow = $("#studentEmployeeRow");				 
-						if($(this).val()=="byClass"){
-							employeeNoTableRow.css("visibility", "hidden");
+						if($(this).val()=="byStudentEmployeeID"){
+							employeeNoTableRow.css("visibility", "visible");
 						}
 						else {
-							employeeNoTableRow.css("visibility", "visible");
+							employeeNoTableRow.css("visibility", "hidden");
 						}
 					});
 					
-					
+					//gets instructors that administered a test on the selected date.
+					$("#testDateMDY").change(function(){
+						//console.log($(this).val());
+						var td = $(this).val();
+						var theOption = "getInstructorsForDate";
+						$.post("PHPScripts/admin/getReports.php", {
+							option: theOption,
+							testDate: td
+						}, function(data){
+							$("#instructorForDate option").remove();
+							$.each(data, function(key,value){
+								$("#instructorForDate").append("<option value='"+value+"'>"+value+"</option>");
+							});
+						
+						},"json");
+					});
 					
 					$("#sortBy").change(function(){ //any change to this will cause the #sortSpecifics to be autopopulated with appropriate choices for the selected criteria.
 						var criteria = $(this).val();
@@ -394,13 +432,18 @@
 					 	var studentEmpID = $("#studentEmpNo").val();
 						var dateString = $("#testDateMDY").val();
 						
+						var testDate = $("#testDateMDY").val();
+						var instructorID = $("#instructorForDate").val();
+						
 						if(requestType == "byStudentEmployeeID"){
 							getSingleStudentReport(dateString, studentEmpID);
 						}
 						else if(requestType == "byClass"){
 							getScoresForDate(dateString);
 						}
-						
+						else if(requestType == "byClassSpoAnalysis"){
+							getSPOAnalysisForClass(testDate,instructorID);
+						}
 						
 					});
 					
@@ -609,8 +652,7 @@
 					checkLoginStatus();
 					$("#sortBy").change().removeAttr("disabled");
 					$("#testDates").removeAttr("disabled");
-					$("#reportTypeSelect").trigger("change");					
-
+					$("#reportTypeSelect").trigger("change");	
 				});
 				
 				
@@ -667,13 +709,18 @@
 		</table>
 		<table id="reportTable">
 			<tr>
+				<td><label for="reportTypeSelect">Select Report Type</label></td>
+				<td><label for="testDateMDY">Test Date</label></td>
+   				<td><label for="instructorForDate">Select Instructor</label></td>
+			</tr>
+			<tr>
 				<td><select id="reportTypeSelect">
 					<option value="byClass">Class Report (FC-10)</option>
-					<option value="byStudentEmployeeID">Single Student Report</option>					
+					<option value="byStudentEmployeeID">Single Student Report</option>	
+					<option value="byClassSpoAnalysis">Class SPO Analysis</option>				
 				</select></td>
-
-				 <td><label for="testDateMDY">Test Date </label></td>
-				 <td><select id="testDateMDY"></select></td>
+				<td><select id="testDateMDY"></select></td>
+				<td><select id="instructorForDate"></select></td>
 			</tr>
 			<tr id="studentEmployeeRow">
 				<td></td>

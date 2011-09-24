@@ -10,7 +10,7 @@ class Reports {
 	public function __set($name, $value) {
 		$this->$name = $value;
 	} 
-	
+		
 	
 	public static function questionsForTest($testID){
 			$testQuestionsAndTimeout = array();
@@ -417,6 +417,7 @@ class Reports {
 			
 		}
 		
+		//gets ALL instructors authorized on SJTester.
 		public static function getInstructors(){
 			
 			$instructors = array();
@@ -675,6 +676,36 @@ class Reports {
 			return $resultsChangeReport;
 		}
 		
+		public static function getInstructorsForTestDate($testDate){
+			$instructors = array(); // return result.
+			include "XJTestDBConnect.php";
+			$con = mysql_connect($host,$usn, $password);
+	
+			if (!$con){
+			  die('Could not connect: ' . mysql_error());
+			 }
+			
+			mysql_select_db($database, $con);
+			
+			$tempDate = explode("-", $testDate);
+			$testDate = $tempDate[2]."-".$tempDate[0]."-".$tempDate[1];			
+			
+			$getInstructorsForDateQuery = "SELECT DISTINCT instructorID FROM studentTestRecords WHERE testDate = '".$testDate."'";
+			$insResult = mysql_query($getInstructorsForDateQuery);
+			if(!$insResult){
+				die("could not run query ($getInstructorsForDateQuery) ".mysql_error());
+			} 			
+			else {
+				while($row = mysql_fetch_array($insResult)){
+					array_push($instructors, $row['instructorID']);
+				}
+			}
+			mysql_close($con);
+			
+			$instructors = json_encode($instructors);
+			return $instructors;
+		}
+		
 		public static function getTestDates(){
 			
 			$testDates = array();
@@ -688,7 +719,7 @@ class Reports {
 			
 			mysql_select_db($database, $con);
 			
-			$selectTestDateQuery = "SELECT DISTINCT testDate from studentTestRecords";
+			$selectTestDateQuery = "SELECT DISTINCT testDate from studentTestRecords ORDER BY testDate DESC";
 			$testDatesResult = mysql_query($selectTestDateQuery);
 			if(!$testDatesResult){
 				die("could not run query ($selectTestDateQuery) ".mysql_error());
@@ -797,6 +828,82 @@ class Reports {
 			$scoresForClass = json_encode($scoresForClass);
 			return $scoresForClass;
 		}
+		
+		public static function spoAnalysisForClass($testDate, $instructorID){
+			$perSpoAnalysis = array(); //returned array
+			$spoList = array();
+			$genTestID = "";
+
+			//format test date.
+			$tempDate = explode("-", $testDate);
+			$testDate = $tempDate[2]."-".$tempDate[0]."-".$tempDate[1];			
+
+
+			include "XJTestDBConnect.php";
+			$con = mysql_connect($host,$usn, $password);
+	
+			if (!$con){
+			  die('Could not connect: ' . mysql_error());
+			 }
+			
+			mysql_select_db($database, $con);
+			
+			//grab genTestID for the instructor/date match.
+			$testIdQuery = "SELECT DISTINCT genTestID from studentTestRecords where instructorID = '".$instructorID."' AND testDate = '".$testDate."'";
+			$testIdResult = mysql_query($testIdQuery, $con);
+			
+			if(!$testIdResult) {
+				die("Could not run query ($testIdQuery) ".mysql_error());
+			}
+			else {
+				while($row = mysql_fetch_array($testIdResult)){
+					$genTestID = $row['genTestID'];
+				}
+			}
+			
+			//get list of SPO's used for the test (identified by genTestID)
+			$spoQuery = "SELECT DISTINCT questions.spo, spo.spo_name FROM usedQuestions, spo, questions WHERE usedQuestions.genTestID = ".$genTestID." AND usedQuestions.questionID = questions.questionID AND questions.spo = spo.spo_number";
+			$spoResult = mysql_query($spoQuery, $con);
+			if(!$spoResult) {
+				die("Could not run query ($spoQuery) ".mysql_error());
+			}
+					
+			//add all results to the $spoList
+			while($row = mysql_fetch_array($spoResult)){
+				$spo = array();
+				$spo['spo_number'] = $row['spo'];
+				$spo['spo_name'] = $row['spo_name'];
+				array_push($spoList, $spo);
+			}
+			
+			//spo number, spo name, percentage.
+			foreach($spoList as $singleSpec){
+				$spoWithPercentageCorrect = array();
+				$getAmountAskedAndAmountCorrectQuery = "select count(testResults.questionID), SUM(testResults.correct) from testResults, questions where testResults.questionID = questions.questionID and testResults.genTestID = ".$genTestID." and questions.spo = '".$singleSpec['spo_number']."'";
+				$queryResult = mysql_query($getAmountAskedAndAmountCorrectQuery);
+				if(!$queryResult){
+					die("Could not run query ($getAmountAskedAndAmountCorrectQuery) ".mysql_error());
+				}
+				else {
+					while($row = mysql_fetch_array($queryResult)){
+						$amtAsked = $row['count(testResults.questionID)'];
+						$amtCorrect = $row['SUM(testResults.correct)'];
+						$percentageScore = round(($amtCorrect * 100) / $amtAsked, 1); 
+						$spoWithPercentageCorrect['spo_number'] = $singleSpec['spo_number'];
+						$spoWithPercentageCorrect['spo_name'] = $singleSpec['spo_name'];
+						$spoWithPercentageCorrect['percentage'] = $percentageScore;
+						array_push($perSpoAnalysis, $spoWithPercentageCorrect);											
+					}
+				} 
+			}
+			mysql_close($con);
+			
+			$perSpoAnalysis = json_encode($perSpoAnalysis);
+			return $perSpoAnalysis;
+		}
+
+
+
 
 	} 
 ?>
