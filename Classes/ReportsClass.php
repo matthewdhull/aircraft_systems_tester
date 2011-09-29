@@ -1,8 +1,35 @@
 <?php
 
-
 class Reports {
 
+	private static function dateRangeForQuarter($quarterString,$year){
+			if($year == ""){
+				echo "year was nil";
+				exit;
+			}
+			$dateRange = array('startDate'=>"", 'endDate'=>"");
+					if($quarterString == "q1"){
+						$dateRange['startDate'] = $year."-1-1";
+						$dateRange['endDate'] = $year."-3-31";
+					}
+					elseif($quarterString == "q2"){
+						$dateRange['startDate'] = $year."-4-1";
+						$dateRange['endDate'] = $year."-6-30";
+					}
+					elseif($quarterString == "q3"){
+						$dateRange['startDate'] = $year."-7-1";
+						$dateRange['endDate'] = $year."-9-30";
+					}
+					elseif($quarterString == "q4"){
+						$dateRange['startDate'] = $year."-10-1";
+						$dateRange['endDate'] = $year."-12-31";
+					}
+					
+			return $dateRange;
+	}
+
+
+	
 	public function __get($name) {
 		return $this->$name;
 	}
@@ -16,15 +43,8 @@ class Reports {
 			$testQuestionsAndTimeout = array();
 			$testQuestions = array();
 			
-			include "../../Classes/XJTestDBConnect.php";
-			$con = mysql_connect($host,$usn, $password);
-	
-			if (!$con){
-			  die('Could not connect: ' . mysql_error());
-			 }
-			
-			mysql_select_db($database, $con);
-			
+			include "XJTestDBConnect.php";		
+			$con = getConnection();
 			
 			$getTimeSinceTest = "SELECT unix_timestamp(`genDate`) FROM `createdTests` WHERE `genTestID` = '".$testID."'";
 			$timeSinceTest = mysql_query($getTimeSinceTest);
@@ -82,20 +102,15 @@ class Reports {
 	
 	}
 	public static function createdTests($instructorEmpNo){
-		
+
+			include "XJTestDBConnect.php";		
+			$con = getConnection();
+
 			$createdTests = array();
 			$subcategoriesArr = array();
 			$qAmountForCategory = "";
 			$correctCount = "";
 		
-			include "../../Classes/XJTestDBConnect.php";
-			$con = mysql_connect($host,$usn, $password);
-	
-			if (!$con){
-			  die('Could not connect: ' . mysql_error());
-			 }
-			
-			mysql_select_db($database, $con);
 
 			$getTests = "SELECT DISTINCT createdTests.genTestID, createdTests.testModelID, createdTests.genDate , createdTests.course_type, createdTests.length, createdTests.testPassword FROM createdTests, studentTestRecords WHERE createdTests.instructorID = '".$instructorEmpNo."' AND studentTestRecords.genTestID = createdTests.genTestID";
 			
@@ -200,23 +215,14 @@ class Reports {
 		
 		public static function reportForStudent($instructorEmployeeNo, $admin, $studentEmpNo, $studentReportTestDate){
 
+			include "XJTestDBConnect.php";		
+			$con = getConnection();
+
 			$report = array();
 			$weakestSystems = array();
 			$missedQuestionSet = array();
 			$employeeInfo = array();
 			$genTestID = "";
-
-			
-			include "../../Classes/XJTestDBConnect.php";
-			$con = mysql_connect($host,$usn, $password);
-	
-			if (!$con){
-			  die('Could not connect: ' . mysql_error());
-			 }
-			
-			mysql_select_db($database, $con);
-			
-			
 			
 			$tempDate = explode("-",$studentReportTestDate);
 			$studentReportTestDate = $tempDate[2]."-".$tempDate[0]."-".$tempDate[1];
@@ -289,18 +295,14 @@ class Reports {
 		
 		//returns all studentTestRecords for .csv (not json)
 		public static function cumulativeTestStats(){
+		
+			include "XJTestDBConnect.php";		
+			$con = getConnection();
+			
 			$statsReport = array();
 			$columnNames = array("Employee Number", "Name", "Class Date", "Test Date", "Instructor", "Syllabus", "Qual Code", "Retrain", "Result", "Score");
 			array_push($statsReport, $columnNames);
-					
-			include "XJTestDBConnect.php";
-			$con = mysql_connect($host,$usn, $password);
-			if (!$con){
-			  die('Could not connect: ' . mysql_error());
-			 }
-			
-			mysql_select_db($database, $con);
-			
+								
 			$getStats = "SELECT employeeNo, firstName, lastName, classDate, testDate, instructorID, syllabus, qualCode, retrain, result, score FROM studentTestRecords";
 			
 			$statsResult = mysql_query($getStats);
@@ -336,43 +338,20 @@ class Reports {
 		
 		
 		public static function showAllScores($year, $orgType, $orgSpec){
+
+			include "XJTestDBConnect.php";		
+			$con = getConnection();
+
 			$statsReport = array();
-		
-			include "../../Classes/XJTestDBConnect.php";
-			$con = mysql_connect($host,$usn, $password);
 			
 			$getReport = "SELECT employeeNo, firstName, lastName, classDate, testDate, instructorID, syllabus, qualCode, retrain, result, score FROM studentTestRecords WHERE testDate ";
-	
-			if (!$con){
-			  die('Could not connect: ' . mysql_error());
-			 }
-			
-			mysql_select_db($database, $con);
-
 			
 			if($orgType == "month"){
 				$getReport = $getReport."LIKE '".$year."-".$orgSpec."-%'";
 			}
 			elseif($orgType == "quarter"){
-				$startDate = "";
-				$endDate = "";
-				if($orgSpec == "q1"){
-					$startDate = $year."-1-1";
-					$endDate = $year."-3-31";
-				}
-				elseif($orgSpec == "q2"){
-					$startDate = $year."-4-1";
-					$endDate = $year."-6-30";
-				}
-				elseif($orgSpec == "q3"){
-					$startDate = $year."-7-1";
-					$endDate = $year."-9-30";
-				}
-				elseif($orgSpec == "q4"){
-					$startDate = $year."-10-1";
-					$endDate = $year."-12-31";
-				}
-				$getReport = $getReport."BETWEEN '".$startDate."' AND '".$endDate."'";
+				$dateRange = self::dateRangeForQuarter($orgSpec,$year);			
+				$getReport = $getReport."BETWEEN '".$dateRange['startDate']."' AND '".$dateRange['endDate']."'";
 				//echo $getReport;
 			} 
 			elseif($orgType == "year"){
@@ -419,19 +398,12 @@ class Reports {
 		
 		//gets ALL instructors authorized on SJTester.
 		public static function getInstructors(){
+	
+			include "XJTestDBConnect.php";		
+			$con = getConnection();
+		
 			
 			$instructors = array();
-			
-			include "../../Classes/XJTestDBConnect.php";
-			$con = mysql_connect($host,$usn, $password);
-	
-			if (!$con){
-			  die('Could not connect: ' . mysql_error());
-			 }
-			
-			mysql_select_db($database, $con);
-			
-		
 			
 			$getInstructorList = "SELECT instructorID, employeeNo, firstName, lastName, password, admin from instructors";
 			$instructorList = mysql_query($getInstructorList);
@@ -460,19 +432,12 @@ class Reports {
 		}
 		
 		public static function getInfoForInstructor($idForInstructor){
+
+			include "XJTestDBConnect.php";		
+			$con = getConnection();
 		
 			$instructorInfo = array();
-		
-			include "../../Classes/XJTestDBConnect.php";
-			$con = mysql_connect($host,$usn, $password);
-	
-			if (!$con){
-			  die('Could not connect: ' . mysql_error());
-			 }
-			
-			mysql_select_db($database, $con);
-			
-			
+					
 			$getInfo = "SELECT * from instructors where employeeNo = '".$idForInstructor."'";
 			$infoResult = mysql_query($getInfo);
 			if(!$infoResult){
@@ -503,18 +468,12 @@ class Reports {
 		}
 		
 		public static function deleteInstructor($idForInstructor){
+		
+			include "XJTestDBConnect.php";		
+			$con = getConnection();
+		
 			$deleteMessage = array();
-			
-			include "../../Classes/XJTestDBConnect.php";
-			$con = mysql_connect($host,$usn, $password);
-	
-			if (!$con){
-			  die('Could not connect: ' . mysql_error());
-			 }
-			
-			mysql_select_db($database, $con);
-			
-			
+
 			$deleteIns = "DELETE FROM instructors WHERE employeeNo = '".$idForInstructor."'";
 			$deleteResult = mysql_query($deleteIns);
 			
@@ -534,17 +493,11 @@ class Reports {
 		}
 		
 		public static function editInstructor($idForInstructor, $firstName, $lastName, $insPassword, $admin, $option) {
-			$editMessage = array();
+
+			include "XJTestDBConnect.php";		
+			$con = getConnection();
 		
-			include "../../Classes/XJTestDBConnect.php";
-			$con = mysql_connect($host,$usn, $password);
-	
-			if (!$con){
-			  die('Could not connect: ' . mysql_error());
-			 }
-			
-			mysql_select_db($database, $con);
-			
+			$editMessage = array();
 			$editInstructor = "";
 			
 			if($option == "updateInstructor"){
@@ -576,6 +529,10 @@ class Reports {
 		}
 		
 		public static function ejectQuestion($testID, $questionID){
+		
+			include "XJTestDBConnect.php";		
+			$con = getConnection();
+		
 			$length = "";
 			$valuePerQ = "";
 			$scoreBeforeUpdate = "";
@@ -592,15 +549,6 @@ class Reports {
 			
 			//this will be returned from the function and contains a list of students with a result changing from unsat -> sat.
 			$resultsChangeReport = array();
-			
-			include "../../Classes/XJTestDBConnect.php";
-			$con = mysql_connect($host,$usn, $password);
-	
-			if (!$con){
-			  die('Could not connect: ' . mysql_error());
-			 }
-			
-			mysql_select_db($database, $con);
 			
 			$getLength = "SELECT length FROM createdTests where genTestID = ".$testID."";
 			$lengthResult = mysql_query($getLength);
@@ -677,16 +625,11 @@ class Reports {
 		}
 		
 		public static function getInstructorsForTestDate($testDate){
+
+			include "XJTestDBConnect.php";		
+			$con = getConnection();
+
 			$instructors = array(); // return result.
-			include "XJTestDBConnect.php";
-			$con = mysql_connect($host,$usn, $password);
-	
-			if (!$con){
-			  die('Could not connect: ' . mysql_error());
-			 }
-			
-			mysql_select_db($database, $con);
-			
 			$tempDate = explode("-", $testDate);
 			$testDate = $tempDate[2]."-".$tempDate[0]."-".$tempDate[1];			
 			
@@ -707,18 +650,11 @@ class Reports {
 		}
 		
 		public static function getTestDates(){
+		
+			include "XJTestDBConnect.php";		
+			$con = getConnection();
 			
 			$testDates = array();
-		
-			include "../../Classes/XJTestDBConnect.php";
-			$con = mysql_connect($host,$usn, $password);
-	
-			if (!$con){
-			  die('Could not connect: ' . mysql_error());
-			 }
-			
-			mysql_select_db($database, $con);
-			
 			$selectTestDateQuery = "SELECT DISTINCT testDate from studentTestRecords ORDER BY testDate DESC";
 			$testDatesResult = mysql_query($selectTestDateQuery);
 			if(!$testDatesResult){
@@ -738,18 +674,11 @@ class Reports {
 		}
 		
 		public static function getTestDatesForInstructor($instructorEmployeeNo){
+		
+			include "XJTestDBConnect.php";		
+			$con = getConnection();
 					
 			$testDates = array();
-		
-			include "../../Classes/XJTestDBConnect.php";
-			$con = mysql_connect($host,$usn, $password);
-	
-			if (!$con){
-			  die('Could not connect: ' . mysql_error());
-			 }
-			
-			mysql_select_db($database, $con);
-			
 			$selectTestDateQuery = "SELECT DISTINCT testDate from studentTestRecords where instructorID = '".$instructorEmployeeNo."'";
 			$testDatesResult = mysql_query($selectTestDateQuery);
 			if(!$testDatesResult){
@@ -769,6 +698,10 @@ class Reports {
 		}
 		
 		public static function getScoresForClass($testDate){
+
+			include "XJTestDBConnect.php";		
+			$con = getConnection();
+		
 			$scoresForClass = array();
 			$testInfo = array();
 			$testInfo['testDate'] = $testDate;
@@ -779,17 +712,6 @@ class Reports {
 			$tempDate = explode("-", $testDate);
 			$testDate = $tempDate[2]."-".$tempDate[0]."-".$tempDate[1];
 		
-			include "../../Classes/XJTestDBConnect.php";
-			$con = mysql_connect($host,$usn, $password);
-	
-			if (!$con){
-			  die('Could not connect: ' . mysql_error());
-			 }
-			
-			mysql_select_db($database, $con);
-			
-			
-			
 			//first get instructor/date/class type information.
 			$testInfoQuery = "select DISTINCT instructorID, TRUNCATE(avg(score),2) from studentTestRecords where testDate = '".$testDate."'";
 			$testInfoResult = mysql_query($testInfoQuery);
@@ -830,6 +752,10 @@ class Reports {
 		}
 		
 		public static function spoAnalysisForClass($testDate, $instructorID){
+		
+			include "XJTestDBConnect.php";		
+			$con = getConnection();
+		
 			$perSpoAnalysis = array(); //returned array
 			$spoList = array();
 			$genTestID = "";
@@ -839,15 +765,6 @@ class Reports {
 			$testDate = $tempDate[2]."-".$tempDate[0]."-".$tempDate[1];			
 
 
-			include "XJTestDBConnect.php";
-			$con = mysql_connect($host,$usn, $password);
-	
-			if (!$con){
-			  die('Could not connect: ' . mysql_error());
-			 }
-			
-			mysql_select_db($database, $con);
-			
 			//grab genTestID for the instructor/date match.
 			$testIdQuery = "SELECT DISTINCT genTestID from studentTestRecords where instructorID = '".$instructorID."' AND testDate = '".$testDate."'";
 			$testIdResult = mysql_query($testIdQuery, $con);

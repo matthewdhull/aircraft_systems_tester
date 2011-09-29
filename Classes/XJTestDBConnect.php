@@ -15,4 +15,18 @@
 	$database = 'xjtest';
 	
 */
+
+	function getConnection(){
+		//$con = mysql_connect($host,$usn, $password);
+		$con = mysql_connect('localhost','root', 'root');		
+
+		if (!$con){
+		  die('Could not connect: ' . mysql_error());
+		 }
+		
+		mysql_select_db('xjtest', $con);
+		
+		return $con;
+	}
+
 ?>
