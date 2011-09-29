@@ -819,8 +819,57 @@ class Reports {
 			return $perSpoAnalysis;
 		}
 
+	public static function spoAnalysisForQuarter($orgSpec, $year){
+		include "XJTestDBConnect.php";		
+		$con = getConnection();
+		$dateRange = self::dateRangeForQuarter($orgSpec,$year);
+		
+		
+		$spoList = array();
+		$perSpoAnalysis = array(); //returned result.
+		
+
+		$getSpoQuery = "SELECT DISTINCT questions.spo, SPO.spo_name FROM usedQuestions, SPO, questions, studentTestRecords WHERE studentTestRecords.testDate between '".$dateRange['startDate']."' AND '".$dateRange['endDate']."' AND usedQuestions.questionID = questions.questionID AND questions.spo = SPO.spo_number";
+		
+		$spoResult = mysql_query($getSpoQuery, $con);
+		if(!$spoResult){
+			die("could not run query ($getSpoQuery) ".mysql_error());
+		}
+		else {
+			while($row = mysql_fetch_array($spoResult)){
+				$spo = array();
+				$spo['spo_number'] = $row['spo'];
+				$spo['spo_name'] = $row['spo_name'];
+				array_push($spoList, $spo);
+			}
+			foreach($spoList as $singleSpec){
+				$spoWithPercentageCorrect = array();
+				$getAmountAskedAndAmountCorrectQuery = "SELECT count(testResults.questionID), SUM(testResults.correct) FROM testResults, questions, studentTestRecords where testResults.questionID = questions.questionID AND studentTestRecords.testDate BETWEEN '".$dateRange['startDate']."' AND '".$dateRange['endDate']."' AND questions.spo = '".$singleSpec['spo_number']."'";
+				
+				$queryResult = mysql_query($getAmountAskedAndAmountCorrectQuery);
+				if(!$queryResult){
+					die("Could not run query ($getAmountAskedAndAmountCorrectQuery) ".mysql_error());
+				}
+				else {
+					while($row = mysql_fetch_array($queryResult)){
+						$amtAsked = $row['count(testResults.questionID)'];
+						$amtCorrect = $row['SUM(testResults.correct)'];
+						$percentageScore = round(($amtCorrect * 100) / $amtAsked, 1); 
+						$spoWithPercentageCorrect['spo_number'] = $singleSpec['spo_number'];
+						$spoWithPercentageCorrect['spo_name'] = $singleSpec['spo_name'];
+						$spoWithPercentageCorrect['percentage'] = $percentageScore;
+						array_push($perSpoAnalysis, $spoWithPercentageCorrect);											
+					}
+				}
+			} 
+		}
+		mysql_close($con);
+		
+		$perSpoAnalysis = json_encode($perSpoAnalysis);
+		return $perSpoAnalysis;
+	
+	}
 
 
-
-	} 
+} 
 ?>

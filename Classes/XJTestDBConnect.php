@@ -25,7 +25,6 @@
 		 }
 		
 		mysql_select_db('xjtest', $con);
-		
 		return $con;
 	}
 
