@@ -1,3 +1,7 @@
+<?php
+session_start();
+session_cache_limiter('nocache');
+?>
 <!DOCTYPE HTML>
 <html>
 	<head>
@@ -20,7 +24,7 @@
 				$(document).ready(function(){
 					var isAdmin = false;
 					var empNo = $("#employeeNo");
-					var instructorID = "";
+					var instructorID = "<?php echo $_SESSION['employeeNo'];?>";
 					var pwd = $("#loginPassword");
 
 					var instructorDivHTML = "<div id='editInstructorDiv'><table><tr><td>Submit</td><td>Delete</td><td>Employee No</td><td>First Name</td><td>Last Name</td><td>Password</td><td>Admin?</td></tr><tr><td><button id='updateInstructorInfo'>Submit</button></td><td><button id='deleteInstructorInfo'>Delete</button></td><td><input id='editInstructorID' type='text'></input></td><td><input id='editFirstName'  type='text'></input></td><td><input id='editLastName' type='text'></input></td><td><input id='editPassWord'  type=text'></input></td><td><input id='editAdmin'  type='checkbox'></input></td></tr></table></div>";
@@ -97,7 +101,6 @@
 								option: "getInstructorTestDates"
 							}, function (data){
 								$("#testDateMDY option").remove();
-								console.log(instructorID);
 								$("#instructorForDate option").remove();
 								$("#instructorForDate").append("<option value='"+instructorID+"'>"+instructorID+"</option>"); //hard code the instructor id to the current user.
 								$.each(data, function(key,value){
