@@ -20,6 +20,7 @@
 				$(document).ready(function(){
 					var isAdmin = false;
 					var empNo = $("#employeeNo");
+					var instructorID = "";
 					var pwd = $("#loginPassword");
 
 					var instructorDivHTML = "<div id='editInstructorDiv'><table><tr><td>Submit</td><td>Delete</td><td>Employee No</td><td>First Name</td><td>Last Name</td><td>Password</td><td>Admin?</td></tr><tr><td><button id='updateInstructorInfo'>Submit</button></td><td><button id='deleteInstructorInfo'>Delete</button></td><td><input id='editInstructorID' type='text'></input></td><td><input id='editFirstName'  type='text'></input></td><td><input id='editLastName' type='text'></input></td><td><input id='editPassWord'  type=text'></input></td><td><input id='editAdmin'  type='checkbox'></input></td></tr></table></div>";
@@ -31,6 +32,7 @@
 					}
 					
 					function clearLoginFields(){
+						instructorID = empNo.val();
 						empNo.val("");
 						pwd.val("");
 					}
@@ -94,7 +96,10 @@
 							$.post("PHPScripts/admin/getReports.php",{
 								option: "getInstructorTestDates"
 							}, function (data){
-								$("#testDateMDY option").remove();							
+								$("#testDateMDY option").remove();
+								console.log(instructorID);
+								$("#instructorForDate option").remove();
+								$("#instructorForDate").append("<option value='"+instructorID+"'>"+instructorID+"</option>"); //hard code the instructor id to the current user.
 								$.each(data, function(key,value){
 									$("#testDateMDY").append("<option value='"+value+"'>"+value+"</option>");
 								});
@@ -215,18 +220,20 @@
 					//gets instructors that administered a test on the selected date.
 					$("#testDateMDY").change(function(){
 						//console.log($(this).val());
-						var td = $(this).val();
-						var theOption = "getInstructorsForDate";
-						$.post("PHPScripts/admin/getReports.php", {
-							option: theOption,
-							testDate: td
-						}, function(data){
-							$("#instructorForDate option").remove();
-							$.each(data, function(key,value){
-								$("#instructorForDate").append("<option value='"+value+"'>"+value+"</option>");
-							});
-						
-						},"json");
+						if(isAdmin === true){
+							var td = $(this).val();
+							var theOption = "getInstructorsForDate";
+							$.post("PHPScripts/admin/getReports.php", {
+								option: theOption,
+								testDate: td
+							}, function(data){
+								$("#instructorForDate option").remove();
+								$.each(data, function(key,value){
+									$("#instructorForDate").append("<option value='"+value+"'>"+value+"</option>");
+								});
+							
+							},"json");
+						}
 					});
 					
 					$("#sortBy").change(function(){ //any change to this will cause the #sortSpecifics to be autopopulated with appropriate choices for the selected criteria.
