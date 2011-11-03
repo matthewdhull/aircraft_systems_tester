@@ -3,7 +3,7 @@
 	<head>
 		<title>Instructor Area</title>
 		
-			<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+			<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
 			<script src="calculation.js" type="text/javascript"></script>
 			
 			<?php 
@@ -38,7 +38,7 @@
 					function clearScreenForLogout(){
 						clearLoginFields();
 						clearInfo();
-						$("#instructorTasks, #adminTasks, #infoDiv, #logoutDiv, #studentEmployeeRow").css("visibility", "hidden");
+						$("#instructorTasks, #adminTasks, #infoDiv, #logoutDiv, #studentEmployeeRow, #spo_sort_critera, #spo_year_select, label[for='spo_year_select'], #spo_quarter_select, label[for='spo_quarter_select']").css("visibility", "hidden");
 					}
 					
 					function clearManageInsructorFields(){
@@ -64,7 +64,8 @@
 									if(isAdmin === true){
 										$("#adminTasks").css("visibility", "visible");
 									}
-									populateTestDates();										
+									populateTestDates();
+									$("#exportType").trigger("change");										
 								}
 								else{
 									clearScreenForLogout();
@@ -93,8 +94,8 @@
 							$.post("PHPScripts/admin/getReports.php",{
 								option: "getInstructorTestDates"
 							}, function (data){
+								$("#testDateMDY option").remove();							
 								$.each(data, function(key,value){
-									$("#testDateMDY option").remove();
 									$("#testDateMDY").append("<option value='"+value+"'>"+value+"</option>");
 								});
 								
@@ -247,6 +248,16 @@
 						
 						specs.append(htmlToAdd);
 					});
+					
+					$("#exportType").change(function(){
+						if($(this).val() == "quarterly_spo_analysis"){
+							$("#spo_sort_critera, #spo_year_select, label[for='spo_year_select'], #spo_quarter_select, label[for='spo_quarter_select']").css("visibility", "visible");
+						}
+						else {
+							$("#spo_sort_critera, #spo_year_select, label[for='spo_year_select'], #spo_quarter_select, label[for='spo_quarter_select']").css("visibility", "hidden");
+
+						}
+					});						
 				
 					$("#loginButton").click(function(){
 						$.post("PHPScripts/admin/instructorLogin.php",{
@@ -588,8 +599,31 @@
 					
 					//make .csv file available for download
 					$("#csvFile").click(function(e){
-						e.preventDefault();
-						window.location.href = "downloadables/download.php";
+						e.preventDefault();					
+						var theOption = "";
+						var os = "";
+						var y = "";
+						var exportType = $("#exportType").val();
+						if(exportType == "quarterly_spo_analysis"){
+							os = $("#spo_quarter_select").val();
+							y = $("#spo_year_select").val();
+							$("#progressBar").css("visibility", "visible");
+							$("label[for='spo_year_select'],#spo_year_select, label[for='spo_quarter_select'], #spo_quarter_select").css("visibility", "hidden");
+							$("#spo_sort_critera").html("Working&hellip;");
+							
+							$.post("downloadables/downloadQuarterlySPO.php", {
+								option: "makeFile",
+								orgSpec: os,
+								year: y
+							}, function(data){
+								$("#progressBar").css("visibility", "hidden");															
+								$("label[for='spo_year_select'],#spo_year_select, label[for='spo_quarter_select'], #spo_quarter_select").css("visibility", "visible");								$("#spo_sort_critera").html("Sort Criteria");							
+								window.location.href= "downloadables/downloadQuarterlySPO.php?option=getFile";
+							});
+						}
+						else if(exportType == "cumulative_scores"){
+							window.location.href = "downloadables/download.php";						
+						}
 					});
 					
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////			
@@ -652,7 +686,7 @@
 					checkLoginStatus();
 					$("#sortBy").change().removeAttr("disabled");
 					$("#testDates").removeAttr("disabled");
-					$("#reportTypeSelect").trigger("change");	
+					$("#reportTypeSelect, #exportType").trigger("change");	
 				});
 				
 				
@@ -735,6 +769,7 @@
 		</table>
 	</div>
 	<div id="adminTasks" class="center" style="visibility:hidden">
+	<div id="progressBar"></div>
 	<h4>Admin Tasks</h4>
 		<table>
 			<tr>
@@ -757,7 +792,20 @@
 			</tr>
 			<tr>	
 				<td><button id="csvFile">Export</button></td>
-				<td>Export cumulative data (.csv)</td>
+				<td><select id="exportType">
+					<option value="cumulative_scores">All Scores</option>
+					<option value="quarterly_spo_analysis">SPO Analysis</option>
+				</select></td>
+				<td id="spo_sort_critera" style="visibility: hidden">Sort Criteria</td>
+				<td><label for="spo_year_select" style="visibility: hidden">Year</label></td>	
+				<td><input type="text" id="spo_year_select" size="5" maxlength="4" style="visibility: hidden"></td>
+				<td><label for="spo_quarter_select" style="visibility: hidden">Quarter</label></td>
+				<td><select id="spo_quarter_select" style="visibility: hidden">
+					<option value="q1">Q1</option>
+					<option value="q2">Q2</option>
+					<option value="q3">Q3</option>
+					<option value="q4">Q4</option>															
+				</select></td>
 			</tr>
 			<tr>
 				<td><button id="qCRUD">Questions</button></td>

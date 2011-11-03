@@ -26,7 +26,7 @@ class ContentSnippets {
 				@import url("CSS/common.css");
 			</style>
 			
-			<script src="../jquery.js" type="text/javascript"></script>
+			<script src=".http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js" type="text/javascript"></script>
 			<script type="text/javascript">
 				$(document).ready(function(){
 						$("#instructorAreaNav").click(function(){

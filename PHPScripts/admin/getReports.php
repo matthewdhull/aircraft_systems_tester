@@ -84,9 +84,6 @@ if(isset($_SESSION['name'])){
 	elseif($option == "getSpoAnalysisForClass"){
 		echo Reports::spoAnalysisForClass($testDate, $idForInstructor);
 	}
-	elseif($option == "getSpoAnalysisForQuarter"){
-		echo Reports::spoAnalysisForQuarter($orgSpec, $year);
-	}
 }
 
 ?>

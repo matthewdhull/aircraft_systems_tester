@@ -37,14 +37,41 @@ class Reports {
 	public function __set($name, $value) {
 		$this->$name = $value;
 	} 
+	
+	
+	private static function getConnection(){
+			//offline connection info.
+			$usn = 'root';
+			$password = 'root';
+			$database = 'xjtest';
+			$host = 'localhost';
+			
+			
+/*
+			//online connection info	
+			$host = 'mdhblog.db'; 
+			$usn = 'gv3zF'; 
+			$password = 'p3rn1c10uzSquId'; 
+			$database = 'xjtest';
+	
+*/
+	
+		$con = mysql_connect( $host, $usn, $password);		
+
+		if (!$con){
+		  die('Could not connect: ' . mysql_error());
+		 }
 		
+		mysql_select_db($database, $con);
+		return $con;
+	
+	}
 	
 	public static function questionsForTest($testID){
 			$testQuestionsAndTimeout = array();
 			$testQuestions = array();
 			
-			include "XJTestDBConnect.php";		
-			$con = getConnection();
+			$con = self::getConnection();
 			
 			$getTimeSinceTest = "SELECT unix_timestamp(`genDate`) FROM `createdTests` WHERE `genTestID` = '".$testID."'";
 			$timeSinceTest = mysql_query($getTimeSinceTest);
@@ -103,9 +130,8 @@ class Reports {
 	}
 	public static function createdTests($instructorEmpNo){
 
-			include "XJTestDBConnect.php";		
-			$con = getConnection();
-
+			$con = self::getConnection();
+			
 			$createdTests = array();
 			$subcategoriesArr = array();
 			$qAmountForCategory = "";
@@ -215,9 +241,8 @@ class Reports {
 		
 		public static function reportForStudent($instructorEmployeeNo, $admin, $studentEmpNo, $studentReportTestDate){
 
-			include "XJTestDBConnect.php";		
-			$con = getConnection();
-
+			$con = self::getConnection();
+			
 			$report = array();
 			$weakestSystems = array();
 			$missedQuestionSet = array();
@@ -296,9 +321,8 @@ class Reports {
 		//returns all studentTestRecords for .csv (not json)
 		public static function cumulativeTestStats(){
 		
-			include "XJTestDBConnect.php";		
-			$con = getConnection();
-			
+			$con = self::getConnection();
+						
 			$statsReport = array();
 			$columnNames = array("Employee Number", "Name", "Class Date", "Test Date", "Instructor", "Syllabus", "Qual Code", "Retrain", "Result", "Score");
 			array_push($statsReport, $columnNames);
@@ -339,9 +363,8 @@ class Reports {
 		
 		public static function showAllScores($year, $orgType, $orgSpec){
 
-			include "XJTestDBConnect.php";		
-			$con = getConnection();
-
+			$con = self::getConnection();
+			
 			$statsReport = array();
 			
 			$getReport = "SELECT employeeNo, firstName, lastName, classDate, testDate, instructorID, syllabus, qualCode, retrain, result, score FROM studentTestRecords WHERE testDate ";
@@ -399,9 +422,7 @@ class Reports {
 		//gets ALL instructors authorized on SJTester.
 		public static function getInstructors(){
 	
-			include "XJTestDBConnect.php";		
-			$con = getConnection();
-		
+			$con = self::getConnection();		
 			
 			$instructors = array();
 			
@@ -433,9 +454,8 @@ class Reports {
 		
 		public static function getInfoForInstructor($idForInstructor){
 
-			include "XJTestDBConnect.php";		
-			$con = getConnection();
-		
+			$con = self::getConnection();
+					
 			$instructorInfo = array();
 					
 			$getInfo = "SELECT * from instructors where employeeNo = '".$idForInstructor."'";
@@ -469,9 +489,8 @@ class Reports {
 		
 		public static function deleteInstructor($idForInstructor){
 		
-			include "XJTestDBConnect.php";		
-			$con = getConnection();
-		
+			$con = self::getConnection();
+					
 			$deleteMessage = array();
 
 			$deleteIns = "DELETE FROM instructors WHERE employeeNo = '".$idForInstructor."'";
@@ -494,9 +513,8 @@ class Reports {
 		
 		public static function editInstructor($idForInstructor, $firstName, $lastName, $insPassword, $admin, $option) {
 
-			include "XJTestDBConnect.php";		
-			$con = getConnection();
-		
+			$con = self::getConnection();
+					
 			$editMessage = array();
 			$editInstructor = "";
 			
@@ -530,9 +548,8 @@ class Reports {
 		
 		public static function ejectQuestion($testID, $questionID){
 		
-			include "XJTestDBConnect.php";		
-			$con = getConnection();
-		
+			$con = self::getConnection();
+					
 			$length = "";
 			$valuePerQ = "";
 			$scoreBeforeUpdate = "";
@@ -626,9 +643,8 @@ class Reports {
 		
 		public static function getInstructorsForTestDate($testDate){
 
-			include "XJTestDBConnect.php";		
-			$con = getConnection();
-
+			$con = self::getConnection();
+			
 			$instructors = array(); // return result.
 			$tempDate = explode("-", $testDate);
 			$testDate = $tempDate[2]."-".$tempDate[0]."-".$tempDate[1];			
@@ -651,9 +667,8 @@ class Reports {
 		
 		public static function getTestDates(){
 		
-			include "XJTestDBConnect.php";		
-			$con = getConnection();
-			
+			$con = self::getConnection();
+
 			$testDates = array();
 			$selectTestDateQuery = "SELECT DISTINCT testDate from studentTestRecords ORDER BY testDate DESC";
 			$testDatesResult = mysql_query($selectTestDateQuery);
@@ -674,10 +689,9 @@ class Reports {
 		}
 		
 		public static function getTestDatesForInstructor($instructorEmployeeNo){
-		
-			include "XJTestDBConnect.php";		
-			$con = getConnection();
-					
+
+			$con = self::getConnection();					
+			
 			$testDates = array();
 			$selectTestDateQuery = "SELECT DISTINCT testDate from studentTestRecords where instructorID = '".$instructorEmployeeNo."'";
 			$testDatesResult = mysql_query($selectTestDateQuery);
@@ -699,9 +713,8 @@ class Reports {
 		
 		public static function getScoresForClass($testDate){
 
-			include "XJTestDBConnect.php";		
-			$con = getConnection();
-		
+			$con = self::getConnection();		
+			
 			$scoresForClass = array();
 			$testInfo = array();
 			$testInfo['testDate'] = $testDate;
@@ -753,9 +766,9 @@ class Reports {
 		
 		public static function spoAnalysisForClass($testDate, $instructorID){
 		
-			include "XJTestDBConnect.php";		
-			$con = getConnection();
-		
+			$con = self::getConnection();
+			
+					
 			$perSpoAnalysis = array(); //returned array
 			$spoList = array();
 			$genTestID = "";
@@ -820,8 +833,8 @@ class Reports {
 		}
 
 	public static function spoAnalysisForQuarter($orgSpec, $year){
-		include "XJTestDBConnect.php";		
-		$con = getConnection();
+		$con = self::getConnection();
+
 		$dateRange = self::dateRangeForQuarter($orgSpec,$year);
 		
 		
@@ -829,7 +842,9 @@ class Reports {
 		$perSpoAnalysis = array(); //returned result.
 		
 
-		$getSpoQuery = "SELECT DISTINCT questions.spo, SPO.spo_name FROM usedQuestions, SPO, questions, studentTestRecords WHERE studentTestRecords.testDate between '".$dateRange['startDate']."' AND '".$dateRange['endDate']."' AND usedQuestions.questionID = questions.questionID AND questions.spo = SPO.spo_number";
+/* 		$getSpoQuery = "SELECT DISTINCT questions.spo, SPO.spo_name FROM usedQuestions, SPO, questions, studentTestRecords WHERE studentTestRecords.testDate between '".$dateRange['startDate']."' AND '".$dateRange['endDate']."' AND usedQuestions.questionID = questions.questionID AND questions.spo = SPO.spo_number"; */
+
+		$getSpoQuery = "SELECT spo_number, spo_name from SPO";		
 		
 		$spoResult = mysql_query($getSpoQuery, $con);
 		if(!$spoResult){
@@ -838,7 +853,7 @@ class Reports {
 		else {
 			while($row = mysql_fetch_array($spoResult)){
 				$spo = array();
-				$spo['spo_number'] = $row['spo'];
+				$spo['spo_number'] = $row['spo_number'];
 				$spo['spo_name'] = $row['spo_name'];
 				array_push($spoList, $spo);
 			}
@@ -854,18 +869,21 @@ class Reports {
 					while($row = mysql_fetch_array($queryResult)){
 						$amtAsked = $row['count(testResults.questionID)'];
 						$amtCorrect = $row['SUM(testResults.correct)'];
-						$percentageScore = round(($amtCorrect * 100) / $amtAsked, 1); 
-						$spoWithPercentageCorrect['spo_number'] = $singleSpec['spo_number'];
+						if($amtAsked != 0 && $amtCorrect != 0){
+							$percentageScore = round(($amtCorrect * 100) / $amtAsked, 1); 
+						}
+						else {
+							$percentageScore = 0;
+						}
+						$spoWithPercentageCorrect['spo_number'] = (string)$singleSpec['spo_number'];
 						$spoWithPercentageCorrect['spo_name'] = $singleSpec['spo_name'];
-						$spoWithPercentageCorrect['percentage'] = $percentageScore;
+						$spoWithPercentageCorrect['percentage'] = (string)$percentageScore;
 						array_push($perSpoAnalysis, $spoWithPercentageCorrect);											
 					}
 				}
 			} 
 		}
 		mysql_close($con);
-		
-		$perSpoAnalysis = json_encode($perSpoAnalysis);
 		return $perSpoAnalysis;
 	
 	}
