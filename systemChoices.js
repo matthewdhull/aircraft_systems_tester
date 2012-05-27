@@ -17,6 +17,7 @@ var erjSystems = {
 	'lighting' : "Lighting",
 	'limitations' : "Limitations",
 	'oxy' : "Oxygen",
+	'performance' : "Performance",
 	'pneum' : "Pneumatics",
 	'powerplant' : "Powerplant",
 	'pressurization' : "Pressurization",

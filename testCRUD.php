@@ -44,6 +44,7 @@
 			?>
 			
 			<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+			<script src="jquery.js"></script>
 			
 			<script type="text/javascript">
 				$(document).ready(function(){
@@ -501,24 +502,26 @@
 								<td><input id="oxy" name="oxy"></td>
 							</tr>
 							<tr>
+								<td><label for="performance">Performance</label></td>
+								<td><input id="performance" name="performance"></td>
 								<td><label for="pneum">Pneumatics</label></td>
 								<td><input id="pneum" name="pneum"></td>
+							</tr>
+							<tr>
 								<td><label for="powerplant">Powerplant</label></td>
 								<td><input id="powerplant" name="powerplant"></td>
-							</tr>
-							<tr>
 								<td><label for="pressurization">Pressurization</label></td>
 								<td><input id="pressurization" name="pressurization"></td>
+							</tr>
+							<tr>
 								<td><label for="profiles">Profiles</label></td>
 								<td><input id="profiles" name="profiles"></td>
-							</tr>
-							<tr>
 								<td><label for="radar">Radar</label></td>
 								<td><input id="radar" name="radar"></td>
-								<td><label for="stall_prot">Stall Protection</label></td>
-								<td><input id="stall_prot" name="stall_prot"></td>
 							</tr>
 							<tr>
+								<td><label for="stall_prot">Stall Protection</label></td>
+								<td><input id="stall_prot" name="stall_prot"></td>
 								<td><label for="mandatory">Mandatory</label></td>
 								<td><input id="mandatory" name="mandatory"></td>
 							</tr>
