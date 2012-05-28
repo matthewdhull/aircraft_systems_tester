@@ -4,7 +4,7 @@
 	<title>Question Modeling</title>
 	
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
-	<script src="jquery.js"></script>	
+<!-- 	<script src="jquery.js"></script>	 -->
 	<script src="systemChoices.js"></script> <!-- Imports ERJ / CRJ Aircraft System Lists -->
 	<style type='text/css'>
 		@import url("CSS/questionCRUD.css");

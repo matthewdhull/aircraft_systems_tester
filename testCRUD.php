@@ -24,13 +24,14 @@
 						var n = $("#lighting").val();
 						var o = $("#limitations").val();
 						var p = $("#oxy").val();
-						var q = $("#pneum").val();
-						var r = $("#powerplant").val();
-						var s = $("#pressurization").val();
-						var t = $("#profiles").val();
-						var u = $("#radar").val();
-						var v = $("#stall_prot").val();
-						var w = $("#mandatory").val();
+						var q = $("performance").val();
+						var r = $("#pneum").val();
+						var s = $("#powerplant").val();
+						var t = $("#pressurization").val();
+						var u = $("#profiles").val();
+						var v = $("#radar").val();
+						var w = $("#stall_prot").val();
+						var x = $("#mandatory").val();
 */?>
 
 			<meta http-equiv="content-type" content="text/html; charset=UTF-8">
@@ -43,8 +44,9 @@
 				ContentSnippets::showFavicon();
 			?>
 			
-			<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
-			<script src="jquery.js"></script>
+<!-- 			<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script> -->
+			<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<!-- 			<script src="jquery.js"></script> -->
 			
 			<script type="text/javascript">
 				$(document).ready(function(){
@@ -109,10 +111,20 @@
 							 $("label[for=lighting]").text(currentText+" ("+data.lighting+")");
 							currentText = $("label[for=limitations]").text();
 							$("label[for=limitations]").text(currentText+" ("+data.limitations+")");
+							
+							
 							currentText = $("label[for=oxy]").text();
 							$("label[for=oxy]").text(currentText+" ("+data.oxy+")");
-							currentText = $("label[for=pneum]").text();
+
+
+							currentText = $("label[for=performance]").text();							
+							$("label[for=performance]").text(currentText+" ("+data.performance+")");
+
+
+							currentText = $("label[for=pneum]").text();							
 							$("label[for=pneum]").text(currentText+" ("+data.pneum+")");
+							
+							
 							currentText = $("label[for=powerplant]").text();
 							$("label[for=powerplant]").text(currentText+" ("+data.powerplant+")");
 							currentText = $("label[for=pressurization]").text();
@@ -179,14 +191,15 @@
 						var n = $("#lighting").val();
 						var o = $("#limitations").val();
 						var p = $("#oxy").val();
-						var q = $("#pneum").val();
-						var r = $("#powerplant").val();
-						var s = $("#pressurization").val();
-						var t = $("#profiles").val();
-						var u = $("#radar").val();
-						var v = $("#stall_prot").val();
-						var w = $("#mandatory").val();
-						var systemSubcategories = [a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w];
+						var q = $("#performance").val();
+						var r = $("#pneum").val();
+						var s = $("#powerplant").val();
+						var t = $("#pressurization").val();
+						var u = $("#profiles").val();
+						var v = $("#radar").val();
+						var w = $("#stall_prot").val();
+						var x = $("#mandatory").val();
+						var systemSubcategories = [a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x];
 					
 						var sum = 0;
 						$.each(systemSubcategories, function(index, value){
@@ -279,13 +292,14 @@
 						var n = $("#lighting").val();
 						var o = $("#limitations").val();
 						var p = $("#oxy").val();
-						var q = $("#pneum").val();
-						var r = $("#powerplant").val();
-						var s = $("#pressurization").val();
-						var t = $("#profiles").val();
-						var u = $("#radar").val();
-						var v = $("#stall_prot").val();
-						var w = $("#mandatory").val();
+						var q = $("#performance").val();
+						var r = $("#pneum").val();
+						var s = $("#powerplant").val();
+						var t = $("#pressurization").val();
+						var u = $("#profiles").val();
+						var v = $("#radar").val();
+						var w = $("#stall_prot").val();
+						var x = $("#mandatory").val();
 
 						$.post("PHPScripts/newTestModel.php",{
 							length: len,
@@ -306,13 +320,14 @@
 							lighting: n,
 							limitations: o,
 							oxy: p,
-							pneum: q,
-							powerplant: r,
-							pressurization: s,
-							profiles: t,
-							radar: u, 
-							stall_prot: v,
-							mandatory: w
+							performance: q,
+							pneum: r,
+							powerplant: s,
+							pressurization: t,
+							profiles: u,
+							radar: v, 
+							stall_prot: w,
+							mandatory: x
 						}, 
 						function(data){
 							////console.log(data);
@@ -330,7 +345,7 @@
 							$("#modelResults table").remove();
 							$("#modeledTests tr td:first").html("Total "+testModel+" Models: "+data.length+"");
 							$.each(data, function(key, value){		
-								$("#modelResults").append("<table id="+value.testID+" class='modelTable'><tr class='testModel'><tr><td><button id="+value.testID+" value='use'>use</button></td><td><button value='delete' id="+value.testID+">delete</button></td></tr><td>Model ID: "+value.testID+"</td></tr><tr><td>Air Conditioning: "+value.air_condition+"</td><td>Aircraft General: "+value.acft_gen+"</td></tr><tr><td>APU: "+value.apu+"</td><td>Autopilot: "+value.autopilot+"</td></tr><tr><td>Crew Awareness: "+value.crew_awareness+"</td><td>Electrical: "+value.elec+"</td></tr><tr><td>Emergency Equipment: "+value.emerg_equip+"</td><td>Fire Protection: "+value.fire_prot+"</td></tr><tr><td>Flight Controls: "+value.flt_control+"</td><td>Fuel: "+value.fuel+"</td></tr><tr><td>Hydraulics: "+value.hydraulics+"</td><td>Ice/Rain Protection: "+value.ice_rain_prot+"</td></tr><tr><td>Landing/Gear Brakes: "+value.ldg_gear_brk+"</td><td>Lighting: "+value.lighting+"</td></tr><tr><td>Limitations: "+value.limitations+"</td><td>Oxygen: "+value.oxy+"</td></tr><tr><td>Pneumatics: "+value.pneum+"</td><td>Powerplant: "+value.powerplant+"</td></tr><tr><td>Pressurization: "+value.pressurization+"</td><td>Profiles: "+value.profiles+"</td></tr><tr><td>Radar: "+value.radar+"</td><td>Stall Protection: "+value.stall_prot+"</td></tr><tr><td>Mandatory: "+value.mandatory+"</td></tr></table>");
+								$("#modelResults").append("<table id="+value.testID+" class='modelTable'><tr class='testModel'><tr><td><button id="+value.testID+" value='use'>use</button></td><td><button value='delete' id="+value.testID+">delete</button></td></tr><td>Model ID: "+value.testID+"</td></tr><tr><td>Air Conditioning: "+value.air_condition+"</td><td>Aircraft General: "+value.acft_gen+"</td></tr><tr><td>APU: "+value.apu+"</td><td>Autopilot: "+value.autopilot+"</td></tr><tr><td>Crew Awareness: "+value.crew_awareness+"</td><td>Electrical: "+value.elec+"</td></tr><tr><td>Emergency Equipment: "+value.emerg_equip+"</td><td>Fire Protection: "+value.fire_prot+"</td></tr><tr><td>Flight Controls: "+value.flt_control+"</td><td>Fuel: "+value.fuel+"</td></tr><tr><td>Hydraulics: "+value.hydraulics+"</td><td>Ice/Rain Protection: "+value.ice_rain_prot+"</td></tr><tr><td>Landing/Gear Brakes: "+value.ldg_gear_brk+"</td><td>Lighting: "+value.lighting+"</td></tr><tr><td>Limitations: "+value.limitations+"</td><td>Oxygen: "+value.oxy+"</td></tr><tr><td>Performance: "+value.performance+"</td><td>Pneumatics: "+value.pneum+"</td></tr><tr><td>Powerplant: "+value.powerplant+"</td><td>Pressurization: "+value.pressurization+"</td></tr><tr><td>Profiles: "+value.profiles+"</td><td>Radar: "+value.radar+"</td></tr><tr><td>Stall Protection: "+value.stall_prot+"</td><td>Mandatory: "+value.mandatory+"</td></tr></table>");
 							});
 							
 							if(isAdmin == false){

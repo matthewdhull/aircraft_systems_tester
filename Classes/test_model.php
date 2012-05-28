@@ -22,6 +22,7 @@ class Test_Model {
 		lighting int unsigned not null, 
 		limitations int unsigned not null, 
 		oxy int unsigned not null, 
+		performance int unsigned not null,
 		pneum int unsigned not null, 
 		powerplant int unsigned not null, 
 		pressurization int unsigned not null, 
@@ -48,6 +49,7 @@ class Test_Model {
 	const LIGHTING = "lighting";
 	const LIMITATIONS = "limitations";
 	const OXY = "oxy";
+	const PERFORMANCE = "performance";
 	const PNEUM = "pneum";
 	const POWERPLANT = "powerplant";
 	const PRESSURIZATION = "pressurization";
@@ -57,7 +59,7 @@ class Test_Model {
 	const MANDATORY = "mandatory";
 	
 	public $systems_topics = array(AIR_CONDITION, ACFT_GEN, APU, AUTOPIOT, CREW_AWARENESS, ELEC, EMERG_EQUIP, FIRE_PROT,
-	 FLT_CONTROL, FUEL, HYDRAULICS, ICE_RAIN_PROT, LDG_GEAR_BRK, LIGHTING, LIMITATIONS, OXY, PNEUM, POWERPLANT, PRESSURIZATION, PROFILES, RADAR, STALL_PROT, MANDATORY);
+	 FLT_CONTROL, FUEL, HYDRAULICS, ICE_RAIN_PROT, LDG_GEAR_BRK, LIGHTING, LIMITATIONS, OXY, PERFORMANCE, PNEUM, POWERPLANT, PRESSURIZATION, PROFILES, RADAR, STALL_PROT, MANDATORY);
 
 
 	public $course_type;
@@ -126,6 +128,7 @@ class Test_Model {
 			$model->num_questions_from_category['lighting'] = $row['lighting'];
 			$model->num_questions_from_category['limitations'] = $row['limitations'];
 			$model->num_questions_from_category['oxy'] = $row['oxy'];
+			$model->num_questions_from_category['performance'] = $row['performance'];
 			$model->num_questions_from_category['pneum'] = $row['pneum'];
 			$model->num_questions_from_category['powerplant'] = $row['powerplant'];
 			$model->num_questions_from_category['pressurization'] = $row['pressurization'];
@@ -155,7 +158,7 @@ class Test_Model {
 		
 		mysql_select_db($database, $con);	
 		
-		$newModelQuery = "INSERT INTO `test_model` (course_type, length, air_condition, acft_gen, apu, autopilot, crew_awareness, elec, emerg_equip, fire_prot, flt_control, fuel, hydraulics, ice_rain_prot, ldg_gear_brk, lighting, limitations, oxy, pneum, powerplant, pressurization, profiles, radar, stall_prot, mandatory) VALUES ('".$this->course_type."', '".$this->length."', '".$this->num_questions_from_category['air_condition']."', '".$this->num_questions_from_category['acft_gen']."', '".$this->num_questions_from_category['apu']."', '".$this->num_questions_from_category['autopilot']."', '".$this->num_questions_from_category['crew_awareness']."', '".$this->num_questions_from_category['elec']."', '".$this->num_questions_from_category['emerg_equip']."', '".$this->num_questions_from_category['fire_prot']."', '".$this->num_questions_from_category['flt_control']."', '".$this->num_questions_from_category['fuel']."', '".$this->num_questions_from_category['hydraulics']."',  '".$this->num_questions_from_category['ice_rain_prot']."', '".$this->num_questions_from_category['ldg_gear_brk']."', '".$this->num_questions_from_category['lighting']."', '".$this->num_questions_from_category['limitations']."', '".$this->num_questions_from_category['oxy']."', '".$this->num_questions_from_category['pneum']."', '".$this->num_questions_from_category['powerplant']."', '".$this->num_questions_from_category['pressurization']."', '".$this->num_questions_from_category['profiles']."', '".$this->num_questions_from_category['radar']."', '".$this->num_questions_from_category['stall_prot']."', '".$this->num_questions_from_category['mandatory']."')";
+		$newModelQuery = "INSERT INTO `test_model` (course_type, length, air_condition, acft_gen, apu, autopilot, crew_awareness, elec, emerg_equip, fire_prot, flt_control, fuel, hydraulics, ice_rain_prot, ldg_gear_brk, lighting, limitations, oxy, performance, pneum, powerplant, pressurization, profiles, radar, stall_prot, mandatory) VALUES ('".$this->course_type."', '".$this->length."', '".$this->num_questions_from_category['air_condition']."', '".$this->num_questions_from_category['acft_gen']."', '".$this->num_questions_from_category['apu']."', '".$this->num_questions_from_category['autopilot']."', '".$this->num_questions_from_category['crew_awareness']."', '".$this->num_questions_from_category['elec']."', '".$this->num_questions_from_category['emerg_equip']."', '".$this->num_questions_from_category['fire_prot']."', '".$this->num_questions_from_category['flt_control']."', '".$this->num_questions_from_category['fuel']."', '".$this->num_questions_from_category['hydraulics']."',  '".$this->num_questions_from_category['ice_rain_prot']."', '".$this->num_questions_from_category['ldg_gear_brk']."', '".$this->num_questions_from_category['lighting']."', '".$this->num_questions_from_category['limitations']."', '".$this->num_questions_from_category['oxy']."', '".$this->num_questions_from_category['performance']."','".$this->num_questions_from_category['pneum']."', '".$this->num_questions_from_category['powerplant']."', '".$this->num_questions_from_category['pressurization']."', '".$this->num_questions_from_category['profiles']."', '".$this->num_questions_from_category['radar']."', '".$this->num_questions_from_category['stall_prot']."', '".$this->num_questions_from_category['mandatory']."')";
 		
 		$newModelResult = mysql_query($newModelQuery);
 		if(!$newModelResult) {
@@ -210,6 +213,7 @@ class Test_Model {
 			$modelAttr['lighting'] = $row['lighting'];
 			$modelAttr['limitations'] = $row['limitations'];
 			$modelAttr['oxy'] = $row['oxy'];
+			$modelAttr['performance'] = $row['performance'];			
 			$modelAttr['pneum'] = $row['pneum'];
 			$modelAttr['powerplant'] = $row['powerplant'];
 			$modelAttr['pressurization'] = $row['pressurization'];
@@ -270,7 +274,7 @@ class Test_Model {
 	
 	public static function getCurrentQuestionQuantity(){
 		
-		$systems = array('air_condition', 'acft_gen','apu', 'autopilot','crew_awareness', 'elec', 'emerg_equip', 'fire_prot', 'flt_control', 'fuel', 'hydraulics',  'ice_rain_prot',  'ldg_gear_brk', 'ldg_gear_brk', 'lighting','limitations', 'oxy', 'pneum', 'powerplant', 'pressurization', 'profiles',  'radar', 'stall_prot', 'mandatory');
+		$systems = array('air_condition', 'acft_gen','apu', 'autopilot','crew_awareness', 'elec', 'emerg_equip', 'fire_prot', 'flt_control', 'fuel', 'hydraulics',  'ice_rain_prot',  'ldg_gear_brk', 'ldg_gear_brk', 'lighting','limitations', 'oxy', 'performance', 'pneum', 'powerplant', 'pressurization', 'profiles',  'radar', 'stall_prot', 'mandatory');
 
 		$questionQuantity = array();
 		
