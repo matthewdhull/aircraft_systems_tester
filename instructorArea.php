@@ -315,6 +315,10 @@ session_cache_limiter('nocache');
 						window.location = "faq.php";
 					});
 					
+					$("#aerodata").click(function(){
+						window.location = "aerodataCRUD.php";
+					});
+					
 					$("#takeTestButton").click(function(){
 						window.location = "examCMS.php";
 					});			
@@ -744,11 +748,15 @@ session_cache_limiter('nocache');
 			</tr>
 			<tr>
 				<td><button id="takeTestButton">Goto</button></td>
-				<td>Go to the testing page.</td>
+				<td>Go to the testing page </td>
 			</tr>
 			<tr>
 				<td><button id="faqButton">FAQ</button></td>
-				<td>Frequently asked questions.</td>
+				<td>Frequently asked questions</td>
+			</tr>
+			<tr>
+				<td><button id="aerodata">Aerodata</button></td>
+				<td>Participate in Aerodata question design</td>
 			</tr>
 			
 		</table>
