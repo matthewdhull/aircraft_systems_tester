@@ -1,0 +1,144 @@
+@import url("common.css");
+
+#questionCUDArea, #questionViewingArea {
+	position: absolute;
+	top: 80px;
+	height: 700px;
+}
+
+#questionCUDArea {
+	position: absolute
+	top: 80px;
+	width: 450px;
+	min-width: 450px;
+	border-right: 5px solid #5c5f79;
+	
+}
+
+
+#toggleAcftQuestionArea {
+	position: absolute;
+	top: 0px;
+	height: 40px;
+	width: 245px;
+	line-height: 0;
+}
+
+#toggleEditModeArea {
+	position: absolute;
+	left: 60px;	
+	top: 5px;
+	height: 40px;
+	width: 245px;
+	line-height: 0;
+}
+
+
+#editTitle:hover, #createTitle:hover{
+	cursor: pointer;
+}
+
+#editTitle, #crjTitle {
+	float: left;
+	margin-left: 10px;
+	color: #d9d9d9;
+}
+
+#createTitle, #erjTitle {
+	float: left;
+	margin-left: 10px;
+	margin-right: 10px;
+	color: #00d36c;
+}
+
+
+#acftToggleSwitch, #toggleSwitch{
+	margin-top: 5px;
+	float: left;
+	height: 31px;
+	top: 10px;
+	width: 100px;
+	background-color: #484949;
+	cursor: pointer;
+}
+
+#acftSwitch, #switch{
+	margin-top: 2px;
+	margin-left: 2px;
+	height: 26px;
+	width: 26px;
+	background-color: #eaeaea;
+	border-top: 1px solid #fff;
+	border-left: 1px solid #fff;
+	cursor: pointer;
+}
+
+#createQuestionArea, #editQuestionArea {
+	position: absolute;
+	top: 140px;
+}
+
+#editQuestionArea {
+	visibility: hidden;
+}
+
+#questionViewingArea{
+	left: 490px;
+	margin-left: auto;
+	width: 690px;
+	min-width: 600px;
+	overflow-y: scroll;
+	overflow-x: none;
+}
+
+textarea, input[type="text"]{
+	width: 400px;
+}
+
+textarea {
+	height: 60px;
+}
+
+select {
+	width: 157px;
+}
+
+#acftArrow, #arrow {
+	margin-top: 2px;
+	margin-left: 6px;
+
+}
+
+.arrow-left {
+        width: 0;
+        height: 0;
+        border-top: 10px solid transparent;
+        border-bottom: 10px solid transparent; 
+
+        border-right:10px solid #484949;
+}
+
+.arrow-right {
+        width: 0;
+        height: 0;
+        border-top: 10px solid transparent;
+        border-bottom: 10px solid transparent;
+        border-left: 10px solid #484949;
+}
+
+.singleQuestion {
+	margin: 10px;
+	background-color: #e4e4e4;
+	width: 650px;
+	border: 1px solid #b7b7b7;
+	
+}
+
+button, input[type="submit"]{
+	height: 27px;
+	margin: 2.5px;
+}
+
+.singleQuestion button{
+	width: 47px;
+}	

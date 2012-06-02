@@ -3,11 +3,10 @@
 <head>
 	<title>Question Modeling</title>
 	
-<!-- 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script> -->
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 	<script src="systemChoices.js"></script> <!-- Imports ERJ / CRJ Aircraft System Lists -->
 	<style type='text/css'>
-		@import url("CSS/questionCRUD.css");
+		@import url("CSS/aerodataCRUD.css");
 	</style>
 	
 	<?php
@@ -64,7 +63,8 @@ function bindEditEvents(){
 			
 				if($(this).html()=="Edit"){				
 					$("#editTitle").click(); //trigger edit mode.
-					$(tableID).css("background-color", "red");
+					$("#questions_from_subcategory table").css("background-color", "");
+					$(tableID).css("background-color", "#e35a5a");
 					//remove all questions that are displayed and pre-fill the form with current question information.
 					//$("#questions_from_subcategory table").remove();
 					$("#editID").val(idNumber);
