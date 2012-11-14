@@ -329,8 +329,11 @@ class Exam {
 		
 		//object to return:
 		$resultsObject = array();
-		
-		
+		if($doNotGrade != true) {
+			$doNotGrade = false;
+			$resultsObject['queryResult'] = "ran query";
+		}
+					
 		//get specific test information from testPassword
 		$testInfoQuery = "SELECT `genDate`,`genTestID`, `instructorID`, `length` FROM `createdTests` WHERE `testPassword` = '".$testPassword."'";	
 		$testInfoResults = mysql_query($testInfoQuery);
