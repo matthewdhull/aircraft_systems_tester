@@ -315,7 +315,7 @@ class Exam {
 	
 	
 
-	public static function gradeExam($testPassword, $employeeNo, $firstName, $lastName, $classDate, $syllabus, $qualCode, $retrain, $qaArr){
+	public static function gradeExam($testPassword, $employeeNo, $firstName, $lastName, $classDate, $syllabus, $qualCode, $retrain, $qaArr, $doNotGrade){
 		include 'testClass.php';
 		include "XJTestDBConnect.php";
 		$con = mysql_connect($host,$usn, $password);
@@ -384,11 +384,12 @@ class Exam {
 			    	$insertResultQuery = "INSERT INTO `testResults` VALUES (null, '".$employeeNo."', ".$genTestID.", ".$key.", true)"; 
 			    }
 			    
-			    
-				$insertResult = mysql_query($insertResultQuery);
-			     if(!$insertResultQuery){
-			     	$this->gen_error = "could not insert result ($insertResultQuery)".mysql_error();
-			     }
+				if($doNotGrade == false) { //used to prevent grading if the test-taker is an instructor
+					$insertResult = mysql_query($insertResultQuery);
+				     if(!$insertResultQuery){
+				     	$this->gen_error = "could not insert result ($insertResultQuery)".mysql_error();
+				     }
+			    }
 			     
 		  	}	
 		 }
@@ -400,14 +401,17 @@ class Exam {
 		$resultsObject['percentage'] = $pct;
 		$resultsObject['outcome'] = ($pct >= 80 ? "satisfactory" : "unsatisfactory");
 		$resultsObject['incorrectQuestions'] = $incorrectQuestionIDs;
+		$resultsObject['doNotGrade'] = $doNotGrade;
 		
 		
 		//record full test record into database.	
 		$completeExamRecord = "INSERT INTO `studentTestRecords` VALUES(null, '".$employeeNo."', '".$firstName."', '".$lastName."', '".$classDate."', '".$testDate."', '".$instructorID."', '".$syllabus."', '".$qualCode."', ".$genTestID.", ".$retrain.", '".$resultsObject['outcome']."', ".$pct.")";
 		
-		$completeExamResult = mysql_query($completeExamRecord);
-		if(!$completeExamResult){
-			$this->gen_error = $this->gen_error." unable to insert complete exam result ".mysql_error();
+		if($doNotGrade == false) { //used to prevent grading if the test-taker is an instructor		
+			$completeExamResult = mysql_query($completeExamRecord);
+			if(!$completeExamResult){
+				$this->gen_error = $this->gen_error." unable to insert complete exam result ".mysql_error();
+			}
 		}
 		
 		mysql_close($con);

@@ -15,6 +15,8 @@ $retrain = $_POST['retrain'];
 $classMonth = $_POST['classMonth'];
 $classDay = $_POST['classDay'];
 $classYear = $_POST['classYear'];
+$doNotGrade = $_POST['doNotGrade'];
+
 //format date.
 $classDate = $classYear."-".$classMonth."-".$classDay;
 
@@ -34,7 +36,7 @@ foreach($answeredQuestionsArr as $elem){
 	$questionsAnswers[$elem["questionID"]] = $elem['selectedAnswer'];
 }
 
-echo Exam::gradeExam($password, $empNo, $firstName, $lastName, $classDate, $syllabus, $qualCode, $retrain, $questionsAnswers);
+echo Exam::gradeExam($password, $empNo, $firstName, $lastName, $classDate, $syllabus, $qualCode, $retrain, $questionsAnswers, $doNotGrade);
 
 
 ?>

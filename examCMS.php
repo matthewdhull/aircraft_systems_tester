@@ -1,4 +1,8 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<?php
+session_start();
+session_cache_limiter('nocache');
+?>
+<!DOCTYPE HTML>
 <html>
 	<head>
 		<title>Exam</title>
@@ -16,6 +20,15 @@
 		<script type="text/javascript">
 			$(document).ready(function(){	
 
+			//check instructorID to allow shell to take test without recording results
+			var instructorID = "<?php echo $_SESSION['employeeNo'];?>";			
+			if (instructorID == "") {
+				alert("no ID");
+			}
+			else {
+				alert("InstructorID: " + instructorID);
+			}
+			
 			
 			<?php /*these variables are set when student clicks 'begin exam'.   they are sent to the server upon grading the test. */?>
 				var employeeNo;
@@ -559,6 +572,14 @@
 */ ?>	
 				$("#gradeButton").click(function(){
 					if($(this).val() == 1){
+						var doNotGrd;
+						if(instructorID != "") {
+							doNotGrd = true;
+						}
+						else {
+							doNotGrd = false;
+						}
+						
 						$("#gradeTestMessage").html("Grading Test...").fadeIn('fast');
 						//$(this).attr("disabled", "disabled");
 						$.post("PHPScripts/gradeExam.php", {
@@ -572,7 +593,8 @@
 							retrain: retr,
 							classMonth: classMo,
 							classDay: classDa,
-							classYear: classYr
+							classYear: classYr,
+							doNotGrade: doNotGrd
 
 							}, function(data){
 								$("#gradeExamDiv").replaceWith(examResultsHTML);
