@@ -49,7 +49,7 @@
 */?>
 				
 				$("#gradeButton, #beginExam").attr("disabled", "disabled");
-				$("#questionsUnansweredTab, #questionsUnanswered, #questionsMarkedTab").css("visibility", "hidden");
+				//$("#questionsUnansweredTab, #questionsUnanswered, #questionsMarkedTab").css("visibility", "hidden");
 				
 				function clearQuestionFields(placeholderMsg){
 					$("#questionText").html(placeholderMsg);
@@ -651,20 +651,20 @@
 				
 
 				$("#qualCode").change(function(){
-					var l5 = "<option value='l5'>L5</option>";
 					var l4 = "<option value='l4'>L4</option>";
+					var l3 = "<option value='l3'>L3</option>";
 					$("#syllabus option").remove();
 					if($(this).val() == "nh"){
-						$("#syllabus").append(l5);
+						$("#syllabus").append(l4);
 					}
 					if($(this).val() == "upg"){
-						$("#syllabus").append(l4);
+						$("#syllabus").append(l3);
 					}
 					if($(this).val() == "rqual"){
-						$("#syllabus").append(l5 + l4);
+						$("#syllabus").append(l4 + l3);
 					}
 					if($(this).val() == "trans"){
-						$("#syllabus").append(l4);
+						$("#syllabus").append(l3);
 					}
 					
 				});
@@ -838,9 +838,9 @@
 							<option value="trans">Transition</option>
 							</select></td>
 						<td><select id="syllabus">
-							<option value="L5">L5</option>
 							<option value="L4">L4</option>
 							<option value="L3">L3</option>
+							<option value="L2">L2</option>
 						</select></td>
 					</tr>
 					<tr>

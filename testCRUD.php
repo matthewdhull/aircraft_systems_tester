@@ -415,6 +415,7 @@
 							<td><select id="viewModeledTestByType">
 									<option value="SY9">SY9</option>
 									<option value="UPG">UPG</option>
+									<option value="INS">INS</option>
 							</select></td>
 						</tr>
 						<tr>
@@ -454,6 +455,7 @@
 									<select id="courseType">
 										<option value="SY9">SY9</option>
 										<option value="UPG">UPG</option>
+										<option value="INS">INS</option>										
 									</select>
 								</td>
 							</tr>
@@ -463,6 +465,8 @@
 									<select id="testLength">
 										<option value="100">100</option>
 										<option value="50">50</option>
+										<option value="25">25</option>
+										<option value="5">10</option>
 									</select>
 								</td>
 							</tr>

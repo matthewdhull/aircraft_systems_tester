@@ -111,9 +111,11 @@ button, button#beginExam {
 	height: 30px;
 	width: 107px;
 	color: white;
-	text-align: center;
+	text-align: right;
+	padding-right: 5px;
 	line-height: 30px;
 	font-family: "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
+	font-size: 12px;
 	cursor: pointer ;
 	-webkit-transition: all 0.3s ease-in-out;
 	-moz-transition: all 0.3s ease-in-out;
