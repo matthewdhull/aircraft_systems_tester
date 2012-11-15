@@ -709,6 +709,7 @@ session_cache_limiter('nocache');
 					$("label[for=firstName]").html("Name");
 					$("#lastName, label[for=lastName], #classDateDay, #classDateMonth, #classDateYear, label[for=classDateMonth],#syllabus, label[for=syllabus], #qualCode, label[for=qualCode], #retrain, label[for=retrain]").attr("hidden", "hidden");
 					$("#employeeNo").val(<?php echo $_SESSION['employeeNo'] ?>).attr("disabled", "disabled"); 
+					$("#beginExam").removeAttr("disabled");
 					
 				}
 
