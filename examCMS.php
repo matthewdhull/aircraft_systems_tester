@@ -22,12 +22,6 @@ session_cache_limiter('nocache');
 
 			//check instructorID to allow shell to take test without recording results
 			var instructorID = "<?php echo $_SESSION['employeeNo'];?>";			
-			if (instructorID == "") {
-				alert("no ID");
-			}
-			else {
-				alert("InstructorID: " + instructorID);
-			}
 			
 			
 			<?php /*these variables are set when student clicks 'begin exam'.   they are sent to the server upon grading the test. */?>
@@ -574,10 +568,10 @@ session_cache_limiter('nocache');
 					if($(this).val() == 1){
 						var doNotGrd;
 						if(instructorID != "") {
-							doNotGrd = true;
+							doNotGrd = "true";
 						}
 						else {
-							doNotGrd = false;
+							doNotGrd = "false";
 						}
 						
 						$("#gradeTestMessage").html("Grading Test...").fadeIn('fast');
@@ -709,6 +703,14 @@ session_cache_limiter('nocache');
 				});				
 				
 				$("#qualCode").trigger("change");
+				
+				if(instructorID != "") {
+					$("#firstName").val("Instructor").attr("disabled", "disabled");
+					$("label[for=firstName]").html("Name");
+					$("#lastName, label[for=lastName], #classDateDay, #classDateMonth, #classDateYear, label[for=classDateMonth],#syllabus, label[for=syllabus], #qualCode, label[for=qualCode], #retrain, label[for=retrain]").attr("hidden", "hidden");
+					$("#employeeNo").val(<?php echo $_SESSION['employeeNo'] ?>).attr("disabled", "disabled"); 
+					
+				}
 
 				
 			});
@@ -742,7 +744,7 @@ session_cache_limiter('nocache');
 					</tr>
 					<tr>
 						<td><label for="employeeNo">Employee Number</label></td>
-						<td><label>Class Date</label></td>
+						<td><label for="classDateMonth">Class Date</label></td>
 					</tr>
 					<tr>
 						<td><input id="employeeNo" name="employeeNo" type="text" size="25" maxlength="5"></input></td>
@@ -808,8 +810,8 @@ session_cache_limiter('nocache');
 							</select></td>
 					</tr>
 					<tr>
-						<td><label>Syllabus</label></td>
-						<td><label>Qualification Code</label></td>
+						<td><label for="syllabus">Syllabus</label></td>
+						<td><label for="qualCode">Qualification Code</label></td>
 					</tr>
 					<tr>
 						<td><select id="qualCode">

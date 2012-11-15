@@ -329,8 +329,8 @@ class Exam {
 		
 		//object to return:
 		$resultsObject = array();
-		if($doNotGrade != true) {
-			$doNotGrade = false;
+		if($doNotGrade != "true") {
+			$doNotGrade = "false";
 			$resultsObject['queryResult'] = "ran query";
 		}
 					
@@ -387,7 +387,7 @@ class Exam {
 			    	$insertResultQuery = "INSERT INTO `testResults` VALUES (null, '".$employeeNo."', ".$genTestID.", ".$key.", true)"; 
 			    }
 			    
-				if($doNotGrade == false) { //used to prevent grading if the test-taker is an instructor
+				if($doNotGrade == "false") { //used to prevent grading if the test-taker is an instructor
 					$insertResult = mysql_query($insertResultQuery);
 				     if(!$insertResultQuery){
 				     	$this->gen_error = "could not insert result ($insertResultQuery)".mysql_error();
@@ -410,7 +410,7 @@ class Exam {
 		//record full test record into database.	
 		$completeExamRecord = "INSERT INTO `studentTestRecords` VALUES(null, '".$employeeNo."', '".$firstName."', '".$lastName."', '".$classDate."', '".$testDate."', '".$instructorID."', '".$syllabus."', '".$qualCode."', ".$genTestID.", ".$retrain.", '".$resultsObject['outcome']."', ".$pct.")";
 		
-		if($doNotGrade == false) { //used to prevent grading if the test-taker is an instructor		
+		if($doNotGrade == "false") { //used to prevent grading if the test-taker is an instructor		
 			$completeExamResult = mysql_query($completeExamRecord);
 			if(!$completeExamResult){
 				$this->gen_error = $this->gen_error." unable to insert complete exam result ".mysql_error();
