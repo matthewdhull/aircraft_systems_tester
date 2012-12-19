@@ -6,6 +6,7 @@ session_cache_limiter('nocache');
 <html>
 	<head>
 		<title>Instructor Area</title>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">		
 		
 			<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 	<!-- 			<script src="jquery.js"></script> -->

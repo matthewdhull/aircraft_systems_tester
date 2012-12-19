@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<title>FAQ</title>
-		
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">		
 		
 		<?php 
 			include "Classes/contentClass.php";
