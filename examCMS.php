@@ -2,12 +2,15 @@
 session_start();
 session_cache_limiter('nocache');
 ?>
-<!DOCTYPE HTML>
-<html>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<title>Exam</title>
-		<meta http-equiv="content-type" content="text/html; charset=UTF-8">		
-		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">	
+		<script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+		<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" /> <!--CSS for date picker-->				
+		<script src="http://code.jquery.com/ui/1.10.0/jquery-ui.js"></script>		
 		<script src="shufflePlugin.js"></script>				
 		<style type="text/css">
 			@import url("CSS/examCMS.css");
@@ -58,6 +61,8 @@ session_cache_limiter('nocache');
 				
 				$("#gradeButton, #beginExam").attr("disabled", "disabled");
 				$("#questionsUnansweredTab, #questionsUnanswered, #questionsMarkedTab").css("visibility", "hidden");
+				
+				$('input[id*="date"]').datepicker();
 				
 				function clearQuestionFields(placeholderMsg){
 					$("#questionText").html(placeholderMsg);
@@ -716,6 +721,9 @@ session_cache_limiter('nocache');
 
 				
 			});
+			
+
+			
 		</script>
 	</head>
 	<body>
@@ -750,6 +758,7 @@ session_cache_limiter('nocache');
 					</tr>
 					<tr>
 						<td><input id="employeeNo" name="employeeNo" type="text" size="25" maxlength="5"></input></td>
+<!-- 						<td><input id="class_date" type="text" /></td> Future date picker element-->
 						<td><select id="classDateMonth">
 								<option value="1">1</option>
 								<option value="2">2</option>
