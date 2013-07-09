@@ -6,6 +6,7 @@ $type = $_POST['type'];
 $category = $_POST['category'];
 $subcategory = $_POST['subcategory'];
 $spo = $_POST['spo'];
+$element = $_POST['element'];
 $wording_a = $_POST['wording_a'];
 $wording_b = $_POST['wording_b'];
 $correct_ans = $_POST['correct_ans'];
@@ -18,7 +19,7 @@ $ans_z = $_POST['ans_z'];
 $questionWordingsArr = array($wording_a, $wording_b);
 $wrong_ansArr = array($ans_x, $ans_y, $ans_z);
 
-$newQ = new question($type, $category, $subcategory, $spo, $questionWordingsArr, $correct_ans, $alt_correct_ans, $last_correct_ans, $wrong_ansArr);
+$newQ = new question($type, $category, $subcategory, $spo, $element, $questionWordingsArr, $correct_ans, $alt_correct_ans, $last_correct_ans, $wrong_ansArr);
 $newQ->insert_new_question($type);
 echo $newQ->json_question();
 
