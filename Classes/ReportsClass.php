@@ -887,7 +887,36 @@ class Reports {
 		return $perSpoAnalysis;
 	
 	}
+	
+	public static function spoListForAcftType($type) {
+	
+		if($type != "erj") {
+			echo "non ERJ types not currently implemented";
+			return;
+		}
+	
+		$con = self::getConnection();
 
-
+		$spoList = array();		
+		
+		$getSpoQuery = "SELECT `SPO`.`spo_number`, `SPO`.`spo_name` FROM `SPO`";		
+		
+		$spoResult = mysql_query($getSpoQuery, $con);
+		if(!$spoResult){
+			die("could not run query ($getSpoQuery) ".mysql_error());
+		}
+		else {
+			while($row = mysql_fetch_array($spoResult)){
+				$spo = array();
+				$spo['spo_number'] = $row['spo_number'];
+				$spo['spo_name'] = $row['spo_name'];
+/* 				$spo[$row['spo_number']] = $row['spo_name']; */
+				array_push($spoList, $spo);
+			}
+		}
+		mysql_close($con);		
+		$spoList = json_encode($spoList);
+		return $spoList;
+	}
 } 
 ?>

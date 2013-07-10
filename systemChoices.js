@@ -1,3 +1,5 @@
+optionList = "";
+
 // The following variables dictionaries that contain the master system category lists for the erj / crj.  
 // This dictionary is currently loaded in questionCRUD.php
 var erjSystems = {
@@ -51,37 +53,6 @@ var crjSystems = {
 	'doors' : "Doors",
 };	
 
-var erj_SPO = {
-	"11.11.1" : "Description, Equipment and Furnishings",  
-	"11.11.6" : "ECS",
-	"11.11.16" : "Aural and Visual Warning",
-	"11.11.4" : "Electrical",
-	"11.11.18" : "Lighting",
-	"11.11.17" : "Fire and Overheat Detection",
-	"11.11.11" : "Fuel",
-	"11.11.7" : "APU",
-	"11.11.3" : "Powerplant",
-	"11.11.8" : "Hydraulics",
-	"11.11.9" : "Landing Gear and Brakes",
-	"11.11.10" : "Flight Controls and Stall Protection",
-	"11.11.5" : "Pneumatics",
-	"11.11.19" : "Ice and Rain Protection",
-	"11.11.2" : "Oxygen", 
-	"11.11.13" : "Flight Instruments",  
-	"11.11.12" : "Communications",
-	"11.11.15" : "AFCS",
-	"11.11.14" : "Navigation"
-};
-
-
-function populateSPOChoices(spoDictionary){
-	var optionList = "";
-	$.each(spoDictionary, function(key,value){
-		optionList += "<option value='"+key+"'>"+value+"</option>";
-	});
-	
-	return optionList;
-}
 
 // generates an option list for a drop-down menu for the selected dictionary. Intended for embedding options into a <select></select> element.
 function populateSystemChoicesWithSystem(system){
@@ -111,10 +82,28 @@ function populateCRJSystemChoices(){
 		$("#subcategory, #questionCategory, #edit_subcategory").append(choices);
 }
 
+
+//dynamically generates a <select> element list with all ERJ SPOs in the database
+
 function populateERJSPOChoices(){
-	var choices = populateSPOChoices(erj_SPO);
+
+	var acType="erj";
+	var opt = "getErjSpoList";
+
+	$.post("PHPScripts/admin/getReports.php", {
+		acftType: acType,
+		option: opt
+	}, function(data){
+		$.each(data, function(key,value){
+			optionList += "<option value='"+value.spo_number+"'>"+value.spo_name+"</option>";
+			
+		});
+		
 	$("#spo option, #edit_spo option").remove();
-	$("#spo, #edit_spo").append(choices);
+	$("#spo, #edit_spo").append(optionList);
+		
+
+	}, "json");	
 	
 }
 

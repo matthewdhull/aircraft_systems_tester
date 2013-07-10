@@ -9,8 +9,8 @@ session_cache_limiter('nocache');
 		<title>Instructor Area</title>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8">		
 		
-			<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-	<!-- 			<script src="jquery.js"></script> -->
+	<!--	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script> -->
+			<script src="jquery.js"></script>
 			<script src="calculation.js" type="text/javascript"></script>
 			
 			<?php 
