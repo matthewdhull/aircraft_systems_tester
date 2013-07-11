@@ -84,7 +84,6 @@ function populateCRJSystemChoices(){
 
 
 //dynamically generates a <select> element list with all ERJ SPOs in the database
-
 function populateERJSPOChoices(){
 
 	var acType="erj";

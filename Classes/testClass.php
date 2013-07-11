@@ -476,7 +476,7 @@ class Question {
 		
 		mysql_select_db($database, $con);	
 		
-		$questionsQuery = "select questions.questionID, questions.category, questions.subcategory, questions.spo, SPO.spo_name, questions.element, questions.type, questions.correct_answer, questions.alt_correct_answer, questions.last_correct_answer, questions.ans_x, questions.ans_y, questions.ans_z, questions.question_a, questions.question_b from questions, SPO where questions.spo = SPO.spo_number and questions.subcategory = '".$subcategory."'";		
+		$questionsQuery = "select questions.questionID, questions.category, questions.subcategory, SPO.spo_name, TPO.tpo_number, SPO.spo_number, questions.element, questions.type, questions.correct_answer, questions.alt_correct_answer, questions.last_correct_answer, questions.ans_x, questions.ans_y, questions.ans_z, questions.question_a, questions.question_b FROM questions, SPO, TPO WHERE questions.spo_id = SPO.spo_id AND SPO.tpo_id = TPO.tpo_id AND questions.subcategory = '".$subcategory."'";		
 		
 		$questionsResult = mysql_query($questionsQuery);
 
@@ -490,7 +490,9 @@ class Question {
 			$questionAttr = array();
 			$questionAttr['questionID'] = $row['questionID'];
 			$questionAttr['type'] = $row['type'];
-			$questionAttr['spo'] = $row['spo']." - ".$row['spo_name'];
+			
+			//creates conactenated TPO/SPO reference "11.11.16" for electrical, etc.
+			$questionAttr['spo'] = $row['tpo_number'].".".$row['tpo_number'].".".$row['spo_number']." - ".$row['spo_name'];
 			$questionAttr['element'] = $row['element'];
 			$questionAttr['question_a'] = $row['question_a'];
 			$questionAttr['question_b'] = $row['question_b'];
@@ -542,7 +544,7 @@ class Question {
 			$questionAttr['questionID'] = $row['questionID'];
 			$questionAttr['type'] = $row['type'];
 			$questionAttr['subcategory'] = $row['subcategory'];
-			$questionAttr['spo'] = $row['spo'];		
+			$questionAttr['spo'] = $row['spo_id'];		
 			$questionAttr['element'] = $row['element'];	
 			$questionAttr['question_a'] = $row['question_a'];
 			$questionAttr['question_b'] = $row['question_b'];
