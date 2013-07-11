@@ -40,7 +40,7 @@ class Question {
 	public $subject;
 	public $subcategory; 
 	public $spo;
-	public $element;
+	public $eo;
 	public $question; 
 	public $question_wordings = array();
 	public $correct_answer; 
@@ -130,7 +130,7 @@ class Question {
 		echo "SUBJECT: ".$this->subject."<br />";
 		echo "SUBCATEGORY: ".$this->subcategory."<br />";
 		echo "SPO: ".$this->spo."<br />";
-		echo "ELEMENT: ".$this->element."<br />";
+		echo "EO: ".$this->eo."<br />";
 		echo "QUESTION_A: ".$this->question_wordings['a']."<br />";
 		echo "QUESTION_B: ".$this->question_wordings['b']."<br />";
 		echo "CORRECT ANSWER: ".$this->correct_answer."<br />";
@@ -150,7 +150,7 @@ class Question {
 		$attr['category'] = $this->category;
 		$attr['subcategory'] = $this->subcategory;
 		$attr['spo'] = $this->spo;
-		$attr['element'] = $this->element;
+		$attr['eo'] = $this->eo;
 		$attr['question_a'] = $this->question_wordings['a'];
 		$attr['question_b'] = $this->question_wordings['b'];
 		$attr['correct_ans'] = $this->correct_answer;
@@ -209,12 +209,12 @@ class Question {
 
 	
 	
-	public function __construct($typeStr, $subjectStr, $subcatStr, $spoStr, $elementStr, $questionWordingsArr, $c_ansStr, $alt_c_ansStr, $last_c_ansStr, $wrong_ansArr) {
+	public function __construct($typeStr, $subjectStr, $subcatStr, $spoStr, $eoStr, $questionWordingsArr, $c_ansStr, $alt_c_ansStr, $last_c_ansStr, $wrong_ansArr) {
 		$this->type = $typeStr;
 		$this->subject = $subjectStr;
 		$this->subcategory = $subcatStr;
 		$this->spo = $spoStr;
-		$this->element = $elementStr;
+		$this->eo = $eoStr;
 		$this->correct_answer = $c_ansStr;
 		$this->alt_correct_answer = $alt_c_ansStr;	
 		$this->last_correct_answer = $last_c_ansStr;	
@@ -390,27 +390,27 @@ class Question {
 		
 		if($qType=="mc"){
 		//multiple choice question
-			$new_question_query = "INSERT INTO `questions` VALUES (NULL, '".$this->subject."', '".$this->subcategory."', '".$this->spo."','".$this->element."','".$this->type."', '".$this->correct_answer."', NULL, NULL,'".$this->wrong_answers[0]."','".$this->wrong_answers[1]."', '".$this->wrong_answers[2]."', '".$this->question_wordings['a']."', '".$this->question_wordings['b']."')";
+			$new_question_query = "INSERT INTO `questions` VALUES (NULL, '".$this->subject."', '".$this->subcategory."', '".$this->spo."','".$this->eo."','".$this->type."', '".$this->correct_answer."', NULL, NULL,'".$this->wrong_answers[0]."','".$this->wrong_answers[1]."', '".$this->wrong_answers[2]."', '".$this->question_wordings['a']."', '".$this->question_wordings['b']."')";
 
 		}
 		
 		elseif($qType=="c2"){
-			$new_question_query = "INSERT INTO `questions` VALUES (NULL, '".$this->subject."', '".$this->subcategory."', '".$this->spo."','".$this->element."','".$this->type."', '".$this->correct_answer."', '".$this->alt_correct_answer."',NULL, '".$this->wrong_answers[0]."', NULL, NULL, '".$this->question_wordings['a']."', '".$this->question_wordings['b']."')";
+			$new_question_query = "INSERT INTO `questions` VALUES (NULL, '".$this->subject."', '".$this->subcategory."', '".$this->spo."','".$this->eo."','".$this->type."', '".$this->correct_answer."', '".$this->alt_correct_answer."',NULL, '".$this->wrong_answers[0]."', NULL, NULL, '".$this->question_wordings['a']."', '".$this->question_wordings['b']."')";
 
 		}
 		
 		elseif($qType=="tf"){
 		// true false question
-			$new_question_query = "INSERT INTO `questions` VALUES (NULL, '".$this->subject."', '".$this->subcategory."', '".$this->spo."','".$this->element."','".$this->type."', '".$this->correct_answer."', NULL, NULL, NULL ,NULL, NULL, '".$this->question_wordings['a']."', '".$this->question_wordings['b']."')";
+			$new_question_query = "INSERT INTO `questions` VALUES (NULL, '".$this->subject."', '".$this->subcategory."', '".$this->spo."','".$this->eo."','".$this->type."', '".$this->correct_answer."', NULL, NULL, NULL ,NULL, NULL, '".$this->question_wordings['a']."', '".$this->question_wordings['b']."')";
 
 		}
 		
 		elseif($qType=="nc"){
-			$new_question_query = "INSERT INTO `questions` VALUES (NULL, '".$this->subject."', '".$this->subcategory."', '".$this->spo."','".$this->element."','".$this->type."', NULL, NULL, NULL,'".$this->wrong_answers[0]."','".$this->wrong_answers[1]."', '".$this->wrong_answers[2]."', '".$this->question_wordings['a']."', '".$this->question_wordings['b']."')";
+			$new_question_query = "INSERT INTO `questions` VALUES (NULL, '".$this->subject."', '".$this->subcategory."', '".$this->spo."','".$this->eo."','".$this->type."', NULL, NULL, NULL,'".$this->wrong_answers[0]."','".$this->wrong_answers[1]."', '".$this->wrong_answers[2]."', '".$this->question_wordings['a']."', '".$this->question_wordings['b']."')";
 			
 		}
 		elseif($qType=="ac"){
-			$new_question_query = "INSERT INTO `questions` VALUES (NULL, '".$this->subject."', '".$this->subcategory."', '".$this->spo."','".$this->element."','".$this->type."', '".$this->correct_answer."', '".$this->alt_correct_answer."', '".$this->last_correct_answer."', NULL, NULL, NULL, '".$this->question_wordings['a']."', '".$this->question_wordings['b']."')";
+			$new_question_query = "INSERT INTO `questions` VALUES (NULL, '".$this->subject."', '".$this->subcategory."', '".$this->spo."','".$this->eo."','".$this->type."', '".$this->correct_answer."', '".$this->alt_correct_answer."', '".$this->last_correct_answer."', NULL, NULL, NULL, '".$this->question_wordings['a']."', '".$this->question_wordings['b']."')";
 		
 		}
 		
@@ -447,7 +447,7 @@ class Question {
 		mysql_select_db($database, $con);	
 
 		
-		$updateQuestionQuery = "UPDATE `questions` SET `type` = '".$this->type."', `subcategory` = '".$this->subcategory."', `spo` = '".$this->spo."', `element` = '".$this->element."',  `correct_answer` = '".$this->correct_answer."', `alt_correct_answer` = '".$this->alt_correct_answer."', `last_correct_answer` = '".$this->last_correct_answer."', `ans_x` = '".$this->wrong_answers[0]."', `ans_y` = '".$this->wrong_answers[1]."', `ans_z` = '".$this->wrong_answers[2]."', `question_a` = '".$this->question_wordings['a']."', `question_b` = '".$this->question_wordings['b']."' WHERE `questionID` = ".$questionID."";
+		$updateQuestionQuery = "UPDATE `questions` SET `type` = '".$this->type."', `subcategory` = '".$this->subcategory."', `spo_id` = '".$this->spo."', `eo_id` = '".$this->eo."',  `correct_answer` = '".$this->correct_answer."', `alt_correct_answer` = '".$this->alt_correct_answer."', `last_correct_answer` = '".$this->last_correct_answer."', `ans_x` = '".$this->wrong_answers[0]."', `ans_y` = '".$this->wrong_answers[1]."', `ans_z` = '".$this->wrong_answers[2]."', `question_a` = '".$this->question_wordings['a']."', `question_b` = '".$this->question_wordings['b']."' WHERE `questionID` = ".$questionID."";
 		
 		$updateQuestionResult = mysql_query($updateQuestionQuery);
 		
@@ -476,7 +476,7 @@ class Question {
 		
 		mysql_select_db($database, $con);	
 		
-		$questionsQuery = "select questions.questionID, questions.category, questions.subcategory, SPO.spo_name, TPO.tpo_number, SPO.spo_number, questions.element, questions.type, questions.correct_answer, questions.alt_correct_answer, questions.last_correct_answer, questions.ans_x, questions.ans_y, questions.ans_z, questions.question_a, questions.question_b FROM questions, SPO, TPO WHERE questions.spo_id = SPO.spo_id AND SPO.tpo_id = TPO.tpo_id AND questions.subcategory = '".$subcategory."'";		
+		$questionsQuery = "select questions.questionID, questions.category, questions.subcategory, SPO.spo_name, TPO.tpo_number, SPO.spo_number, questions.eo_id, questions.type, questions.correct_answer, questions.alt_correct_answer, questions.last_correct_answer, questions.ans_x, questions.ans_y, questions.ans_z, questions.question_a, questions.question_b FROM questions, SPO, TPO WHERE questions.spo_id = SPO.spo_id AND SPO.tpo_id = TPO.tpo_id AND questions.subcategory = '".$subcategory."'";		
 		
 		$questionsResult = mysql_query($questionsQuery);
 
@@ -493,7 +493,7 @@ class Question {
 			
 			//creates conactenated TPO/SPO reference "11.11.16" for electrical, etc.
 			$questionAttr['spo'] = $row['tpo_number'].".".$row['tpo_number'].".".$row['spo_number']." - ".$row['spo_name'];
-			$questionAttr['element'] = $row['element'];
+			$questionAttr['eo'] = $row['eo_id'];
 			$questionAttr['question_a'] = $row['question_a'];
 			$questionAttr['question_b'] = $row['question_b'];
 			$questionAttr['correct_answer'] = $row['correct_answer'];
@@ -545,7 +545,7 @@ class Question {
 			$questionAttr['type'] = $row['type'];
 			$questionAttr['subcategory'] = $row['subcategory'];
 			$questionAttr['spo'] = $row['spo_id'];		
-			$questionAttr['element'] = $row['element'];	
+			$questionAttr['eo'] = $row['eo_id'];	
 			$questionAttr['question_a'] = $row['question_a'];
 			$questionAttr['question_b'] = $row['question_b'];
 			$questionAttr['correct_answer'] = $row['correct_answer'];

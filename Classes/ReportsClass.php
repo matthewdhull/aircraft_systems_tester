@@ -899,7 +899,7 @@ class Reports {
 
 		$spoList = array();		
 		
-		$getSpoQuery = "SELECT `SPO`.`spo_number`, `SPO`.`spo_name` FROM `SPO`";		
+		$getSpoQuery = "SELECT `SPO`.`spo_id`, `SPO`.`spo_name` FROM `SPO`";		
 		
 		$spoResult = mysql_query($getSpoQuery, $con);
 		if(!$spoResult){
@@ -908,9 +908,8 @@ class Reports {
 		else {
 			while($row = mysql_fetch_array($spoResult)){
 				$spo = array();
-				$spo['spo_number'] = $row['spo_number'];
+				$spo['spo_id'] = $row['spo_id'];
 				$spo['spo_name'] = $row['spo_name'];
-/* 				$spo[$row['spo_number']] = $row['spo_name']; */
 				array_push($spoList, $spo);
 			}
 		}

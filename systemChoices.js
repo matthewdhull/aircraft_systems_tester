@@ -94,7 +94,7 @@ function populateERJSPOChoices(){
 		option: opt
 	}, function(data){
 		$.each(data, function(key,value){
-			optionList += "<option value='"+value.spo_number+"'>"+value.spo_name+"</option>";
+			optionList += "<option id="+value.spo_id+">"+value.spo_name+"</option>";
 			
 		});
 		

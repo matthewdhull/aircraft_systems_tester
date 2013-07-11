@@ -57,7 +57,7 @@
 				var cat = $("#category").val();
 				var subcat = $("#subcategory").val();
 				var spoV = $("#spo").val();
-				var elementV = $("#element").val();
+				var eoV = $("#eo").val();
 				var question_text = $("#question_text").val();
 				var alternate_wording = $("#alternate_wording").val();
 				var corr_ans = $("#correct_ans").val();
@@ -72,7 +72,7 @@
 					category: cat,
 					subcategory: subcat,
 					spo: spoV,
-					element: elementV,
+					eo: eoV,
 					wording_a: question_text,
 					wording_b: alternate_wording,
 					correct_ans: corr_ans,
@@ -88,7 +88,7 @@
 				return false;
 		});
 		
-		//short variables names for the various table elements
+		//short variables names for the various tables
 		var ccAnsL = $("#correct_ansLabel");
 		var ccAns = $("#correct_ans");
 		var caAnsL = $("#alt_correct_ansLabel");
@@ -138,7 +138,7 @@
 								$("#edit_type").val(value.type).trigger("change");
 								$("#edit_subcategory").val(value.subcategory);
 								$("#edit_spo").val(value.spo);
-								$("#edit_element").val(value.element);
+								$("#edit_eo").val(value.eo);
 								$("#edit_question_text").val(value.question_a);
 								$("#edit_alternate_wording").val(value.question_b);
 								$("#edit_correct_ans").val(value.correct_answer);
@@ -181,7 +181,8 @@
 				subcategory: questionCategory
 			}, function(data) {
 		 		$.each(data, function(key,value){
-	 				$("#questions_from_subcategory").append("<table class='singleQuestion' id='t"+value.questionID+"'><tr><td><button value='edit' id='e"+value.questionID+"'>Edit</button><button value='delete' id='d"+value.questionID+"'>Delete</button></td></tr><tr><td>Question Type:</td><td>"+value.type+"</td></tr><tr><td>SPO:</td><td>"+value.spo+"</td></tr><tr><td>Element:</td><td>"+value.element+"</td></tr><tr><td>Question Wording A:</td><td>"+value.question_a+"</td></tr><tr><td>Question Wording B:</td><td>"+value.question_b+"</td></tr><tr><td>Correct Answer:</td><td>"+value.correct_answer+"</td></tr><tr><td>Alternate Correct Answer:</td><td>"+value.alt_correct_answer+"</td></tr><tr><td>Last Correct Answer:</td><td>"+value.last_correct_answer+"</td></tr><tr><td>Answer X:</td><td>"+value.ans_x+"</td></tr><tr><td>Answer Y:</td><td>"+value.ans_y+"</td></tr><tr><td>Answer Z:</td><td>"+value.ans_z+"</td></tr></table>");
+		 			console.log(value);
+	 				$("#questions_from_subcategory").append("<table class='singleQuestion' id='t"+value.questionID+"'><tr><td><button value='edit' id='e"+value.questionID+"'>Edit</button><button value='delete' id='d"+value.questionID+"'>Delete</button></td></tr><tr><td>Question Type:</td><td>"+value.type+"</td></tr><tr><td>SPO:</td><td>"+value.spo+"</td></tr><tr><td>EO:</td><td>"+value.eo+"</td></tr><tr><td>Question Wording A:</td><td>"+value.question_a+"</td></tr><tr><td>Question Wording B:</td><td>"+value.question_b+"</td></tr><tr><td>Correct Answer:</td><td>"+value.correct_answer+"</td></tr><tr><td>Alternate Correct Answer:</td><td>"+value.alt_correct_answer+"</td></tr><tr><td>Last Correct Answer:</td><td>"+value.last_correct_answer+"</td></tr><tr><td>Answer X:</td><td>"+value.ans_x+"</td></tr><tr><td>Answer Y:</td><td>"+value.ans_y+"</td></tr><tr><td>Answer Z:</td><td>"+value.ans_z+"</td></tr></table>");
 	 			});
 	 			
 	 			//allows user to click 'edit' button and edit question information.
@@ -199,7 +200,7 @@
 			var tp = $("#edit_type").val();
 			var sc = $("#edit_subcategory").val();
 			var spoV = $("#edit_spo").val();
-			var elementV = $("#edit_element").val();
+			var eoV = $("#edit_eo").val();
 			var newText = $("#edit_question_text").val();
 			var newAltnText = $("#edit_alternate_wording").val();
 			var newCorrectAns = $("#edit_correct_ans").val();
@@ -214,7 +215,7 @@
 				type: tp,
 				subcategory: sc,
 				spo: spoV,
-				element: elementV,
+				eo: eoV,
 				wording_a: newText,
 				wording_b: newAltnText,
 				correct_ans: newCorrectAns,
@@ -570,9 +571,9 @@
 							</td>
 						</tr>
 						<tr>
-							<td>Element:</td>
-							<td><select id="element">
-									<?php/*Auto-populated with Element list predicated from SPO selection*/?>							
+							<td>EO:</td>
+							<td><select id="eo">
+									<?php/*Auto-populated with EO list predicated from SPO selection*/?>							
 								</select>
 							</td>
 						</tr>
@@ -664,9 +665,9 @@
 							</td>
 						</tr>
 						<tr>
-							<td>Element:</td>
-							<td><select id="edit_element">
-									<?php/*Auto-populated with Elements predicated from selected SPO*/?>
+							<td>EO:</td>
+							<td><select id="edit_eo">
+									<?php/*Auto-populated with EOs predicated from selected SPO*/?>
 								</select>
 							</td>
 						</tr>
