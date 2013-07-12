@@ -166,6 +166,8 @@
 					}
 				return false;
 			});
+			
+			$("#edit_spo").trigger("change");
 		}
 		
 		
@@ -488,11 +490,22 @@
 		
 		$("#type").trigger("change");
 		
+		$("#spo").change(function(){
+			var spo_id = $("#spo").children(":selected").attr("id");			
+			populateEOsForSPO(spo_id);
+		});
+		
+		$("#edit_spo").change(function(){
+			var spo_id = $("#edit_spo").children(":selected").attr("id");			
+			populateEOsForSPO(spo_id);
+		});
 		
 
 		checkLoginStatus();
 		populateERJSystemChoices();
-		populateERJSPOChoices();		
+		populateERJSPOChoices();	
+		
+		
 		
 	});
 	

@@ -917,5 +917,30 @@ class Reports {
 		$spoList = json_encode($spoList);
 		return $spoList;
 	}
+	
+	public static function eoListforSPO($spo_id) {
+		$con = self::getConnection();
+
+		$eoList = array();		
+		
+		$getEOQuery = "SELECT `EO`.`eo_id`, `EO`.`element_name`, `EO`.`spo_id` FROM `EO`, `SPO` WHERE `EO`.`spo_id` = `SPO`.`spo_id` AND `EO`.`spo_id` = '".$spo_id."'";		
+		
+		$eoResult = mysql_query($getEOQuery, $con);
+		if(!$eoResult){
+			die("could not run query ($getEOQuery) ".mysql_error());
+		}
+		else {
+			while($row = mysql_fetch_array($eoResult)){
+				$eo = array();
+				$eo['eo_id'] = $row['eo_id'];
+				$eo['element_name'] = $row['element_name'];
+				array_push($eoList, $eo);
+			}
+		}
+		mysql_close($con);		
+		$eoList = json_encode($eoList);
+		return $eoList;
+		
+	}
 } 
 ?>

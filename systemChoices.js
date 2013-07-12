@@ -1,4 +1,4 @@
-optionList = "";
+
 
 // The following variables dictionaries that contain the master system category lists for the erj / crj.  
 // This dictionary is currently loaded in questionCRUD.php
@@ -83,26 +83,49 @@ function populateCRJSystemChoices(){
 }
 
 
+function populateEOsForSPO(spo_id){
+	var spo = spo_id;
+	var opt = "getEOs";
+	var eoList = "";
+	$.post("PHPScripts/admin/getReports.php", {
+		spo_id: spo,
+		option: opt
+	}, function(data){
+		$.each(data, function(key,value){
+			eoList += "<option id="+value.eo_id+">"+value.element_name+"</option>";
+			
+		});
+		
+	$("#eo option, #edit_eo option").remove();
+	$("#eo, #edit_eo").append(eoList);
+		
+
+	}, "json");	
+}
+
 //dynamically generates a <select> element list with all ERJ SPOs in the database
 function populateERJSPOChoices(){
 
 	var acType="erj";
 	var opt = "getErjSpoList";
+	var spoList;
 
 	$.post("PHPScripts/admin/getReports.php", {
 		acftType: acType,
 		option: opt
 	}, function(data){
 		$.each(data, function(key,value){
-			optionList += "<option id="+value.spo_id+">"+value.spo_name+"</option>";
-			
+			spoList += "<option id="+value.spo_id+">"+value.spo_name+"</option>";
 		});
 		
 	$("#spo option, #edit_spo option").remove();
-	$("#spo, #edit_spo").append(optionList);
+	$("#spo, #edit_spo").append(spoList);
 		
 
 	}, "json");	
 	
+	
 }
+
+
 
