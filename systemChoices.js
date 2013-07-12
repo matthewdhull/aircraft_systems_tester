@@ -92,13 +92,12 @@ function populateEOsForSPO(spo_id){
 		option: opt
 	}, function(data){
 		$.each(data, function(key,value){
-			eoList += "<option id="+value.eo_id+">"+value.element_name+"</option>";
+			eoList += "<option id="+value.eo_id+" value="+value.eo_id+">"+value.element_name+"</option>";
 			
 		});
 		
 	$("#eo option, #edit_eo option").remove();
 	$("#eo, #edit_eo").append(eoList);
-		
 
 	}, "json");	
 }
@@ -115,13 +114,13 @@ function populateERJSPOChoices(){
 		option: opt
 	}, function(data){
 		$.each(data, function(key,value){
-			spoList += "<option id="+value.spo_id+">"+value.spo_name+"</option>";
+			spoList += "<option id="+value.spo_id+" value="+value.spo_id+">"+value.spo_name+"</option>";
 		});
 		
-	$("#spo option, #edit_spo option").remove();
-	$("#spo, #edit_spo").append(spoList);
-		
-
+		$("#spo option, #edit_spo option").remove();
+		$("#spo, #edit_spo").append(spoList);
+		var spo_id = $("#spo").children(":selected").attr("id");			
+		populateEOsForSPO(spo_id);
 	}, "json");	
 	
 	

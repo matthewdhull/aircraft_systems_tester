@@ -3,8 +3,8 @@
 <head>
 	<title>Question Modeling</title>
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8">	
-<!-- 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script> -->
-	<script src="jquery.js"></script>	
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<!-- 	<script src="jquery.js"></script>	 -->
 	<script src="systemChoices.js"></script> <!-- Imports ERJ / CRJ Aircraft System Lists -->
 	<style type='text/css'>
 		@import url("CSS/questionCRUD.css");
@@ -148,6 +148,9 @@
 								$("#edit_incorrect_ans_y").val(value.ans_y);
 								$("#edit_incorrect_ans_z").val(value.ans_z);
 							});
+							
+							$("#edit_spo").trigger("change");							
+							
 						}, "json");			
 					}
 					
@@ -166,13 +169,11 @@
 					}
 				return false;
 			});
-			
-			$("#edit_spo").trigger("change");
 		}
 		
 		
 		
-		
+	
 		
 		$("#view_questions_button").click(function(){
 			
@@ -183,7 +184,6 @@
 				subcategory: questionCategory
 			}, function(data) {
 		 		$.each(data, function(key,value){
-		 			console.log(value);
 	 				$("#questions_from_subcategory").append("<table class='singleQuestion' id='t"+value.questionID+"'><tr><td><button value='edit' id='e"+value.questionID+"'>Edit</button><button value='delete' id='d"+value.questionID+"'>Delete</button></td></tr><tr><td>Question Type:</td><td>"+value.type+"</td></tr><tr><td>SPO:</td><td>"+value.spo+"</td></tr><tr><td>EO:</td><td>"+value.eo+"</td></tr><tr><td>Question Wording A:</td><td>"+value.question_a+"</td></tr><tr><td>Question Wording B:</td><td>"+value.question_b+"</td></tr><tr><td>Correct Answer:</td><td>"+value.correct_answer+"</td></tr><tr><td>Alternate Correct Answer:</td><td>"+value.alt_correct_answer+"</td></tr><tr><td>Last Correct Answer:</td><td>"+value.last_correct_answer+"</td></tr><tr><td>Answer X:</td><td>"+value.ans_x+"</td></tr><tr><td>Answer Y:</td><td>"+value.ans_y+"</td></tr><tr><td>Answer Z:</td><td>"+value.ans_z+"</td></tr></table>");
 	 			});
 	 			
