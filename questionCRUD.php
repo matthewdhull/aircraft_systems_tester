@@ -137,7 +137,7 @@
 							var eo_id;
 							
 							$.each(data, function(key, value){
-								$("#edit_type").val(value.type);
+								$("#edit_type").val(value.type).trigger("change");
 								$("#edit_subcategory").val(value.subcategory);
 								$("#edit_spo").val(value.spo);
 								$("#edit_eo").val(value.eo);
@@ -510,8 +510,7 @@
 		populateERJSystemChoices();
 		populateERJSPOChoices();	
 		
-		
-		
+	
 	});
 	
 	
