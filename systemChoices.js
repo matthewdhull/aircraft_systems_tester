@@ -83,8 +83,10 @@ function populateCRJSystemChoices(){
 }
 
 
-function populateEOsForSPO(spo_id){
+function populateEOsForSPO(spo_id, autoselect_eo_id){
 	var spo = spo_id;
+	var eo = autoselect_eo_id; //auto-select eo for question being edited if desired.
+	
 	var opt = "getEOs";
 	var eoList = "";
 	$.post("PHPScripts/admin/getReports.php", {
@@ -98,6 +100,7 @@ function populateEOsForSPO(spo_id){
 		
 	$("#eo option, #edit_eo option").remove();
 	$("#eo, #edit_eo").append(eoList);
+	$("#edit_eo").val(eo);
 
 	}, "json");	
 }

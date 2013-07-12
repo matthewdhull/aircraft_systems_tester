@@ -133,12 +133,15 @@
 						$.post("PHPScripts/fetchQuestionForEditing.php", {
 							questionID: idNumber
 						}, function(data){
-							//console.log(data);
+							
+							var eo_id;
+							
 							$.each(data, function(key, value){
-								$("#edit_type").val(value.type).trigger("change");
+								$("#edit_type").val(value.type);
 								$("#edit_subcategory").val(value.subcategory);
 								$("#edit_spo").val(value.spo);
 								$("#edit_eo").val(value.eo);
+								eo_id = value.eo //for use in auto-selecting eo
 								$("#edit_question_text").val(value.question_a);
 								$("#edit_alternate_wording").val(value.question_b);
 								$("#edit_correct_ans").val(value.correct_answer);
@@ -149,7 +152,9 @@
 								$("#edit_incorrect_ans_z").val(value.ans_z);
 							});
 							
-							$("#edit_spo").trigger("change");							
+							//get EOs from SPO and auto-select EO for the current question being edited
+							populateEOsForSPO($("#edit_spo").val(), eo_id);
+		
 							
 						}, "json");			
 					}
@@ -492,12 +497,12 @@
 		
 		$("#spo").change(function(){
 			var spo_id = $("#spo").children(":selected").attr("id");			
-			populateEOsForSPO(spo_id);
+			populateEOsForSPO(spo_id,null);
 		});
 		
 		$("#edit_spo").change(function(){
 			var spo_id = $("#edit_spo").children(":selected").attr("id");			
-			populateEOsForSPO(spo_id);
+			populateEOsForSPO(spo_id,null);
 		});
 		
 
