@@ -476,7 +476,7 @@ class Question {
 		
 		mysql_select_db($database, $con);	
 		
-		$questionsQuery = "select questions.questionID, questions.category, questions.subcategory, SPO.spo_name, TPO.tpo_number, SPO.spo_number, EO.eo_no, questions.type, questions.correct_answer, questions.alt_correct_answer, questions.last_correct_answer, questions.ans_x, questions.ans_y, questions.ans_z, questions.question_a, questions.question_b FROM questions, EO, SPO, TPO WHERE questions.eo_id = EO.eo_id AND questions.spo_id = SPO.spo_id AND SPO.tpo_id = TPO.tpo_id AND questions.subcategory = '".$subcategory."'";		
+		$questionsQuery = "select questions.questionID, questions.category, questions.subcategory, SPO.spo_name, EO.element_name, TPO.tpo_number, SPO.spo_number, EO.eo_no, questions.type, questions.correct_answer, questions.alt_correct_answer, questions.last_correct_answer, questions.ans_x, questions.ans_y, questions.ans_z, questions.question_a, questions.question_b FROM questions, EO, SPO, TPO WHERE questions.eo_id = EO.eo_id AND questions.spo_id = SPO.spo_id AND SPO.tpo_id = TPO.tpo_id AND questions.subcategory = '".$subcategory."'";		
 		
 		$questionsResult = mysql_query($questionsQuery);
 
@@ -492,8 +492,8 @@ class Question {
 			$questionAttr['type'] = $row['type'];
 			
 			//creates conactenated TPO/SPO reference "11.11.16" for electrical, etc.
-			$questionAttr['spo'] = $row['tpo_number'].".".$row['tpo_number'].".".$row['spo_number']." - ".$row['spo_name'];
-			$questionAttr['eo'] = $row['eo_no'];
+			$questionAttr['jta'] = $row['tpo_number'].".".$row['tpo_number'].".".$row['spo_number'].".".$row['eo_no'];
+			$questionAttr['spo_eo_description'] = $row['spo_name']." - ".$row['element_name'];
 			$questionAttr['question_a'] = $row['question_a'];
 			$questionAttr['question_b'] = $row['question_b'];
 			$questionAttr['correct_answer'] = $row['correct_answer'];
