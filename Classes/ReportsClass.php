@@ -41,6 +41,7 @@ class Reports {
 	
 	private static function getConnection(){
 			//offline connection info.
+
 			$usn = 'root';
 			$password = 'root';
 			$database = 'xjtest';

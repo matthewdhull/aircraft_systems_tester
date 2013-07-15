@@ -74,7 +74,7 @@ function bindEditEvents(){
 							//console.log(data);
 							$.each(data, function(key, value){
 								$("#edit_type").val(value.type).trigger("change");
-								$("#edit_subcategory").val("performance");
+								$("#edit_subcategory").val("powerplant");
 								$("#edit_spo").val("9.1.20");
 								$("#edit_question_text").val(value.question_a);
 								$("#edit_alternate_wording").val(value.question_b);
@@ -108,7 +108,7 @@ function bindEditEvents(){
 
 		function viewAerodataQuestions(){
 			
-				var questionCategory = "performance";
+				var questionCategory = "powerplant";
 				currentSubcategory = questionCategory;
 				$("#questions_from_subcategory table").remove();
 			$.post("PHPScripts/viewQuestions.php", {

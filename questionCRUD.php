@@ -123,12 +123,16 @@
 					var qID = $(this).attr("id");
 					var noLetterID = qID.substr(1);
 					var idNumber = parseInt(noLetterID);
+					var tableID = "#t" + idNumber;
+					
 			
 				if($(this).html()=="Edit"){				
 					$("#editTitle").click(); //trigger edit mode.
+					$("#questions_from_subcategory table").css("border", "1px solid #b7b7b7"); // reset borders
+					$(tableID).css("border", "3px dotted #e52000"); //red dashed border to indicate editing
 			
 					//remove all questions that are displayed and pre-fill the form with current question information.
-					$("#questions_from_subcategory table").remove();
+/* 					$("#questions_from_subcategory table").remove(); */
 					$("#editID").val(idNumber);
 						$.post("PHPScripts/fetchQuestionForEditing.php", {
 							questionID: idNumber
@@ -180,7 +184,7 @@
 		
 	
 		
-		$("#view_questions_button").click(function(){
+		$("#questionCategory").change(function(){
 			
 				var questionCategory = $("#questionCategory").val();
 				currentSubcategory = questionCategory;
@@ -208,6 +212,7 @@
 			var sc = $("#edit_subcategory").val();
 			var spoV = $("#edit_spo").val();
 			var eoV = $("#edit_eo").val();
+			console.log("spo: "+spoV+" eo: "+eoV);
 			var newText = $("#edit_question_text").val();
 			var newAltnText = $("#edit_alternate_wording").val();
 			var newCorrectAns = $("#edit_correct_ans").val();
@@ -231,6 +236,8 @@
 				ans_x: newIncorrectAnsX,
 				ans_y: newIncorrectAnsY,
 				ans_z:newIncorrectAnsZ
+			}, function(data){
+				$("#questionCategory").trigger("change");
 			});
 			$("#editID").val("");
 			$("#edit_question_text").val("");
@@ -509,6 +516,7 @@
 		checkLoginStatus();
 		populateERJSystemChoices();
 		populateERJSPOChoices();	
+		$("#questionCategory").trigger("change");
 		
 	
 	});
@@ -757,9 +765,6 @@
 							<?php /* auto-populated with system choices. */ ?>
 							</select> 
 						</td>
-					</tr>
-					<tr>
-						<td><input id="view_questions_button" type="submit" value="view questions" name="view_questions" /></td>
 					</tr>
 				</table>
 			</form>
