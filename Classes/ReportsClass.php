@@ -47,8 +47,8 @@ class Reports {
 			$database = 'xjtest';
 			$host = 'localhost';
 			
-			
 /*
+			
 			//online connection info	
 			$host = 'mdhblog.db'; 
 			$usn = 'gv3zF'; 
@@ -129,6 +129,7 @@ class Reports {
 			return $testQuestionsAndTimeout;
 	
 	}
+	
 	public static function createdTests($instructorEmpNo){
 
 			$con = self::getConnection();

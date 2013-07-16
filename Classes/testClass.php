@@ -476,7 +476,7 @@ class Question {
 		
 		mysql_select_db($database, $con);	
 		
-		$questionsQuery = "select questions.questionID, questions.category, questions.subcategory, SPO.spo_name, EO.element_name, TPO.tpo_number, SPO.spo_number, EO.eo_no, questions.type, questions.correct_answer, questions.alt_correct_answer, questions.last_correct_answer, questions.ans_x, questions.ans_y, questions.ans_z, questions.question_a, questions.question_b FROM questions, EO, SPO, TPO WHERE questions.eo_id = EO.eo_id AND questions.spo_id = SPO.spo_id AND SPO.tpo_id = TPO.tpo_id AND questions.subcategory = '".$subcategory."'";		
+		$questionsQuery = "select questions.questionID, questions.category, questions.subcategory, SPO.spo_name, EO.element_name, TPO.tpo_number, SPO.spo_number, EO.eo_no, questions.type, questions.correct_answer, questions.alt_correct_answer, questions.last_correct_answer, questions.ans_x, questions.ans_y, questions.ans_z, questions.question_a, questions.question_b FROM questions, EO, SPO, TPO WHERE questions.eo_id = EO.eo_id AND questions.spo_id = SPO.spo_id AND SPO.tpo_id = TPO.tpo_id AND questions.subcategory = '".$subcategory."' order by EO.eo_no ASC";		
 		
 		$questionsResult = mysql_query($questionsQuery);
 
