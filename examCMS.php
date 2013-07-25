@@ -8,7 +8,7 @@ session_cache_limiter('nocache');
 	<head>
 		<title>Exam</title>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8">	
-		<script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 		<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" /> <!--CSS for date picker-->				
 		<script src="http://code.jquery.com/ui/1.10.0/jquery-ui.js"></script>		
 		<script src="shufflePlugin.js"></script>				
@@ -72,6 +72,7 @@ session_cache_limiter('nocache');
 				
 				function showQuestionForIndex(index, boolIsQuestionID){
 					var q = {}; <?php /*placeholder for question being retrieved. */?>
+
 					
 					
 					<?php /*grab question by questionID attribute.*/?>
@@ -86,6 +87,9 @@ session_cache_limiter('nocache');
 					}
 					else if(boolIsQuestionID === false || boolIsQuestionID === null) {
 						q = questions[index];
+
+						//console.log("selected answer "+q.selectedAnswer);			
+									
 					}
 					
 					$("#questionText").html((currentIndex+1)+". "+ q.questionText); <?php /*shows question number. */?>
@@ -128,7 +132,7 @@ session_cache_limiter('nocache');
 				function setAnswerForIndex(answer, index){
 					var q = questions[index];
 					q.selectedAnswer = answer;
-					//alert("set answer: "+q.selectedAnswer+" for index: "+index);
+					//console.log("set answer: "+q.selectedAnswer+" for index: "+index);
 
 				}
 				
@@ -804,7 +808,6 @@ session_cache_limiter('nocache');
 								<option value="31">31</option>
 							</select>
 							<select id="classDateYear">
-								<option value="2012">2012</option>
 								<option value="2013">2013</option>
 								<option value="2014">2014</option>
 								<option value="2015">2015</option>

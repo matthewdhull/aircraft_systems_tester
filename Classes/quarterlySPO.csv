@@ -1,0 +1,213 @@
+"Description, Equipment and Furnishings",2,1
+"Description, Equipment and Furnishings",3,2
+"Description, Equipment and Furnishings",4,1
+"Description, Equipment and Furnishings",5,1
+"Description, Equipment and Furnishings",6,1
+"Description, Equipment and Furnishings",7,0
+"Description, Equipment and Furnishings",8,0
+"Description, Equipment and Furnishings",9,1
+"Description, Equipment and Furnishings",10,0
+"Description, Equipment and Furnishings",11,0
+"Description, Equipment and Furnishings",12,0
+"Description, Equipment and Furnishings",13,1
+"Description, Equipment and Furnishings",14,0
+"Description, Equipment and Furnishings",15,2
+"Description, Equipment and Furnishings",16,0
+"Description, Equipment and Furnishings",17,0
+"Description, Equipment and Furnishings",18,0
+"Description, Equipment and Furnishings",19,0
+"Description, Equipment and Furnishings",20,0
+"Description, Equipment and Furnishings",21,0
+"Description, Equipment and Furnishings",22,2
+"Description, Equipment and Furnishings",23,0
+Oxygen,24,8
+Oxygen,25,6
+Oxygen,26,1
+Oxygen,27,0
+Oxygen,28,0
+Powerplant,29,0
+Powerplant,30,6
+Powerplant,31,2
+Powerplant,32,1
+Powerplant,33,1
+Powerplant,34,1
+Powerplant,35,0
+Powerplant,36,0
+Powerplant,37,0
+Powerplant,38,1
+Powerplant,39,2
+Powerplant,40,2
+Powerplant,41,1
+Powerplant,42,3
+Powerplant,43,0
+Powerplant,44,0
+Powerplant,45,0
+Electrical,46,5
+Electrical,47,0
+Electrical,48,1
+Electrical,49,0
+Electrical,50,0
+Electrical,51,2
+Electrical,52,4
+Electrical,53,0
+Electrical,54,1
+Electrical,55,7
+Electrical,56,0
+Electrical,57,0
+Pneumatics,58,3
+Pneumatics,59,0
+Pneumatics,60,1
+Pneumatics,61,0
+Pneumatics,62,1
+Pneumatics,63,3
+Pneumatics,64,1
+Pneumatics,65,1
+Pneumatics,66,0
+Pneumatics,67,0
+Pneumatics,68,0
+ECS,69,1
+ECS,70,4
+ECS,71,1
+ECS,72,1
+ECS,73,1
+ECS,74,1
+ECS,75,0
+ECS,76,5
+ECS,77,2
+ECS,78,1
+ECS,79,0
+ECS,80,0
+ECS,81,0
+APU,82,1
+APU,83,2
+APU,84,1
+APU,85,1
+APU,86,2
+APU,87,0
+Hydraulics,88,2
+Hydraulics,89,1
+Hydraulics,90,3
+Hydraulics,91,0
+Hydraulics,92,4
+Hydraulics,93,5
+Hydraulics,94,0
+Hydraulics,95,0
+Hydraulics,96,0
+Hydraulics,97,0
+"Landing Gear and Brakes",98,3
+"Landing Gear and Brakes",99,2
+"Landing Gear and Brakes",100,1
+"Landing Gear and Brakes",101,4
+"Landing Gear and Brakes",102,1
+"Landing Gear and Brakes",103,7
+"Landing Gear and Brakes",104,1
+"Landing Gear and Brakes",105,1
+"Landing Gear and Brakes",106,0
+"Flight Controls and Stall Protection",107,1
+"Flight Controls and Stall Protection",108,1
+"Flight Controls and Stall Protection",109,1
+"Flight Controls and Stall Protection",110,3
+"Flight Controls and Stall Protection",111,4
+"Flight Controls and Stall Protection",112,1
+"Flight Controls and Stall Protection",113,5
+"Flight Controls and Stall Protection",114,2
+"Flight Controls and Stall Protection",115,2
+"Flight Controls and Stall Protection",116,1
+"Flight Controls and Stall Protection",117,0
+"Flight Controls and Stall Protection",118,0
+"Flight Controls and Stall Protection",119,0
+Fuel,120,0
+Fuel,121,0
+Fuel,122,0
+Fuel,123,0
+Fuel,124,0
+Fuel,125,2
+Fuel,126,4
+Fuel,127,2
+Fuel,128,0
+Fuel,129,0
+Fuel,130,0
+Fuel,131,0
+Fuel,132,1
+Communications,133,2
+Communications,134,0
+Communications,135,1
+Communications,136,0
+Communications,137,0
+Communications,138,0
+Communications,139,1
+"Flight Instruments",140,0
+"Flight Instruments",141,1
+"Flight Instruments",142,0
+"Flight Instruments",143,0
+"Flight Instruments",144,0
+"Flight Instruments",145,0
+"Flight Instruments",146,0
+"Flight Instruments",147,0
+"Flight Instruments",148,1
+"Flight Instruments",149,0
+"Flight Instruments",150,0
+"Flight Instruments",151,0
+"Flight Instruments",152,0
+"Flight Instruments",153,0
+Navigation,154,0
+Navigation,155,0
+Navigation,156,0
+Navigation,157,0
+Navigation,158,0
+Navigation,159,0
+Navigation,160,0
+Navigation,161,0
+Navigation,162,0
+Navigation,163,0
+Navigation,164,0
+Navigation,165,0
+Navigation,166,0
+AFCS,167,0
+AFCS,168,0
+AFCS,169,1
+AFCS,170,0
+AFCS,171,2
+AFCS,172,6
+AFCS,173,0
+AFCS,174,1
+AFCS,175,6
+AFCS,176,3
+"Aural and Visual Warning",177,3
+"Aural and Visual Warning",178,4
+"Aural and Visual Warning",179,0
+"Aural and Visual Warning",180,0
+"Aural and Visual Warning",181,0
+"Aural and Visual Warning",182,0
+"Aural and Visual Warning",183,1
+"Aural and Visual Warning",184,0
+"Aural and Visual Warning",185,0
+"Aural and Visual Warning",186,2
+"Aural and Visual Warning",187,0
+"Fire and Overheat Detection",188,1
+"Fire and Overheat Detection",189,5
+"Fire and Overheat Detection",190,2
+"Fire and Overheat Detection",191,0
+"Fire and Overheat Detection",192,1
+"Fire and Overheat Detection",193,1
+"Fire and Overheat Detection",194,0
+"Fire and Overheat Detection",195,0
+"Fire and Overheat Detection",196,0
+"Fire and Overheat Detection",197,0
+Lighting,198,0
+Lighting,199,1
+Lighting,200,2
+Lighting,201,5
+Lighting,202,0
+Lighting,203,0
+Lighting,204,0
+Lighting,205,2
+"Ice and Rain Protection",206,3
+"Ice and Rain Protection",207,1
+"Ice and Rain Protection",208,5
+"Ice and Rain Protection",209,2
+"Ice and Rain Protection",210,0
+"Ice and Rain Protection",211,4
+"Ice and Rain Protection",212,0
+"Ice and Rain Protection",213,0
+"Ice and Rain Protection",214,2

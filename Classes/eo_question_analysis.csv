@@ -1,0 +1,213 @@
+"Description, Equipment and Furnishings","Airplane Description",1
+"Description, Equipment and Furnishings",Dimensions,2
+"Description, Equipment and Furnishings","Cabin Arrangement",1
+"Description, Equipment and Furnishings","Passenger Service Unit",1
+"Description, Equipment and Furnishings","Flight Deck Arrangement",1
+"Description, Equipment and Furnishings","Avionics Overview",0
+"Description, Equipment and Furnishings","Advanced Features",0
+"Description, Equipment and Furnishings","Ground Servicing",1
+"Description, Equipment and Furnishings","Passenger Door",0
+"Description, Equipment and Furnishings","Service Door",0
+"Description, Equipment and Furnishings","Emergency Door",0
+"Description, Equipment and Furnishings","Access Doors and Hatches",1
+"Description, Equipment and Furnishings","Cockpit Security Door",0
+"Description, Equipment and Furnishings",Lavatory,2
+"Description, Equipment and Furnishings","Water and Waste",0
+"Description, Equipment and Furnishings",Limitations,0
+"Description, Equipment and Furnishings","(CR7/9) CR7/9 Differences",0
+"Description, Equipment and Furnishings","(ERJ) EMB-135 Differences",0
+"Description, Equipment and Furnishings","(ERJ) EMB-145EP Differences",0
+"Description, Equipment and Furnishings","(ERJ) EMB-145XR Differences",0
+"Description, Equipment and Furnishings",ELT,2
+"Description, Equipment and Furnishings","FDR, CVR",0
+Oxygen,"Crew Oxygen",8
+Oxygen,"Passenger Oxygen",6
+Oxygen,"Supplemental Oxygen",1
+Oxygen,Limitations,0
+Oxygen,"(CR7/9) CR7/9 Differences",0
+Powerplant,"Jet Engine Concepts",0
+Powerplant,Overview,6
+Powerplant,"Accessory Gearbox",2
+Powerplant,"Fuel Supply and Metering",1
+Powerplant,Ignition,1
+Powerplant,Lubrication,1
+Powerplant,Generator,0
+Powerplant,Bleed,0
+Powerplant,"Thrust Levers",0
+Powerplant,"Engine Indications",1
+Powerplant,"Engine Starting",2
+Powerplant,"Thrust Setting",2
+Powerplant,"Reverse Thrust",1
+Powerplant,Limitations,3
+Powerplant,"(CR7/9) CR7/9 Differences",0
+Powerplant,"(ERJ) EMB-135 Differences",0
+Powerplant,"(ERJ) EMB-145XR Differences",0
+Electrical,"General Concepts",5
+Electrical,"AC Power Generation",0
+Electrical,"AC Power Distribution",1
+Electrical,"AC Redundancy and Bus Protection",0
+Electrical,"AC Controls and Indications",0
+Electrical,"DC Power Generation",2
+Electrical,"DC Power Distribution",4
+Electrical,"DC Redundancy and Bus Protection",0
+Electrical,"DC Controls and Indications",1
+Electrical,"Emergency Power",7
+Electrical,Limitations,0
+Electrical,"CR7/9 Differences",0
+Pneumatics,"General Concepts",3
+Pneumatics,"Low Pressure Bleed Overview",0
+Pneumatics,"High Pressure Bleed Overview",1
+Pneumatics,"Low Pressure Bleed Operation",0
+Pneumatics,"High Pressure Bleed Operation",1
+Pneumatics,"Low Pressure Bleed Controls and Indications",3
+Pneumatics,"High Pressure Bleed Controls and Indications",1
+Pneumatics,"Leak Detection",1
+Pneumatics,Limitations,0
+Pneumatics,"(CR7/9) CR7/9 Differences",0
+Pneumatics,"(ERJ) EMB-145XR Differences",0
+ECS,"RAM Air System",1
+ECS,"Air Cycle Machine",4
+ECS,"Temperature Control",1
+ECS,"Air Distribution",1
+ECS,"Display and Avionics Cooling",1
+ECS,"Cargo Air Conditioning",1
+ECS,"(CR2, CR7/9) Galley Heating",0
+ECS,Pressurization,5
+ECS,"Controls and Indications",2
+ECS,Limitations,1
+ECS,"(CR7/9) CR7/9 Differences",0
+ECS,"(ERJ) EMB-135 Differences",0
+ECS,"(ERJ) EMB-145XR Differences",0
+APU,"General Concepts",1
+APU,"ECU and Control System",2
+APU,Operation,1
+APU,"Controls and Indications",1
+APU,Limitations,2
+APU,"(CR7/9) CR7/9 Differences",0
+Hydraulics,"General Concepts",2
+Hydraulics,"System Components",1
+Hydraulics,Pumps,3
+Hydraulics,"System Cooling",0
+Hydraulics,"Power Distribution",4
+Hydraulics,"Controls and Indications",5
+Hydraulics,Limitations,0
+Hydraulics,"(CR7/9) CR7/9 Differences",0
+Hydraulics,"(ERJ) EMB-135 Differences",0
+Hydraulics,"(ERJ) EMB-145EP Differences",0
+"Landing Gear and Brakes","Main Landing Gear",3
+"Landing Gear and Brakes","Nose Landing Gear",2
+"Landing Gear and Brakes","Proximity Sensing and WOW",1
+"Landing Gear and Brakes","Alternate Gear Extension",4
+"Landing Gear and Brakes","Nose Wheel Steering",1
+"Landing Gear and Brakes",Brakes,7
+"Landing Gear and Brakes","Controls and Indications",1
+"Landing Gear and Brakes",Limitations,1
+"Landing Gear and Brakes","(CR7/9) CR7/9 Differences",0
+"Flight Controls and Stall Protection",Overview,1
+"Flight Controls and Stall Protection","Aileron System",1
+"Flight Controls and Stall Protection","Elevator System",1
+"Flight Controls and Stall Protection","Rudder System",3
+"Flight Controls and Stall Protection",Spoilers,4
+"Flight Controls and Stall Protection","Stabilizer Trim",1
+"Flight Controls and Stall Protection",Flaps,5
+"Flight Controls and Stall Protection","Stall Detection / Protection Equipment",2
+"Flight Controls and Stall Protection","Controls and Indications",2
+"Flight Controls and Stall Protection",Limitations,1
+"Flight Controls and Stall Protection","(CR7/9) CR7/9 Differences",0
+"Flight Controls and Stall Protection","(ERJ) EMB-145XP Differences",0
+"Flight Controls and Stall Protection","(ERJ) Gust Lock System",0
+Fuel,Tanks,0
+Fuel,"Quantity Measurement",0
+Fuel,Refueling,0
+Fuel,"Motive Flow",0
+Fuel,"Engine Fuel Feed",0
+Fuel,"Electric Boost Pumps",2
+Fuel,"Fuel Transfer and Crossflow",4
+Fuel,"Controls and Indications",2
+Fuel,Limitations,0
+Fuel,"(CR7/9) CR7/9 Differences",0
+Fuel,"(ERJ) EMB-135 Differences",0
+Fuel,"(ERJ) EMB-145EP Differences",0
+Fuel,"(ERJ) EMB-145XR Differences",1
+Communications,"Radio Tuning",2
+Communications,"Audio Control Panel",0
+Communications,Intercom/PA,1
+Communications,"Flight Attendant Communication",0
+Communications,"ACARS Communication",0
+Communications,"(ERJ) SELCAL System",0
+Communications,"(ERJ) Radio Management System",1
+"Flight Instruments","EFIS Displays",0
+"Flight Instruments","Pitot Static System",1
+"Flight Instruments","AHRS System",0
+"Flight Instruments","TAT Measurement",0
+"Flight Instruments","Air Data Computers",0
+"Flight Instruments","High/Low Speed Cues",0
+"Flight Instruments","Radio Altimeter",0
+"Flight Instruments","Controls and Indications",0
+"Flight Instruments","Standby Instruments",1
+"Flight Instruments",Limitations,0
+"Flight Instruments","(CR7/9) CR7/9 Differences",0
+"Flight Instruments","(ERJ) EMB-145XR Differences",0
+"Flight Instruments",Clock,0
+"Flight Instruments","EFIS Comparison Monitor",0
+Navigation,"VHF Radios",0
+Navigation,GPS,0
+Navigation,"Radio Tuning / Auto Tuning",0
+Navigation,"Blended Navigation",0
+Navigation,ADF,0
+Navigation,"Marker Beacons",0
+Navigation,"Transponder and TCAS",0
+Navigation,Limitations,0
+Navigation,EGPWS,0
+Navigation,FMS,0
+Navigation,"Weather Radar",0
+Navigation,"(CR7/9) CR7/9 Differences",0
+Navigation,"Windshear Detection and Escape Guidance",0
+AFCS,"Flight Control Computers",0
+AFCS,"Flight Directors",0
+AFCS,"Yaw Dampers",1
+AFCS,"Flight Control Panel",0
+AFCS,"Flight Director Modes (Lateral)",2
+AFCS,"Flight Director Modes (Vertical)",6
+AFCS,"Altitude Alerting",0
+AFCS,Autopilot,1
+AFCS,"Controls and Indications",6
+AFCS,Limitations,3
+"Aural and Visual Warning","Data Concentrator Units",3
+"Aural and Visual Warning",Displays,4
+"Aural and Visual Warning","EICAS Control Panel",0
+"Aural and Visual Warning","EICAS Color Logic",0
+"Aural and Visual Warning","EICAS Message Prioritization",0
+"Aural and Visual Warning","Audible Indications",0
+"Aural and Visual Warning","Takeoff Configuration Monitoring",1
+"Aural and Visual Warning",Inhibits,0
+"Aural and Visual Warning","Maintenance Diagnostic Computer",0
+"Aural and Visual Warning","Controls and Indications",2
+"Aural and Visual Warning",Limitations,0
+"Fire and Overheat Detection","Loop Operation",1
+"Fire and Overheat Detection","Engine Fire Detection / Extinguishing",5
+"Fire and Overheat Detection","APU Fire Detection / Extinguishing",2
+"Fire and Overheat Detection","Landing Gear Bay Overheat Detection",0
+"Fire and Overheat Detection","Cargo Fire Detection / Extinguishing",1
+"Fire and Overheat Detection","Lavatory Fire Detection / Extinguishing",1
+"Fire and Overheat Detection","Controls and Indications",0
+"Fire and Overheat Detection",Limitations,0
+"Fire and Overheat Detection","(CR7/9) CR7/9 Differences",0
+"Fire and Overheat Detection","(ERJ) EMB-135 Differences",0
+Lighting,"Flight Deck Lighting",0
+Lighting,"Cabin Lighting",1
+Lighting,"External Lighting",2
+Lighting,"Emergency Lighting",5
+Lighting,"Controls and Indications",0
+Lighting,Limitations,0
+Lighting,"(CR7/9) CR7/9 Differences",0
+Lighting,"(ERJ) EMB-145XR Differences",2
+"Ice and Rain Protection","Icing Conditions",3
+"Ice and Rain Protection","Ice Detection",1
+"Ice and Rain Protection","Pneumatic Anti-Icing",5
+"Ice and Rain Protection","Electric Anti-Icing",2
+"Ice and Rain Protection","Windshield Wipers",0
+"Ice and Rain Protection","Controls and Indications",4
+"Ice and Rain Protection",Limitations,0
+"Ice and Rain Protection","(CR7/9) CR7/9 Differences",0
+"Ice and Rain Protection","(ERJ) EMB-145XR Differences",2

@@ -81,7 +81,11 @@ h4 {
 #instructorTasks {
 	position: absolute;
 	top: 80px;
-	height: 360px;
+	height: auto;
+}
+
+#instructorTasks table {
+	
 }
 
 #adminTasks {

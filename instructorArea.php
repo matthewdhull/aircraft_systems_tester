@@ -305,7 +305,7 @@ session_cache_limiter('nocache');
 						});
 						
 						
-					$("#createNewTest, #modelNewTest").click(function(){
+					$("#modelNewTest").click(function(){
 						window.location = "testCRUD.php";
 					});	
 					
@@ -315,10 +315,6 @@ session_cache_limiter('nocache');
 					
 					$("#faqButton").click(function(){
 						window.location = "faq.php";
-					});
-					
-					$("#aerodata").click(function(){
-						window.location = "aerodataCRUD.php";
 					});
 					
 					$("#takeTestButton").click(function(){
@@ -738,12 +734,13 @@ session_cache_limiter('nocache');
 		</table>
 	</div>
 	<div id="instructorTasks" class="center" style="visibility: hidden">
-		<h4>Instructor Tasks</h4>
-		<table>
-			<tr>
-				<td><button id="createNewTest">Create</button></td>
-				<td>Create a new test</td>
-			</tr>
+		<div id="buildTest">
+			<div id="plus_sign">
+				<div id="vertical_bar">
+				<div id="horizontal_bar">
+			</div>
+		</div>
+		<table id="reportTable">
 			<tr>
 				<td><button id="viewTestsButton">View</button></td>
 				<td>View tests you administered</td>
@@ -756,13 +753,6 @@ session_cache_limiter('nocache');
 				<td><button id="faqButton">FAQ</button></td>
 				<td>Frequently asked questions</td>
 			</tr>
-			<tr>
-				<td><button id="aerodata">Aerodata</button></td>
-				<td>Participate in Aerodata question design</td>
-			</tr>
-			
-		</table>
-		<table id="reportTable">
 			<tr>
 				<td><label for="reportTypeSelect">Select Report Type</label></td>
 				<td><label for="testDateMDY">Test Date</label></td>
