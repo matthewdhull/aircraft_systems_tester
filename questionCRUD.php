@@ -187,10 +187,12 @@
 		$("#questionCategory").change(function(){
 			
 				var questionCategory = $("#questionCategory").val();
+				var variant_type = acftSwitchPosition.toLowerCase();
 				currentSubcategory = questionCategory;
 				$("#questions_from_subcategory table").remove();
 			$.post("PHPScripts/viewQuestions.php", {
-				subcategory: questionCategory
+				subcategory: questionCategory,
+				variant: variant_type
 			}, function(data) {
 		 		$.each(data, function(key,value){
 	 				var table = tableForQuestion(value.questionID, value.type, value.jta, value.spo_eo_description, value.question_a, value.question_b, value.correct_answer, value.alt_correct_answer, value.last_correct_answer, value.ans_x, value.ans_y, value.ans_z); 
@@ -578,7 +580,6 @@
 							<td>Category:</td>
 							<td> <select id="category" name="category">
 								<option value="systems">systems</option>
-								<option value="flt_ops">flight ops</option>
 							</select>
 							</td>
 						</tr>

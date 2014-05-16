@@ -8,10 +8,18 @@ session_cache_limiter('nocache');
 	<head>
 		<title>Exam</title>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8">	
-		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-		<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" /> <!--CSS for date picker-->				
-		<script src="http://code.jquery.com/ui/1.10.0/jquery-ui.js"></script>		
-		<script src="shufflePlugin.js"></script>				
+
+
+<!-- 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script> -->
+<!-- 		<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" /> <!--CSS for date picker-->				 
+<!-- 		<script src="http://code.jquery.com/ui/1.10.0/jquery-ui.js"></script>		 -->
+
+
+		<script src="//cdnjs.cloudflare.com/ajax/libs/json2/20110223/json2.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+		<script src="https://raw.github.com/andris9/jStorage/master/jstorage.js"></script>
+		<script src="shufflePlugin.js"></script>						
+		
 		<style type="text/css">
 			@import url("CSS/examCMS.css");
 		</style>
@@ -28,7 +36,9 @@ session_cache_limiter('nocache');
 			var instructorID = "<?php echo $_SESSION['employeeNo'];?>";			
 			
 			
+			
 			<?php /*these variables are set when student clicks 'begin exam'.   they are sent to the server upon grading the test. */?>
+/*
 				var employeeNo;
 				var pwd;
 				var fName;
@@ -39,8 +49,63 @@ session_cache_limiter('nocache');
 				var classMo;
 				var classDa;
 				var classYr;
+*/
+				
+				var employeeNo = $.jStorage.get("employeeNo");
+				var fName = $.jStorage.get("fName");
+				var lName = $.jStorage.get("lName");
+				var syl = $.jStorage.get("syl");
+				var qCode = $.jStorage.get("qCode");
+				var retr = $.jStorage.get("retr");
+				var classMo = $.jStorage.get("classMo");
+				var classDa = $.jStorage.get("classDa");
+				var classYr = $.jStorage.get("classYr"); 
+
+				function isTestBegun() {
+					if(employeeNo != undefined){
+						console.log('test begun. First name: '+fName);
+						showUnanweredQuestions();
+						$("#gradeButton").removeAttr("disabled");
+						$("#loginDiv").hide();
+						$("#questionDiv, #questionsUnansweredTab, #questionsUnanswered, #questionsMarkedTab, #questionsMarked, #gradeExamDiv").css("visibility", "visible");
+					}	
+					
+					else {
+						console.log('fName undefined');
+					}
+				}				
+
+				isTestBegun();								 					 					
 				
 				var questions = [];
+
+				var questionsExist = $.jStorage.get("questions");
+				
+				if (questionsExist == null){
+					console.log('quesions array undefined');
+				}
+				
+				else {
+					$.each(questionsExist, function(key,value){
+							var ques = {
+							"questionID":value.questionID,
+							"type":value.type,
+							"questionText":value.questionText,
+							"a":value.a,
+							"b":value.b,
+							"c":value.c,
+							"d":value.d,
+							"selectedAnswer":value.selectedAnswer,
+							"marked":false
+						};
+						
+						questions.push(ques);
+					});
+					maxIndex = questions.length-1;
+					showQuestionForIndex(0, false);
+				}				
+				
+				
 				var currentIndex = 0;
 	
 	
@@ -62,7 +127,7 @@ session_cache_limiter('nocache');
 				$("#gradeButton, #beginExam").attr("disabled", "disabled");
 				$("#questionsUnansweredTab, #questionsUnanswered, #questionsMarkedTab").css("visibility", "hidden");
 				
-				$('input[id*="date"]').datepicker();
+/* 				$('input[id*="date"]').datepicker(); */
 				
 				function clearQuestionFields(placeholderMsg){
 					$("#questionText").html(placeholderMsg);
@@ -166,6 +231,7 @@ session_cache_limiter('nocache');
 					}
 					
 					showQuestionForIndex(currentIndex, false);
+					$.jStorage.set("questions",questions); //store updated questions in the browser												
 					
 				});
 				
@@ -230,15 +296,27 @@ session_cache_limiter('nocache');
 					lName = $("#lastName").val();
 					syl = $("#syllabus").val();
 					qCode = $("#qualCode").val();
+					
 					if($("#retrain").is(':checked')){
 						retr = true;
 					}
 					else {
 						retr = false;
 					}
+										
 					classMo = $("#classDateMonth").val();
 					classDa = $("#classDateDay").val();
  					classYr = $("#classDateYear").val();
+ 					
+					$.jStorage.set("employeeNo", employeeNo);
+					$.jStorage.set("fName", fName);					
+					$.jStorage.set("lName",lName);
+					$.jStorage.set("syl", syl);
+					$.jStorage.set("qCode",qCode);
+					$.jStorage.set("retr",retr);
+					$.jStorage.set("classMo",classMo);
+					$.jStorage.set("classDa",classDa);
+					$.jStorage.set("classYr",classYr); 					 					 					
  					
  					$("#overridePasswordDiv").css("visibility", "hidden");
 					
@@ -271,6 +349,7 @@ session_cache_limiter('nocache');
 							});
 							
 							questions = $.shuffle(questions);
+							$.jStorage.set("questions",questions); //store questions in the browser							
 							maxIndex = questions.length - 1;
 							showQuestionForIndex(0, false);
 							showUnanweredQuestions();
@@ -630,7 +709,7 @@ session_cache_limiter('nocache');
 									$("#reviewMessage").html("Reference the 'Review' area below to correct missed questions");	
 									$("#reviewQuestionsTab, #reviewQuestions, #reviewNavigationTable").css("visibility", "visible");
 									$("#gradeButton, #questionsMarked, #questionsMarkedTab, #questionsUnansweredTab, #questionsUnanswered").css("visibility", "hidden");
-									
+									$.jStorage.delete("questions");				//clear the local storage
 									reviewInSession = true; <?php /* enable review mode. */?>
 									$.each(missedQuestions, function(key, value){
 										 var ka = {

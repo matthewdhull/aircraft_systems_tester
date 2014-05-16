@@ -85,10 +85,129 @@ class Test_Model {
 	}
 	
 	
+	//returns an unsaved model for a daily quiz
+	public static function modelForDailyQuiz($systems_array){
+		$model = new self(NULL, NULL, NULL);
+		$model->course_type = "DQUIZ";
+		
+		//set all systems to zero questions and then fill in as needed after querying the database for the desired systems in the quiz
+		$model->num_questions_from_category['air_condition'] = 0;
+		$model->num_questions_from_category['acft_gen'] = 0;
+		$model->num_questions_from_category['apu'] = 0;
+		$model->num_questions_from_category['autopilot'] = 0;
+		$model->num_questions_from_category['crew_awareness'] = 0;
+		$model->num_questions_from_category['elec'] = 0;
+		$model->num_questions_from_category['emerg_equip'] = 0;
+		$model->num_questions_from_category['fire_prot'] = 0;
+		$model->num_questions_from_category['flt_control'] = 0;
+		$model->num_questions_from_category['fuel'] = 0;
+		$model->num_questions_from_category['hydraulics'] = 0;
+		$model->num_questions_from_category['ice_rain_prot'] = 0;
+		$model->num_questions_from_category['ldg_gear_brk'] = 0;
+		$model->num_questions_from_category['ldg_gear_brk'] = 0;
+		$model->num_questions_from_category['lighting'] = 0;
+		$model->num_questions_from_category['limitations'] = 0;
+		$model->num_questions_from_category['oxy'] = 0;
+		$model->num_questions_from_category['performance'] = 0;
+		$model->num_questions_from_category['pneum'] = 0;
+		$model->num_questions_from_category['powerplant'] = 0;
+		$model->num_questions_from_category['pressurization'] = 0;
+		$model->num_questions_from_category['profiles'] = 0;
+		$model->num_questions_from_category['radar'] = 0;
+		$model->num_questions_from_category['stall_prot'] = 0;
+		$model->num_questions_from_category['mandatory'] = 0;
+		
+
+		$questionQuantity = array();
+		$length = 0;
+
+        include 'XJTestDBConnect.php';
+        $con = mysql_connect($host, $usn, $password);
+        
+        if(!$con){
+        	die("could not connect: ".mysql_error());
+        }
+        
+        mysql_select_db($database, $con);
+        
+		foreach($systems_array as $system){
+			$questionQuantity[$system] = $qRow['COUNT(subcategory)'];
+			$length += $qRow['COUNT(subcategory)'];
+			$model->num_questions_from_category[$system] = $qRow['COUNT(subcategory)'];
+		}
+		
+    	$model->length = $length;
+		
+		mysql_close($con);        
+        return $model;
+	}
+	
+	
+	public static function modelForType($type) {
+	 	//echo "modelFromID".$id."";
+        $model = new self(NULL, NULL, NULL);
+        
+        include 'XJTestDBConnect.php';
+        $con = mysql_connect($host, $usn, $password);
+        
+        if(!$con){
+        	die("could not connect: ".mysql_error());
+        }
+        
+        mysql_select_db($database, $con);
+        
+        
+        $fetchModelQuery = "SELECT * FROM `test_model` WHERE `course_type` = '".$type."'";
+        $fetchModelResult = mysql_query($fetchModelQuery);
+        
+        if(!$fetchModelResult){
+			echo "Couldn't run query $fetchModelQuery ".mysql_error();
+        }
+        
+
+        while($row = mysql_fetch_array($fetchModelResult)){
+	        $model->testID = $row['testID'];
+        	$model->course_type = $row['course_type'];
+        	$model->length = $row['length'];
+			$model->num_questions_from_category['air_condition'] = $row['air_condition'];
+			$model->num_questions_from_category['acft_gen'] = $row['acft_gen'];
+			$model->num_questions_from_category['apu'] = $row['apu'];
+			$model->num_questions_from_category['autopilot'] = $row['autopilot'];
+			$model->num_questions_from_category['crew_awareness'] = $row['crew_awareness'];
+			$model->num_questions_from_category['elec'] = $row['elec'];
+			$model->num_questions_from_category['emerg_equip'] = $row['emerg_equip'];
+			$model->num_questions_from_category['fire_prot'] = $row['fire_prot'];
+			$model->num_questions_from_category['flt_control'] = $row['flt_control'];
+			$model->num_questions_from_category['fuel'] = $row['fuel'];
+			$model->num_questions_from_category['hydraulics'] = $row['hydraulics'];
+			$model->num_questions_from_category['ice_rain_prot'] = $row['ice_rain_prot'];
+			$model->num_questions_from_category['ldg_gear_brk'] = $row['ldg_gear_brk'];
+			$model->num_questions_from_category['ldg_gear_brk'] = $row['ldg_gear_brk'];
+			$model->num_questions_from_category['lighting'] = $row['lighting'];
+			$model->num_questions_from_category['limitations'] = $row['limitations'];
+			$model->num_questions_from_category['oxy'] = $row['oxy'];
+			$model->num_questions_from_category['performance'] = $row['performance'];
+			$model->num_questions_from_category['pneum'] = $row['pneum'];
+			$model->num_questions_from_category['powerplant'] = $row['powerplant'];
+			$model->num_questions_from_category['pressurization'] = $row['pressurization'];
+			$model->num_questions_from_category['profiles'] = $row['profiles'];
+			$model->num_questions_from_category['radar'] = $row['radar'];
+			$model->num_questions_from_category['stall_prot'] = $row['stall_prot'];
+			$model->num_questions_from_category['mandatory'] = $row['mandatory'];
+
+	     }
+	     
+        mysql_close($con);
+
+        return $model;
+		
+	}
+	
+	
 	//virtual constructor to retrieve test model by ID.
 	 public static function modelFromID($id){
 	 	//echo "modelFromID".$id."";
-        $model = new self(NULL, NULL, NULl);
+        $model = new self(NULL, NULL, NULL);
         
         include 'XJTestDBConnect.php';
         $con = mysql_connect($host, $usn, $password);
