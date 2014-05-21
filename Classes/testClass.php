@@ -50,6 +50,7 @@ class Question {
 	public $wrong_answers = array(); 	
 	public $database = 'xjtest';
 
+
 	
 	//not set in constructor
 	public $answer_choices = array(); //dictionary
@@ -95,7 +96,6 @@ class Question {
 		
 	}
 	
-	
 		
 	private function set_question_wordings($arr){
 		$newArr = array();
@@ -122,7 +122,32 @@ class Question {
 		}
 	}
 
+	private function getVariantId($variantStr) {
+		include 'XJTestDBConnect.php';
+		$con = mysql_connect($host,$usn, $password);
+
+		if (!$con){
+		  die('Could not connect: ' . mysql_error());
+		 }
 		
+		mysql_select_db($database, $con);	
+		
+		$variant_id;	
+
+		$get_variant_id_query = "SELECT `variant_id` FROM `variant` WHERE `variant_name` = '".$variantStr."'";
+		
+		$variant_id_result = mysql_query($get_variant_id_query);
+		$row = mysql_fetch_row($variant_id_result);
+		$variant_id = $row[0];		
+		
+		if (!$variant_id_result) {
+	    	echo "Could not successfully run query ($get_variant_id_query) from DB: " . mysql_error();
+		}
+		mysql_close($this->con);	
+		
+		return $variant_id;	
+		
+	}		
 		
 	//displays all attributes for question.  
 	public function inspect_question(){
@@ -217,7 +242,7 @@ class Question {
 		$this->subcategory = $subcatStr;
 		$this->spo = $spoStr;
 		$this->eo = $eoStr;
-		$this->variant = $variantStr;
+		$this->variant = $this->getVariantId($variantStr);
 		$this->correct_answer = $c_ansStr;
 		$this->alt_correct_answer = $alt_c_ansStr;	
 		$this->last_correct_answer = $last_c_ansStr;	
@@ -387,33 +412,42 @@ class Question {
 	}
 	
 	public function insert_new_question($qType) {
+
 		include 'XJTestDBConnect.php';
+		$con = mysql_connect($host,$usn, $password);
+
+		if (!$con){
+		  die('Could not connect: ' . mysql_error());
+		 }
+		
+		mysql_select_db($database, $con);	
+		
 		
 		$new_question_query = "";
 		
 		if($qType=="mc"){
 		//multiple choice question
-			$new_question_query = "INSERT INTO `questions` VALUES (NULL, '".$this->subject."', '".$this->subcategory."', '".$this->spo."','".$this->eo."','".$this->variant."','".$this->type."', '".$this->correct_answer."', NULL, NULL,'".$this->wrong_answers[0]."','".$this->wrong_answers[1]."', '".$this->wrong_answers[2]."', '".$this->question_wordings['a']."', '".$this->question_wordings['b']."')";
+			$new_question_query = "INSERT INTO `questions` VALUES (NULL, '".$this->subject."', '".$this->subcategory."', '".$this->spo."','".$this->eo."', ".$this->variant.",'".$this->type."', '".$this->correct_answer."', NULL, NULL,'".$this->wrong_answers[0]."','".$this->wrong_answers[1]."', '".$this->wrong_answers[2]."', '".$this->question_wordings['a']."', '".$this->question_wordings['b']."')";
 
 		}
 		
 		elseif($qType=="c2"){
-			$new_question_query = "INSERT INTO `questions` VALUES (NULL, '".$this->subject."', '".$this->subcategory."', '".$this->spo."','".$this->eo."','".$this->variant."','".$this->type."', '".$this->correct_answer."', '".$this->alt_correct_answer."',NULL, '".$this->wrong_answers[0]."', NULL, NULL, '".$this->question_wordings['a']."', '".$this->question_wordings['b']."')";
+			$new_question_query = "INSERT INTO `questions` VALUES (NULL, '".$this->subject."', '".$this->subcategory."', '".$this->spo."','".$this->eo."','.$variant_id.','".$this->type."', '".$this->correct_answer."', '".$this->alt_correct_answer."',NULL, '".$this->wrong_answers[0]."', NULL, NULL, '".$this->question_wordings['a']."', '".$this->question_wordings['b']."')";
 
 		}
 		
 		elseif($qType=="tf"){
 		// true false question
-			$new_question_query = "INSERT INTO `questions` VALUES (NULL, '".$this->subject."', '".$this->subcategory."', '".$this->spo."','".$this->eo."', '".$this->variant."','".$this->type."', '".$this->correct_answer."', NULL, NULL, NULL ,NULL, NULL, '".$this->question_wordings['a']."', '".$this->question_wordings['b']."')";
+			$new_question_query = "INSERT INTO `questions` VALUES (NULL, '".$this->subject."', '".$this->subcategory."', '".$this->spo."','".$this->eo."', '.$variant_id.','".$this->type."', '".$this->correct_answer."', NULL, NULL, NULL ,NULL, NULL, '".$this->question_wordings['a']."', '".$this->question_wordings['b']."')";
 
 		}
 		
 		elseif($qType=="nc"){
-			$new_question_query = "INSERT INTO `questions` VALUES (NULL, '".$this->subject."', '".$this->subcategory."', '".$this->spo."','".$this->eo."','".$this->variant."','".$this->type."', NULL, NULL, NULL,'".$this->wrong_answers[0]."','".$this->wrong_answers[1]."', '".$this->wrong_answers[2]."', '".$this->question_wordings['a']."', '".$this->question_wordings['b']."')";
+			$new_question_query = "INSERT INTO `questions` VALUES (NULL, '".$this->subject."', '".$this->subcategory."', '".$this->spo."','".$this->eo."','.$variant_id.','".$this->type."', NULL, NULL, NULL,'".$this->wrong_answers[0]."','".$this->wrong_answers[1]."', '".$this->wrong_answers[2]."', '".$this->question_wordings['a']."', '".$this->question_wordings['b']."')";
 			
 		}
 		elseif($qType=="ac"){
-			$new_question_query = "INSERT INTO `questions` VALUES (NULL, '".$this->subject."', '".$this->subcategory."', '".$this->spo."','".$this->eo."','".$this->variant."','".$this->type."', '".$this->correct_answer."', '".$this->alt_correct_answer."', '".$this->last_correct_answer."', NULL, NULL, NULL, '".$this->question_wordings['a']."', '".$this->question_wordings['b']."')";
+			$new_question_query = "INSERT INTO `questions` VALUES (NULL, '".$this->subject."', '".$this->subcategory."', '".$this->spo."','".$this->eo."','.$variant_id.','".$this->type."', '".$this->correct_answer."', '".$this->alt_correct_answer."', '".$this->last_correct_answer."', NULL, NULL, NULL, '".$this->question_wordings['a']."', '".$this->question_wordings['b']."')";
 		
 		}
 		

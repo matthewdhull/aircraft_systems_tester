@@ -15,11 +15,13 @@ $last_correct_ans = $_POST['last_correct_ans'];
 $ans_x = $_POST['ans_x'];
 $ans_y = $_POST['ans_y'];
 $ans_z = $_POST['ans_z'];
+$variant = $_POST['variant'];
+
 
 $questionWordingsArr = array($wording_a, $wording_b);
 $wrong_ansArr = array($ans_x, $ans_y, $ans_z);
 
-$newQ = new question($type, $category, $subcategory, $spo, $eo, $questionWordingsArr, $correct_ans, $alt_correct_ans, $last_correct_ans, $wrong_ansArr);
+$newQ = new question($type, $category, $subcategory, $spo, $eo, $variant, $questionWordingsArr, $correct_ans, $alt_correct_ans, $last_correct_ans, $wrong_ansArr);
 $newQ->insert_new_question($type);
 echo $newQ->json_question();
 

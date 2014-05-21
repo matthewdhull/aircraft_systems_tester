@@ -3,9 +3,9 @@
 <head>
 	<title>Question Modeling</title>
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8">	
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-<!-- 	<script src="jquery.js"></script>	 -->
-	<script src="systemChoices.js"></script> <!-- Imports ERJ / CRJ Aircraft System Lists -->
+<!-- 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script> -->
+	<script src="jquery.js"></script>	
+	<script src="systemChoices.js"></script>   <!-- Imports ERJ / CRJ Aircraft System Lists --> 
 	<style type='text/css'>
 		@import url("CSS/questionCRUD.css");
 	</style>
@@ -66,6 +66,7 @@
 				var incorrect_x = $("#incorrect_ans_x").val();
 				var incorrect_y = $("#incorrect_ans_y").val();
 				var incorrect_z = $("#incorrect_ans_z").val(); 
+				var variantStr = acftSwitchPosition.toLowerCase();
 
 				$.post("PHPScripts/newQuestion.php", {
 					type: questionType,
@@ -80,11 +81,12 @@
 					last_correct_ans: last_corr_ans,
 					ans_x: incorrect_x,
 					ans_y: incorrect_y,
-					ans_z: incorrect_z
+					ans_z: incorrect_z,
+					variant: variantStr
 				}, function(data){
 				}, "json");
 				
-				$("#question_text, #alternate_wording, #correct_ans, #alt_correct_ans, #last_correct_ans, #incorrect_ans_x, #incorrect_ans_y,#incorrect_ans_z").val(""); 
+				//$("#question_text, #alternate_wording, #correct_ans, #alt_correct_ans, #last_correct_ans, #incorrect_ans_x, #incorrect_ans_y,#incorrect_ans_z").val(""); 
 				return false;
 		});
 		
@@ -531,11 +533,13 @@
 	
 </head>
 <body>
+
 	<?php
 		$addendum = " : ERJ";
 		ContentSnippets::doHeader($addendum);
 		ContentSnippets::doNavigationBar();
 	?>
+	
 	<div id="adminAreaOnly">
 		<div id="questionCUDArea">
 
