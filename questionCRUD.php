@@ -187,13 +187,12 @@
 	
 		
 		$("#questionCategory").change(function(){
-			
 				var questionCategory = $("#questionCategory").val();
 				var variant_type = acftSwitchPosition.toLowerCase();
 				currentSubcategory = questionCategory;
 				$("#questions_from_subcategory table").remove();
 			$.post("PHPScripts/viewQuestions.php", {
-				subcategory: questionCategory,
+				spo: questionCategory,
 				variant: variant_type
 			}, function(data) {
 		 		$.each(data, function(key,value){
@@ -766,7 +765,7 @@
 				<input type="hidden" id="editID" value="" name=""></input>
 				<table>
 					<tr>
-						<td>Subcategory: </td>
+						<td>SPO Name: </td>
 						<td> <select id="questionCategory" name="questionCategory">
 							<?php /* auto-populated with system choices. */ ?>
 							</select> 

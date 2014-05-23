@@ -1,10 +1,10 @@
 <?php
 include '../Classes/testClass.php';
-$subcategory  = $_POST['subcategory'];
+$spo  = $_POST['spo'];
 $variant = $_POST['variant'];
 
 
 //json object 
-echo Question::view_questions($subcategory,$variant);
+echo Question::view_questions($spo, $variant);
 
 ?>

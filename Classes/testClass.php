@@ -233,9 +233,6 @@ class Question {
 		return $question;		
 	}
 	
-
-	
-	
 	public function __construct($typeStr, $subjectStr, $subcatStr, $spoStr, $eoStr, $variantStr, $questionWordingsArr, $c_ansStr, $alt_c_ansStr, $last_c_ansStr, $wrong_ansArr) {
 		$this->type = $typeStr;
 		$this->subject = $subjectStr;
@@ -252,7 +249,6 @@ class Question {
 		$this->set_answer_choices();
 						
 	}
-
 	
 	public function generate_test_question(){
 		$testQuestion = array();
@@ -422,14 +418,35 @@ class Question {
 		
 		mysql_select_db($database, $con);	
 		
+		$question_a = mysql_real_escape_string($this->question_wordings['a']);
+		$question_b = mysql_real_escape_string($this->question_wordings['b']);
+		$correct_ans = mysql_real_escape_string($this->correct_answer);
+		$ans_x = mysql_real_escape_string($this->wrong_answers[0]);
+		$ans_y = mysql_real_escape_string($this->wrong_answers[1]);
+		$ans_z = mysql_real_escape_string($this->wrong_answers[2]);
 		
 		$new_question_query = "";
 		
 		if($qType=="mc"){
 		//multiple choice question
-			$new_question_query = "INSERT INTO `questions` VALUES (NULL, '".$this->subject."', '".$this->subcategory."', '".$this->spo."','".$this->eo."', ".$this->variant.",'".$this->type."', '".$this->correct_answer."', NULL, NULL,'".$this->wrong_answers[0]."','".$this->wrong_answers[1]."', '".$this->wrong_answers[2]."', '".$this->question_wordings['a']."', '".$this->question_wordings['b']."')";
-
+			$new_question_query = "INSERT INTO `questions` VALUES (";
+			$new_question_query .= "NULL,";
+			$new_question_query .= "'".$this->subject."', ";
+			$new_question_query .= "'".$this->subcategory."',";
+			$new_question_query .= "'".$this->spo."',";
+			$new_question_query .= "'".$this->eo."',";
+			$new_question_query .= "".$this->variant.",";
+			$new_question_query .= "'".$this->type."',";
+			$new_question_query .= "'{$correct_ans}',";
+			$new_question_query .= "NULL,";
+			$new_question_query .= "NULL,";
+			$new_question_query .= "'{$ans_x}',";
+			$new_question_query .= "'{$ans_y}',";
+			$new_question_query .= "'{$ans_z}',";
+			$new_question_query .= "'{$question_a}',";
+			$new_question_query .= "'{$question_b}')";
 		}
+		
 		
 		elseif($qType=="c2"){
 			$new_question_query = "INSERT INTO `questions` VALUES (NULL, '".$this->subject."', '".$this->subcategory."', '".$this->spo."','".$this->eo."','.$variant_id.','".$this->type."', '".$this->correct_answer."', '".$this->alt_correct_answer."',NULL, '".$this->wrong_answers[0]."', NULL, NULL, '".$this->question_wordings['a']."', '".$this->question_wordings['b']."')";
@@ -496,9 +513,8 @@ class Question {
 		
 	}
 	
-	
 	//class method for viewing all questions from a specific category. returns a jSON object.
-	static function view_questions($subcategory, $variant){
+	static function view_questions($spo, $variant){
 	
 		/* echo "view questions called with '".$subcategory."'"; */
 		$questions = array();
@@ -513,7 +529,9 @@ class Question {
 		
 		mysql_select_db($database, $con);	
 		
-$questionsQuery = "select questions.questionID, questions.category, questions.subcategory, SPO.spo_name, EO.element_name, TPO.tpo_number, SPO.spo_number, EO.eo_no, variant.variant_id, questions.type, questions.correct_answer, questions.alt_correct_answer, questions.last_correct_answer, questions.ans_x, questions.ans_y,questions.ans_z, questions.question_a, questions.question_b FROM questions, EO, SPO, TPO, variant WHERE questions.eo_id = EO.eo_id AND questions.spo_id = SPO.spo_id AND SPO.tpo_id = TPO.tpo_id AND questions.subcategory = '".$subcategory."' AND variant.variant_name = '".$variant."' AND questions.variant_id = variant.variant_id ORDER BY EO.eo_no ASC";
+
+$questionsQuery = "select questions.questionID, questions.category, questions.subcategory, SPO.spo_name, EO.element_name, TPO.tpo_number, SPO.spo_number, EO.eo_no, variant.variant_id, questions.type, questions.correct_answer, questions.alt_correct_answer, questions.last_correct_answer, questions.ans_x, questions.ans_y,questions.ans_z, questions.question_a, questions.question_b FROM questions, EO, SPO, TPO, variant WHERE questions.eo_id = EO.eo_id AND questions.spo_id = SPO.spo_id AND SPO.tpo_id = TPO.tpo_id AND variant.variant_name = '".$variant."' AND questions.variant_id = variant.variant_id AND questions.spo_id = ".$spo." ORDER BY EO.eo_no ASC";
+
 
 		
 		$questionsResult = mysql_query($questionsQuery);

@@ -74,10 +74,29 @@ Convenience wrappers for the ERJ/CRJ Systems option list.  This function removes
 selected acft type.  These are used in questionCRUD.php.
 */
 
+
 function populateERJSystemChoices(){
-		var choices = populateSystemChoicesWithSystem(erjSystems);
-		$("#subcategory option, #questionCategory option, #edit_subcategory option").remove();
-		$("#subcategory, #questionCategory, #edit_subcategory").append(choices);
+
+	var acType="erj";
+	var opt = "getErjSpoList";
+	var spoList;
+
+	$.post("PHPScripts/admin/getReports.php", {
+		acftType: acType,
+		option: opt
+	}, function(data){
+		$.each(data, function(key,value){
+			spoList += "<option id="+value.spo_id+" value="+value.spo_id+">"+value.spo_name+"</option>";
+		});
+		
+		
+		$("#subcategory option, #questionCategory option").remove();
+		$("#subcategory, #questionCategory").append(spoList);
+
+	}, "json");	
+	
+
+	
 }
 
 
