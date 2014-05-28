@@ -418,6 +418,7 @@ class Question {
 		
 		mysql_select_db($database, $con);	
 		
+		//escape strings prior to insertion
 		$question_a = mysql_real_escape_string($this->question_wordings['a']);
 		$question_b = mysql_real_escape_string($this->question_wordings['b']);
 		$correct_ans = mysql_real_escape_string($this->correct_answer);
