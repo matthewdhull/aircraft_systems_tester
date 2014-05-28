@@ -5,11 +5,10 @@
 #   git config --global core.excludesfile ~/.gitignore_global
 
 
-# Ignore all logfiles and tempfiles.
-/*.xls
-/*.rtf
-/*.pdf
-/*.txt
-/*.png
+*.xls
+*.rtf
+*.pdf
+*.txt
+*.png
 
 
