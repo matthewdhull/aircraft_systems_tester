@@ -425,6 +425,35 @@ class Test_Model {
 		mysql_close($con);
 		
 	}
+	
+	public static function getSPOForModeling(){
+		$spo = array();
+
+		include "XJTestDBConnect.php";
+		$con = mysql_connect($host,$usn, $password);
+
+		if (!$con){
+		  die('Could not connect: ' . mysql_error());
+		 }
+		
+		mysql_select_db($database, $con);
+		
+		//get SPOs
+		$getSPOquery = "SELECT `spo_name` from `SPO`";
+		$getSPOResult = mysql_query($getSPOquery);
+		if(!$getSPOResult){
+			die("could not run query ($getSPOquery) ".mysql_error());
+		}
+		while($row = mysql_fetch_array($getSPOResult)){
+			array_push($spo, $row["spo_name"]);
+		}
+		
+		mysql_close($con);
+		$totalModels = json_encode($totalModels);
+		$spo = json_encode($spo);
+		return $spo;
+		
+	}
 
 }
 
