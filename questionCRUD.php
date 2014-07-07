@@ -431,7 +431,7 @@
 			$("#acftArrow").removeClass("arrow-right").addClass("arrow-left").css("margin-right", "6px");			
 			$("#headerTitle").html("SJTester : ERJ");											
 			acftSwitchPosition = "ERJ";
-			populateERJSystemChoices();
+			//populateERJSystemChoices();
 		});
 		
 		$("#crjTitle").click(function(){
@@ -441,7 +441,7 @@
 			$("#acftArrow").removeClass("arrow-left").addClass("arrow-right").css("margin-left", "8px");
 			$("#headerTitle").html("SJTester : CRJ");											
 			acftSwitchPosition = "CRJ";
-			populateCRJSystemChoices();					
+			//populateCRJSystemChoices();					
 		});
 		
 		
@@ -518,9 +518,8 @@
 		
 
 		checkLoginStatus();
-		populateERJSystemChoices();
+		populateSystemChoices();
 		populateERJSPOChoices();	
-		$("#questionCategory").trigger("change");
 		
 	
 	});

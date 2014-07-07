@@ -75,14 +75,13 @@ selected acft type.  These are used in questionCRUD.php.
 */
 
 
-function populateERJSystemChoices(){
+function populateSystemChoices(){
 
-	var acType="erj";
-	var opt = "getErjSpoList";
+
+	var opt = "getSPOList";
 	var spoList;
 
 	$.post("PHPScripts/admin/getReports.php", {
-		acftType: acType,
 		option: opt
 	}, function(data){
 		$.each(data, function(key,value){
@@ -92,19 +91,24 @@ function populateERJSystemChoices(){
 		
 		$("#subcategory option, #questionCategory option").remove();
 		$("#subcategory, #questionCategory").append(spoList);
+		$("#questionCategory").trigger("change");		
 
 	}, "json");	
 	
+
 
 	
 }
 
 
+/*
 function populateCRJSystemChoices(){
 		var choices = populateSystemChoicesWithSystem(crjSystems);
 		$("#subcategory option, #questionCategory option, #edit_subcategory option").remove();		
 		$("#subcategory, #questionCategory, #edit_subcategory").append(choices);
 }
+*/
+
 
 
 function populateEOsForSPO(spo_id, autoselect_eo_id){
@@ -130,14 +134,12 @@ function populateEOsForSPO(spo_id, autoselect_eo_id){
 }
 
 //dynamically generates a <select> element list with all ERJ SPOs in the database
-function populateERJSPOChoices(){
+function populateERJSPOChoices(){	
 
-	var acType="erj";
-	var opt = "getErjSpoList";
+	var opt = "getSPOList";
 	var spoList;
 
 	$.post("PHPScripts/admin/getReports.php", {
-		acftType: acType,
 		option: opt
 	}, function(data){
 		$.each(data, function(key,value){

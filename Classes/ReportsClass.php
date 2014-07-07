@@ -834,7 +834,7 @@ class Reports {
 			return $perSpoAnalysis;
 		}
 
-	public static function spoAnalysisForQuarter($orgSpec, $year){
+		public static function spoAnalysisForQuarter($orgSpec, $year){
 		$con = self::getConnection();
 
 		$dateRange = self::dateRangeForQuarter($orgSpec,$year);
@@ -890,37 +890,32 @@ class Reports {
 	
 	}
 	
-	public static function spoListForAcftType($type) {
+		public static function spoListForAcftType() {
 	
-		if($type != "erj") {
-			echo "non ERJ types not currently implemented";
-			return;
-		}
+			$con = self::getConnection();
 	
-		$con = self::getConnection();
-
-		$spoList = array();		
-		
-		$getSpoQuery = "SELECT `SPO`.`spo_id`, `SPO`.`spo_name` FROM `SPO`";		
-		
-		$spoResult = mysql_query($getSpoQuery, $con);
-		if(!$spoResult){
-			die("could not run query ($getSpoQuery) ".mysql_error());
-		}
-		else {
-			while($row = mysql_fetch_array($spoResult)){
-				$spo = array();
-				$spo['spo_id'] = $row['spo_id'];
-				$spo['spo_name'] = $row['spo_name'];
-				array_push($spoList, $spo);
+			$spoList = array();		
+			
+			$getSpoQuery = "SELECT `SPO`.`spo_id`, `SPO`.`spo_name` FROM `SPO`";		
+			
+			$spoResult = mysql_query($getSpoQuery, $con);
+			if(!$spoResult){
+				die("could not run query ($getSpoQuery) ".mysql_error());
 			}
+			else {
+				while($row = mysql_fetch_array($spoResult)){
+					$spo = array();
+					$spo['spo_id'] = $row['spo_id'];
+					$spo['spo_name'] = $row['spo_name'];
+					array_push($spoList, $spo);
+				}
+			}
+			mysql_close($con);		
+			$spoList = json_encode($spoList);
+			return $spoList;
 		}
-		mysql_close($con);		
-		$spoList = json_encode($spoList);
-		return $spoList;
-	}
-	
-	public static function eoListforSPO($spo_id) {
+		
+		public static function eoListforSPO($spo_id) {
 		$con = self::getConnection();
 
 		$eoList = array();		

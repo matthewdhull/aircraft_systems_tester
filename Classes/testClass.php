@@ -422,6 +422,8 @@ class Question {
 		$question_a = mysql_real_escape_string($this->question_wordings['a']);
 		$question_b = mysql_real_escape_string($this->question_wordings['b']);
 		$correct_ans = mysql_real_escape_string($this->correct_answer);
+		$alt_correct_ans = mysql_real_escape_string($this->alt_correct_answer);
+		$last_correct_ans = mysql_real_escape_string($this->last_correct_answer);
 		$ans_x = mysql_real_escape_string($this->wrong_answers[0]);
 		$ans_y = mysql_real_escape_string($this->wrong_answers[1]);
 		$ans_z = mysql_real_escape_string($this->wrong_answers[2]);
@@ -450,22 +452,78 @@ class Question {
 		
 		
 		elseif($qType=="c2"){
-			$new_question_query = "INSERT INTO `questions` VALUES (NULL, '".$this->subject."', '".$this->subcategory."', '".$this->spo."','".$this->eo."','.$variant_id.','".$this->type."', '".$this->correct_answer."', '".$this->alt_correct_answer."',NULL, '".$this->wrong_answers[0]."', NULL, NULL, '".$this->question_wordings['a']."', '".$this->question_wordings['b']."')";
+			$new_question_query = "INSERT INTO `questions` VALUES (NULL,";
+			$new_question_query .= "'".$this->subject."', ";
+			$new_question_query .= "'".$this->subcategory."', ";
+			$new_question_query .= "'".$this->spo."', ";
+			$new_question_query .= "'".$this->eo."', ";
+			$new_question_query .= "'.$variant_id.',";
+			$new_question_query .= "'".$this->type."',";
+			$new_question_query .= "'{$correct_ans}',";
+			$new_question_query .= "'{$alt_correct_ans}',";
+			$new_question_query .= "NULL,";
+			$new_question_query .= "'{$ans_x}',";
+			$new_question_query .= "NULL,";
+			$new_question_query.= "NULL,";
+			$new_question_query .= "'{$question_a}',";
+			$new_question_query .= "'{$question_b}')";
 
 		}
 		
 		elseif($qType=="tf"){
 		// true false question
-			$new_question_query = "INSERT INTO `questions` VALUES (NULL, '".$this->subject."', '".$this->subcategory."', '".$this->spo."','".$this->eo."', '.$variant_id.','".$this->type."', '".$this->correct_answer."', NULL, NULL, NULL ,NULL, NULL, '".$this->question_wordings['a']."', '".$this->question_wordings['b']."')";
+			$new_question_query = "INSERT INTO `questions` VALUES (NULL, ";
+			$new_question_query .= "'".$this->subject."', ";
+			$new_question_query .= "'".$this->subcategory."', ";
+			$new_question_query .= "'".$this->spo."', ";
+			$new_question_query .= "'".$this->eo."', ";
+			$new_question_query .= "'.$variant_id.', ";
+			$new_question_query .= "'".$this->type."', ";
+			$new_question_query .= "'{$correct_ans}',";
+			$new_question_query .= "NULL,";
+			$new_question_query .= "NULL,"; 
+			$new_question_query .= "NULL,";
+			$new_question_query .= "NULL,"; 
+			$new_question_query .= "NULL,"; 
+			$new_question_query .= "'{$question_a}',";
+			$new_question_query .= "'{$question_b}')";
 
 		}
 		
 		elseif($qType=="nc"){
-			$new_question_query = "INSERT INTO `questions` VALUES (NULL, '".$this->subject."', '".$this->subcategory."', '".$this->spo."','".$this->eo."','.$variant_id.','".$this->type."', NULL, NULL, NULL,'".$this->wrong_answers[0]."','".$this->wrong_answers[1]."', '".$this->wrong_answers[2]."', '".$this->question_wordings['a']."', '".$this->question_wordings['b']."')";
+			$new_question_query = "INSERT INTO `questions` VALUES (NULL, ";
+			$new_quesiton_query .= "'".$this->subject."', ";
+			$new_quesiton_query .= "'".$this->subcategory."', ";
+			$new_question_query .= "'".$this->spo."', ";
+			$new_question_query .= "'".$this->eo."', ";
+			$new_question_query .= "'.$variant_id.', ";
+			$new_question_query .= "'".$this->type."',";
+			$new_question_query .= "NULL,";
+			$new_question_query .= "NULL,";
+			$new_question_query .= "NULL,";
+			$new_question_query .= "'{$ans_x}',";
+			$new_question_query .= "'{$ans_y}',";
+			$new_question_query .= "'{$ans_z}',";
+			$new_question_query .= "'{$question_a}',";
+			$new_question_query .= "'{$question_b}')";
 			
 		}
 		elseif($qType=="ac"){
-			$new_question_query = "INSERT INTO `questions` VALUES (NULL, '".$this->subject."', '".$this->subcategory."', '".$this->spo."','".$this->eo."','.$variant_id.','".$this->type."', '".$this->correct_answer."', '".$this->alt_correct_answer."', '".$this->last_correct_answer."', NULL, NULL, NULL, '".$this->question_wordings['a']."', '".$this->question_wordings['b']."')";
+			$new_question_query = "INSERT INTO `questions` VALUES (NULL, ";
+			$new_question_query .= "'".$this->subject."', ";
+			$new_question_query .= "'".$this->subcategory."', ";
+			$new_question_query .= "'".$this->spo."', ";
+			$new_question_query .= "'".$this->eo."', ";
+			$new_question_query .= "'.$variant_id.', ";
+			$new_question_query .= "'".$this->type."', ";
+			$new_question_query .= "'{$correct_ans}',";
+			$new_question_query .= "'{$alt_correct_ans}',";
+			$new_question_query .= "'{$last_correct_ans}',";
+			$new_question_query .= "NULL, ";
+			$new_question_query .= "NULL, ";
+			$new_question_query .= "NULL, ";
+			$new_question_query .= "'{$question_a}',";
+			$new_question_query .= "'{$question_b}')";
 		
 		}
 		

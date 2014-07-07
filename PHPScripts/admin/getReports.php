@@ -16,7 +16,6 @@ $firstName = $_POST['firstName'];
 $lastName = $_POST['lastName'];
 $password = $_POST['password'];
 $admin = $_POST['admin'];
-$acftType = $_POST['acftType'];
 $spo_id = $_POST['spo_id'];
 
 
@@ -86,9 +85,8 @@ if(isset($_SESSION['name'])){
 	elseif($option == "getSpoAnalysisForClass"){
 		echo Reports::spoAnalysisForClass($testDate, $idForInstructor);
 	}
-	elseif($option == "getErjSpoList") {
-		echo Reports::spoListForAcftType($acftType);
-		
+	elseif($option == "getSPOList") {
+		echo Reports::spoListForAcftType();
 	}
 	elseif($option == "getEOs"){
 		echo Reports::eoListforSPO($spo_id);
