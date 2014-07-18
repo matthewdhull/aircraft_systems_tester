@@ -4,42 +4,13 @@
 
 class Question {
 	
-	/*
-	const AIR_CONDITION =  "air_condition";
-	const ACFT_GEN = "acft_gen";
-	const APU = "apu";
-	const AUTOPILOT = "autopilot";
-	const CREW_AWARENESS = "crew_awareness";
-	const ELEC = "elec";
-	const EMERG_EQUIP = "emerg_equip";
-	const FIRE_PROT = "fire_prot";
-	const FLT_CONTROL = "flt_control";
-	const FUEL = "fuel";
-	const HYDRAULICS = "hydraulics";
-	const ICE_RAIN_PROT = "ice_rain_prot";
-	const LDG_GEAR_BRK =  "ldg_gear_brk";
-	const LIGHTING = "lighting";
-	const LIMITATIONS = "limitations";
-	const OXY = "oxy";
-	const PNEUM = "pneum";
-	const POWERPLANT = "powerplant";
-	const PRESSURIZATION = "pressurization";
-	const PROFILES = "profiles";
-	const RADAR = "radar";
-	const STALL_PROT = "stall_prot";
-	const MANDATORY =  "mandatory";
-*/
-	
-/*
-	public $systems_topics = array(AIR_CONDITION, ACFT_GEN, APU, AUTOPIOT, CREW_AWARENESS, ELEC, EMERG_EQUIP, FIRE_PROT,
-	 FLT_CONTROL, FUEL, HYDRAULICS, ICE_RAIN_PROT, LDG_GEAR_BRK, LIGHTING, LIMITATIONS, OXY, PNEUM, POWERPLANT, PRESSURIZATION, PROFILES, RADAR, STALL_PROT, MANDATORY);
-*/
 
 	//set in constructor
 	public $type; 
 	public $subject;
 	public $subcategory; 
 	public $spo;
+	public $spo_id;
 	public $eo;
 	public $variant;
 	public $question; 
@@ -143,7 +114,7 @@ class Question {
 		if (!$variant_id_result) {
 	    	echo "Could not successfully run query ($get_variant_id_query) from DB: " . mysql_error();
 		}
-		mysql_close($this->con);	
+		mysql_close($con);	
 		
 		return $variant_id;	
 		
@@ -154,14 +125,14 @@ class Question {
 		echo "<br />";
 		echo "TYPE: ".$this->type."<br />";
 		echo "SUBJECT: ".$this->subject."<br />";
-		echo "SUBCATEGORY: ".$this->subcategory."<br />";
-		echo "SPO: ".$this->spo."<br />";
+		echo "SPO: ".$this->subcategory."<br />";
+		//echo "SPO: ".$this->spo_id."<br />";
 		echo "EO: ".$this->eo."<br />";
 		echo "QUESTION_A: ".$this->question_wordings['a']."<br />";
 		echo "QUESTION_B: ".$this->question_wordings['b']."<br />";
 		echo "CORRECT ANSWER: ".$this->correct_answer."<br />";
 		echo "ALT CORRECT ANSWER: ".$this->alt_correct_answer."<br />";
-		echo "LAST CORREC ANSWER: ".$this->last_correct_answer."<br />";
+		echo "LAST CORRECT ANSWER: ".$this->last_correct_answer."<br />";
 		echo "WRONG ANSWERS: ";
 		foreach($this->wrong_answers as $element) {
 			echo $element.", ";
@@ -174,7 +145,7 @@ class Question {
 		$attr = array();
 		$attr['type'] = $this->type;
 		$attr['category'] = $this->category;
-		$attr['subcategory'] = $this->subcategory;
+		//$attr['subcategory'] = $this->subcategory;
 		$attr['spo'] = $this->spo;
 		$attr['eo'] = $this->eo;
 		$attr['variant'] = $this->variant;
@@ -191,9 +162,8 @@ class Question {
 		return $attr;
 	}
 	
-	
 	public static function questionFromID($id){
-			//echo "new question for ".$id." ";
+
 		$question = new Question(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 		$question->questionID = $id;
 
@@ -205,28 +175,30 @@ class Question {
 		 }
 		
 		mysql_select_db($database, $con);	
+				
+		$fetchQuestionQuery = "SELECT questions.type, questions.category, questions.spo_id, SPO.spo_name AS `spo`, EO.element_name AS `eo`, questions.correct_answer, questions.alt_correct_answer, questions.last_correct_answer, questions.ans_x, questions.ans_y, questions.ans_z, questions.question_a, questions.question_b FROM `questions` JOIN `SPO` USING (`spo_id`) JOIN `EO` USING (`eo_id`) WHERE `questionID` = ".$id."";	
 		
-		$fetchQuestionQuery = "SELECT * from `questions` WHERE `questionID` = ".$id."";
 		
+				
 		$fetchQuestionResult = mysql_query($fetchQuestionQuery);
 		if(!$fetchQuestionResult){
-			//echo "no results";
+			die("could not run query ($fetchQuestionQuery) ".mysql_error());
 		}
 		
 		$wordingsArr = array();
 		while ($row = mysql_fetch_array($fetchQuestionResult)){
 			$question->type = $row['type'];
 			$question->subject = $row['category'];
-			$question->subcategory = $row['subcategory'];
+			$question->spo_id = $row['spo_id'];
+			$question->subcategory = $row['spo'];
+			$question->eo = $row['eo'];
 			$question->correct_answer = $row['correct_answer'];
 			$question->alt_correct_answer = $row['alt_correct_answer'];
 			$question->last_correct_answer = $row['last_correct_answer'];
 			$question->wrong_answers = array($row['ans_x'], $row['ans_y'], $row['ans_z']);
 			$wordingsArr = array($row['question_a'], $row['question_b']);
 		}
-		
-		//mysql_close($con);
-		
+				
 		$question->set_answer_choices();
 		$question->set_question_wordings($wordingsArr);
 		
@@ -254,7 +226,8 @@ class Question {
 		$testQuestion = array();
 		$testQuestion['questionID'] = $this->questionID;	
 		$testQuestion['type'] = $this->type;
-		$testQuestion['subcategory'] = $this->subcategory;
+		$testQuestion['subcategory'] = $this->spo;
+		$testQuestion['spo_id'] = $this->spo_id;
 
 
 		
@@ -457,7 +430,7 @@ class Question {
 			$new_question_query .= "'".$this->subcategory."', ";
 			$new_question_query .= "'".$this->spo."', ";
 			$new_question_query .= "'".$this->eo."', ";
-			$new_question_query .= "'.$variant_id.',";
+			$new_question_query .= "".$this->variant.",";
 			$new_question_query .= "'".$this->type."',";
 			$new_question_query .= "'{$correct_ans}',";
 			$new_question_query .= "'{$alt_correct_ans}',";
@@ -477,7 +450,7 @@ class Question {
 			$new_question_query .= "'".$this->subcategory."', ";
 			$new_question_query .= "'".$this->spo."', ";
 			$new_question_query .= "'".$this->eo."', ";
-			$new_question_query .= "'.$variant_id.', ";
+			$new_question_query .= "".$this->variant.",";
 			$new_question_query .= "'".$this->type."', ";
 			$new_question_query .= "'{$correct_ans}',";
 			$new_question_query .= "NULL,";
@@ -496,7 +469,7 @@ class Question {
 			$new_quesiton_query .= "'".$this->subcategory."', ";
 			$new_question_query .= "'".$this->spo."', ";
 			$new_question_query .= "'".$this->eo."', ";
-			$new_question_query .= "'.$variant_id.', ";
+			$new_question_query .= "".$this->variant.",";
 			$new_question_query .= "'".$this->type."',";
 			$new_question_query .= "NULL,";
 			$new_question_query .= "NULL,";
@@ -514,7 +487,7 @@ class Question {
 			$new_question_query .= "'".$this->subcategory."', ";
 			$new_question_query .= "'".$this->spo."', ";
 			$new_question_query .= "'".$this->eo."', ";
-			$new_question_query .= "'.$variant_id.', ";
+			$new_question_query .= "".$this->variant.",";
 			$new_question_query .= "'".$this->type."', ";
 			$new_question_query .= "'{$correct_ans}',";
 			$new_question_query .= "'{$alt_correct_ans}',";
@@ -544,7 +517,7 @@ class Question {
 		}
 
 		
-		mysql_close($this->con);
+		mysql_close($con);
 		
 	}
 	
@@ -683,7 +656,6 @@ $questionsQuery = "select questions.questionID, questions.category, questions.su
 
 		
 	}
-	
 	
 	public static function delete_question($qID){
 		

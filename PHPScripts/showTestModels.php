@@ -2,8 +2,10 @@
 
 include '../Classes/test_model.php';
 
-$model = $_POST['model'];
+$variant = $_POST['variant'];
+$course_type = $_POST['course_type'];
 
-echo Test_Model::showModeledTestsFromType($model);
+
+echo Test_Model::showModeledTestsFromType($variant, $course_type);
 
 ?>

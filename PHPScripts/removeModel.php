@@ -2,8 +2,8 @@
 
 include '../Classes/test_model.php';
 
-$testID = $_POST['testID'];
+$test_model_id = $_POST['test_model_id'];
 
-echo Test_Model::removeModelWithID($testID);
+echo Test_Model::removeModelWithID($test_model_id);
 
 ?>

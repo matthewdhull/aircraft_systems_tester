@@ -31,7 +31,8 @@ class Test_Model {
 		stall_prot int unsigned not null,
 		mandatory int unsigned not null
 	)
-*/
+
+
 
 	const AIR_CONDITION =  "air_condition";
 	const ACFT_GEN = "acft_gen";
@@ -60,14 +61,14 @@ class Test_Model {
 	
 	public $systems_topics = array(AIR_CONDITION, ACFT_GEN, APU, AUTOPIOT, CREW_AWARENESS, ELEC, EMERG_EQUIP, FIRE_PROT,
 	 FLT_CONTROL, FUEL, HYDRAULICS, ICE_RAIN_PROT, LDG_GEAR_BRK, LIGHTING, LIMITATIONS, OXY, PERFORMANCE, PNEUM, POWERPLANT, PRESSURIZATION, PROFILES, RADAR, STALL_PROT, MANDATORY);
-
+*/
 
 	public $course_type;
 	public $length;
 	public $num_questions_from_category = array();
+	public $variant;
 	public $testID;
-	
-	
+		
 	
 	public function __get($name) {
 		return $this->$name;
@@ -77,11 +78,13 @@ class Test_Model {
 		$this->$name = $value;
 	} 
 	
-	function __construct($cType, $len, $num_q_cArr){
+	function __construct($vnt, $cType, $len, $num_q_cArr){
 			
 		$this->course_type = $cType;
 		$this->length = $len;
-		$this->num_questions_from_category = $num_q_cArr;
+		$this->num_questions_from_spo = $num_q_cArr;
+		$this->variant = $vnt;
+
 	}
 	
 	
@@ -141,7 +144,6 @@ class Test_Model {
 		mysql_close($con);        
         return $model;
 	}
-	
 	
 	public static function modelForType($type) {
 	 	//echo "modelFromID".$id."";
@@ -204,7 +206,44 @@ class Test_Model {
 	}
 	
 	
+	public static function modelWithID($test_model_id){
+		
+		$model = new self(NULL, NULL, NULL, NULL);
+		
+        include 'XJTestDBConnect.php';
+        $con = mysql_connect($host, $usn, $password);
+        
+        mysql_select_db($database, $con);
+        
+        
+        $fetchModelQuery = "SELECT * FROM `testModel` WHERE `test_model_id` = '".$test_model_id."'";
+        
+        
+        $fetchModelResult = mysql_query($fetchModelQuery);
+        
+        if(!$fetchModelResult){
+        	die("could not run query ($fetchModelQuery) ".mysql_error());
+        }
+        
+		$model->testID = $test_model_id;
+		
+		while($row = mysql_fetch_array($fetchModelResult)){
+			$model->course_type = $row['course_type'];
+			$model->length = $row['test_length'];
+			$model->variant = $row['variant_id'];
+			$model->num_questions_from_category[$row['spo_id']] = $row['count'];	
+		}
+		
+        
+        mysql_close($con);
+        
+		return $model;        
+        		
+	}
+	
 	//virtual constructor to retrieve test model by ID.
+	// deprecated
+	/*
 	 public static function modelFromID($id){
 	 	//echo "modelFromID".$id."";
         $model = new self(NULL, NULL, NULL);
@@ -264,7 +303,67 @@ class Test_Model {
         
 
     }
+	*/
 	
+	
+	public function create_new_model(){
+
+		include "XJTestDBConnect.php";
+		$con = mysql_connect($host,$usn, $password);
+		if (!$con){
+		  die('Could not connect: ' . mysql_error());
+		}
+	
+		//generate random identifier for new model
+		$length = 6;
+		$randstr = "";
+	      for($i=0; $i<$length; $i++){
+	         $randnum = mt_rand(0,61);
+	         if($randnum < 10){
+	            $randstr .= chr($randnum+48);
+	         }else if($randnum < 36){
+	            $randstr .= chr($randnum+55);
+	         }else{
+	            $randstr .= chr($randnum+61);
+	         }
+	      }
+	      
+	    $model_identifier = $randstr;
+		
+		$insertNewModelQuery = "INSERT INTO `testModel` (test_model_id, variant_id, spo_id, count, course_type, test_length) ";
+		$insertNewModelQuery .= "VALUES ";
+
+		$last_key = end(array_keys($this->num_questions_from_spo));
+
+		foreach($this->num_questions_from_spo as $k => $v){		
+			$insertNewModelQuery .= "('".$model_identifier."',";
+			$insertNewModelQuery .= "".$this->variant.",";			
+			$insertNewModelQuery .= "".$v['id'].",";
+			$insertNewModelQuery .= "".$v['count'].",";
+			$insertNewModelQuery .= "'".$this->course_type."', ";		
+			$insertNewModelQuery .= "".$this->length."";	
+			
+		 if($k == $last_key){
+			$insertNewModelQuery .= ")";			  
+		  }			
+		  else {
+			$insertNewModelQuery .= "),";			  
+		  }
+						
+		};
+
+		mysql_select_db($database, $con);	
+
+		$insertNewModelQueryResult = mysql_query($insertNewModelQuery);
+		if(!$insertNewModelQueryResult){
+			die("could not run query ($insertNewModelQuery) ".mysql_error());
+		}
+		
+		mysql_close($con);
+		
+	}
+	
+/*	
 	public function create_new_model(){
 		include "XJTestDBConnect.php";
 
@@ -287,8 +386,68 @@ class Test_Model {
 		mysql_close($con);
 		
 	}
+*/	
 	
 	
+	static function showModeledTestsFromType($variant, $course_type){
+		include "XJTestDBConnect.php";
+		$con = mysql_connect($host,$usn, $password);
+
+		if (!$con){
+		  die('Could not connect: ' . mysql_error());
+		 }
+		
+		mysql_select_db($database, $con);
+		
+		$modelQuery = "SELECT `test_model_id`, `spo_name` as spo, `count` FROM `testModel` JOIN `SPO` USING (`spo_id`) WHERE `variant_id` = ".$variant." AND `course_type` = '".$course_type."'";
+		
+		
+
+		
+		$modelQueryResult = mysql_query($modelQuery);
+		if(!$modelQueryResult){
+			die("could not run query ($modelQuery) ".mysql_error());
+		}
+
+		$models = array();
+		$current_id = "";
+		
+        $roww = mysql_fetch_array($modelQueryResult);
+        $current_id = $roww['test_model_id'];
+
+        $model = array();        
+        while($row = mysql_fetch_array($modelQueryResult)){
+
+	        
+			if ($current_id == $row['test_model_id']){
+				$model[$row['spo']] = $row['count'];
+			}
+			
+
+			
+			else {
+				//push current array to $models
+				$models[$current_id] = $model;
+				//start new array
+				unset($model);
+				$current_id = $row['test_model_id'];
+			}
+			
+	
+	  	}      
+	  	
+	 	$models[$current_id] = $model;
+	 	 	
+	  	$models = json_encode($models);
+	  	
+	  	return $models;
+		
+		mysql_close($con);
+		
+	}
+
+	//deprecated
+	/*
 	static function showModeledTestsFromType($courseType){
 		include "XJTestDBConnect.php";
 		$con = mysql_connect($host,$usn, $password);
@@ -353,10 +512,42 @@ class Test_Model {
 
 
 	}
+	*/
 	
-	
-	static function removeModelWithID($testID) {
+	static function removeModelWithID($test_model_id) {
 		$totalModels = array();
+		
+		include "XJTestDBConnect.php";
+		$con = mysql_connect($host,$usn, $password);
+
+		mysql_select_db($database, $con);
+		
+		
+		$deleteModelQuery = "DELETE FROM `testModel` WHERE `test_model_id` = '".$test_model_id."'";
+		
+		$deleteModelResult = mysql_query($deleteModelQuery);
+		
+		if(!$deleteModelResult){
+			echo "could not run query ($deleteModelQuery) ".mysql_error();
+		}
+		
+		$totalModelsQuery = "SELECT COUNT(DISTINCT(test_model_id)) AS models FROM `testModel`";
+		$totalModelsResult = mysql_query($totalModelsQuery);
+		
+		while($row = mysql_fetch_array($totalModelsResult)){
+			$totalModels['totalModels'] = $row['models'];
+		}
+		
+
+		mysql_close($con);
+		$totalModels = json_encode($totalModels);
+		return $totalModels;
+		
+	}
+	
+	public static function getQuestionQuantityForSPO($variant){
+				
+		$questionQuantity = array();
 		
 		include "XJTestDBConnect.php";
 		$con = mysql_connect($host,$usn, $password);
@@ -367,29 +558,31 @@ class Test_Model {
 		
 		mysql_select_db($database, $con);
 		
-		
-		$deleteModelQuery = "DELETE FROM `test_model` WHERE `testID` = '".$testID."'";
-		
-		$deleteModelResult = mysql_query($deleteModelQuery);
-		
-		if(!$deleteModelResult){
-			echo "could not run query ";
-		}
-		
-		$totalModelsQuery = "SELECT COUNT(testID) FROM `test_model`";
-		$totalModelsResult = mysql_query($totalModelsQuery);
-		
-		while($row = mysql_fetch_array($totalModelsResult)){
-			$totalModels['totalModels'] = $row["COUNT(testID)"];
-		}
-		
+		$getQuantityQuery = "SELECT questions.spo_id, spo_name AS spo, count(questions.spo_id) AS count FROM questions INNER JOIN SPO using (spo_id) WHERE questions.variant_id = ".$variant." GROUP BY spo_id";		
 
-		mysql_close($con);
-		$totalModels = json_encode($totalModels);
-		return $totalModels;
 		
+		$getQuantityQueryResult = mysql_query($getQuantityQuery);
+		
+		
+		if(!$getQuantityQueryResult){
+			die("could not run query ($getQuantityQuery) ".mysql_error());
+		}
+		while($qRow = mysql_fetch_array($getQuantityQueryResult)){
+			
+			$spo_info = array();
+			$spo_info['spo_id'] = $qRow['spo_id'];
+			$spo_info['spo'] = $qRow['spo'];
+			$spo_info['count'] = $qRow['count'];
+			
+			array_push($questionQuantity, $spo_info);			
+		}
+				
+		$questionQuantity = json_encode($questionQuantity);
+		
+		mysql_close($con);
+		
+		return $questionQuantity;		
 	}
-	
 	
 	public static function getCurrentQuestionQuantity(){
 		

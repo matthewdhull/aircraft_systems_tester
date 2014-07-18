@@ -5,36 +5,7 @@
 		
 		<title></title>
 		
-		
-			
 						
-<?php /*
-						var a = $("#air_condition").val();
-						var b = $("#acft_gen").val();
-						var c = $("#apu").val();
-						var d = $("#autopilot").val();
-						var e = $("#crew_awareness").val();
-						var f = $("#elec").val();
-						var g = $("#emerg_equip").val();
-						var h = $("#fire_prot").val();
-						var i = $("#flt_control").val();
-						var j = $("#fuel").val();
-						var k = $("#hydraulics").val();
-						var l = $("#ice_rain_prot").val();
-						var m = $("#ldg_gear_brk").val();
-						var n = $("#lighting").val();
-						var o = $("#limitations").val();
-						var p = $("#oxy").val();
-						var q = $("performance").val();
-						var r = $("#pneum").val();
-						var s = $("#powerplant").val();
-						var t = $("#pressurization").val();
-						var u = $("#profiles").val();
-						var v = $("#radar").val();
-						var w = $("#stall_prot").val();
-						var x = $("#mandatory").val();
-*/?>
-
 			<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 			
 			<style type='text/css'>
@@ -54,12 +25,12 @@
 			
 					var isAdmin = false;
 					
+					
 					function clearScreenForLogout(){
-						$("div").css("visibility", "hidden");
+							$("div").css("visibility", "hidden");
 						$("body").html("You are not logged in");
 					}
-					
-					
+									
 					function checkLoginStatus(){
 					
 						$.post("PHPScripts/admin/instructorLogin.php",
@@ -80,7 +51,27 @@
 							}, "json");
 					}
 					
-					function getNumberOfQuestions(){
+					function getQuestionQuantityForSPO(variant_type){
+						var spo = "";
+						$.post("PHPScripts/getQuestionCount.php", {
+							variant: variant_type
+						}, function(data){
+							$.each(data, function(key, value){	
+								//console.log(key+" "+value);
+								spo += "<tr class='qForSPO'><td><label for='"+value.spo_id+"'>"+value.spo+" ("+value.count+")</label></td><td><input class='spo_count_spec' id='"+value.spo_id+"' name='"+value.spo+"' value=0 readonly><div class='inc button'>+</div><div class='dec button'>-</div></td></tr>";
+																
+							});	
+							
+							spo += "</table>";
+							$("#newTestModelTable").append(spo);
+							bindIncrementDecrementEvents();
+							
+						},"json");
+					}
+					
+					//deprecated
+					/*function getNumberOfQuestions(){
+						console.log("function deprecated. use getQuestionQuantityForSPO() instead");
 						$.post("PHPScripts/getQuestionCount.php",null,function(data){
 							var currentText = $("label[for=air_condition]").text();
 							$("label[for=air_condition]").text(currentText+" ("+data.air_condition+")");
@@ -141,7 +132,7 @@
 							
 							
 						},"json");
-					}
+					}*/
 				
 				<?php /*load current value in questionNeeded on page load. */?>
 					function displayCurrentLength(){
@@ -151,6 +142,20 @@
 					
 				
 				<?php /*check input qty against set testLength */?>
+				
+				function updateQuantities(){
+					var sum = 0;
+					$("#newTestModelTable :input[class='spo_count_spec']").each(function(){
+						sum += Number($(this).val());
+					});
+					
+					$("#totalQuestions").val(sum);					
+				}
+				
+				
+				
+				//deprecated
+				/*	
 					function updateQuantities(){
 						var neededQty = parseInt($("#testLength").val());
 						var currentQty = parseInt($("#totalQuestions").val());
@@ -168,61 +173,23 @@
 						}
 
 					}
+				*/
 					
 					<?php /*set size of all system topic input fields */?>
 					$("#newTestModelTable input:text").attr("size", "2");
-					
-
-					<?php /*add all fields and display total in #totalQuestions. *uses calculation.js plugin */?>
-					$("#newTestModelTable input:text").focus(function(){
-					
-						var a = $("#air_condition").val();
-						var b = $("#acft_gen").val();
-						var c = $("#apu").val();
-						var d = $("#autopilot").val();
-						var e = $("#crew_awareness").val();
-						var f = $("#elec").val();
-						var g = $("#emerg_equip").val();
-						var h = $("#fire_prot").val();
-						var i = $("#flt_control").val();
-						var j = $("#fuel").val();
-						var k = $("#hydraulics").val();
-						var l = $("#ice_rain_prot").val();
-						var m = $("#ldg_gear_brk").val();
-						var n = $("#lighting").val();
-						var o = $("#limitations").val();
-						var p = $("#oxy").val();
-						var q = $("#performance").val();
-						var r = $("#pneum").val();
-						var s = $("#powerplant").val();
-						var t = $("#pressurization").val();
-						var u = $("#profiles").val();
-						var v = $("#radar").val();
-						var w = $("#stall_prot").val();
-						var x = $("#mandatory").val();
-						var systemSubcategories = [a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x];
-					
-						var sum = 0;
-						$.each(systemSubcategories, function(index, value){
-							if(value != ""){
-
-								value = parseInt(value);
-								sum += value;
-							}
-							
-						});
-						$("#totalQuestions").val(sum);
-						updateQuantities();
-					});		
-					
-					
+										
 					<?php /*clear form when test Length value is changed */?>
 					$("#testLength").change(function(){
-						$("#newTestModelTable input:text, #totalQuestions").val("");
+						$("#newTestModelTable, #totalQuestions").val("");
 						$("#totalQuestions, #questionsNeeded").css("color","black");
 						$("#questionsNeeded").val($("#testLength").val());
 					});
 					
+					
+					$("#fleet").change(function(){
+						$("#newTestModelTable tr[class='qForSPO']").remove();
+						getQuestionQuantityForSPO($("#fleet").val());						
+					});
 					
 					<?php /*reset fields */?>
 					$("#resetButton").click(function(){
@@ -238,7 +205,7 @@
 							var tID = $(this).attr("id");
 							var courseType = $("#viewModeledTestByType").val();
 							$.post("PHPScripts/removeModel.php", {
-								testID: tID
+								test_model_id: tID
 							}, function(data){
 									$("#modeledTests tr td:first").html("Total "+courseType+" Models: "+data.totalModels+"");
 									<?php /*remove the deleted test model from the screen.*/?>
@@ -246,11 +213,7 @@
 								
 							}, "json");
 							
-							
-							
-							
 						});	
-						
 						
 					}
 					
@@ -271,71 +234,96 @@
 					}
 					
 					
-					
+					function bindIncrementDecrementEvents(){
+						$(".button").on("click", function() {
+						  var $button = $(this);
+						  var oldValue = $button.parent().find("input").val();
+						
+						  if ($button.text() == "+") {
+							  var newVal = parseFloat(oldValue) + 1;
+							} else {
+						   // Don't allow decrementing below zero
+						    if (oldValue > 0) {
+						      var newVal = parseFloat(oldValue) - 1;
+						    } else {
+						      newVal = 0;
+						    }
+						  }
+						
+						  $button.parent().find("input").val(newVal);
+						  updateQuantities();
+						});					
+					}						
 					
 					<?php /*submit new test model to database. */?>
+					
 					$("#submitButton").click(function(){
+						var spoAndCount = [];
 						var len = $("#testLength").val();
 						var typ = $("#courseType").val();
-						var a = $("#air_condition").val();
-						var b = $("#acft_gen").val();
-						var c = $("#apu").val();
-						var d = $("#autopilot").val();
-						var e = $("#crew_awareness").val();
-						var f = $("#elec").val();
-						var g = $("#emerg_equip").val();
-						var h = $("#fire_prot").val();
-						var i = $("#flt_control").val();
-						var j = $("#fuel").val();
-						var k = $("#hydraulics").val();
-						var l = $("#ice_rain_prot").val();
-						var m = $("#ldg_gear_brk").val();
-						var n = $("#lighting").val();
-						var o = $("#limitations").val();
-						var p = $("#oxy").val();
-						var q = $("#performance").val();
-						var r = $("#pneum").val();
-						var s = $("#powerplant").val();
-						var t = $("#pressurization").val();
-						var u = $("#profiles").val();
-						var v = $("#radar").val();
-						var w = $("#stall_prot").val();
-						var x = $("#mandatory").val();
-
-						$.post("PHPScripts/newTestModel.php",{
+						var fleet_type = $("#fleet").val();
+						
+						$("#newTestModelTable :input[class='spo_count_spec']").each(function(){
+							var input = $(this);
+							spo_spec = {"id":input.attr('id'), "count":input.val()};
+							spoAndCount.push(spo_spec);
+						});
+						
+						$.post("PHPScripts/newTestModel.php", {
+							variant: fleet_type,
 							length: len,
 							course_type: typ,
-							air_condition: a,
-							acft_gen: b,
-							apu: c,
-							autopilot: d,
-							crew_awareness: e,
-							elec: f,
-							emerg_equip: g,
-							fire_prot: h,
-							flt_control: i,
-							fuel: j,
-							hydraulics: k,
-							ice_rain_prot: l,
-							ldg_gear_brk: m,
-							lighting: n,
-							limitations: o,
-							oxy: p,
-							performance: q,
-							pneum: r,
-							powerplant: s,
-							pressurization: t,
-							profiles: u,
-							radar: v, 
-							stall_prot: w,
-							mandatory: x
-						}, 
-						function(data){
-							////console.log(data);
-						}, "json");
+							model: spoAndCount
+						}, function(data){});
 						return false;
 					});
-					
+
+				
+					$("#showTestModelsButton").click(function(){
+						var crs_type = $("#viewModeledTestByType").val();
+						var flt_type = $("#fleet_type").val();
+						$.post("PHPScripts/showTestModels.php",{
+							course_type: crs_type,
+							variant: flt_type							
+						}, function(data){
+							
+							$("#modelResults table").remove();
+							
+							var modelTableHTML = "";
+							
+							$.each(data, function(key, values){	
+								
+								modelTableHTML += "<table id="+key+" class='modelTable'><tr class='testModel'><td><button id="+key+" value='use'>use</button><button value='delete' id="+key+">delete</button></td></tr><td>Model ID: "+key+"</td></tr>";
+								
+								//console.log(key);
+								
+								$.each( values, function(k, v) {
+									modelTableHTML += "<tr><td>"+k+": </td><td>"+v+"</td></tr>";
+								});								
+																
+								modelTableHTML += "</table>";
+								
+							});
+							
+							$("#modelResults").append(modelTableHTML);
+							
+							
+							if(isAdmin == false){
+								$("#modelResults button:contains('delete')").css("visibility", "hidden");
+							}
+							bindDeletableEvents();
+							bindUseEvents();
+							
+						}, "json");
+						
+						return false;
+					});
+
+
+
+					//deprecated
+
+					/*
 					$("#showTestModelsButton").click(function(){
 						var testModel = $("#viewModeledTestByType").val();
 						$.post("PHPScripts/showTestModels.php",{
@@ -355,10 +343,8 @@
 							bindDeletableEvents();
 							bindUseEvents();
 						}, "json");
-						
-						
 					});
-					
+					*/
 					
 					
 					$("#createTestButton").click(function(){
@@ -393,8 +379,7 @@
 					<?php /*onload */?>
 					checkLoginStatus();
 					displayCurrentLength();	
-					getNumberOfQuestions();
-					
+					$("#fleet").trigger("change");					
 				});
 				
 							
@@ -413,8 +398,16 @@
 							<th>Test Creation</th>
 						</tr>
 						<tr>
+							<td>
+								<select id='fleet_type'>
+									<option value=1>ERJ</option>
+									<option value=2>CRJ</option>
+								</select>
+							</td>
+						</tr>
+						<tr>
 							<td><select id="viewModeledTestByType">
-									<option value="SY9">SY9</option>
+									<option value="SY9">SYS</option>
 									<option value="UPG">UPG</option>
 									<option value="INS">INS</option>
 							</select></td>
@@ -451,6 +444,15 @@
 						<table id="newTestModelTable">
 							<tr><th>Test Modeling</th></tr>
 							<tr>
+								<td>Fleet</td>
+								<td>
+									<select id='fleet'>
+										<option value=1>ERJ</option>
+										<option value=2>CRJ</option>										
+									</select>
+								</td>
+							</tr>
+							<tr>
 								<td>Course Type: </td>
 								<td>
 									<select id="courseType">
@@ -473,83 +475,13 @@
 							</tr>
 							<tr>
 								<td>System</td><td>No. of questions</td>
-							<tr>
-								<td><label for="air_condition">Air Conditioning</label></td>
-								<td><input id="air_condition" name="air_condition"></td>
-								<td><label for="acft_gen">Aircraft General</label></td>
-								<td><input id="acft_gen" name="acft_gen"></td>
 							</tr>
-							<tr>
-								<td><label for="apu">APU</label></td>
-								<td><input id="apu" name="apu"></td>
-								<td><label for="autopilot">Autopilot</label></td>
-								<td><input id="autopilot" name="autopilot"></td>
-							</tr>
-							<tr>
-								<td><label for="crew_awareness">Crew Awareness</label></td>
-								<td><input id="crew_awareness" name="crew_awareness"></td>
-								<td><label for="elec">Electrical</label></td>
-								<td><input id="elec" name="elec"></td>
-							</tr>
-							<tr>
-								<td><label for="emerg_equip">Emergency Equipment</label></td>
-								<td><input id="emerg_equip" name="emerg_equip"></td>
-								<td><label for="fire_prot">Fire Protection</label></td>
-								<td><input id="fire_prot" name="fire_prot"></td>
-							</tr>
-							<tr>
-								<td><label for="flt_control">Flight Controls</label></td>
-								<td><input id="flt_control" name="flt_control"></td>
-								<td><label for="fuel">Fuel</label></td>
-								<td><input id="fuel" name="fuel"></td>
-							</tr>
-							<tr>
-								<td><label for="hydraulics">Hydraulics</label></td>
-								<td><input id="hydraulics" name="hydraulics"></td>
-								<td><label for="ice_rain_prot">Ice/Rain Protection</label></td>
-								<td><input id="ice_rain_prot" name="ice_rain_prot"></td>
-							</tr>
-							<tr>
-								<td><label for="ldg_gear_brk">Landing Gear/Brakes</label></td>
-								<td><input id="ldg_gear_brk" name="ldg_gear_brk"></td>
-								<td><label for="lighting">Lighting</label></td>
-								<td><input id="lighting" name="lighting"></td>
-							</tr>
-							<tr>
-								<td><label for="limitations">Limitations</label></td>
-								<td><input id="limitations" name="limitations"></td>
-								<td><label for="oxy">Oxygen</label></td>
-								<td><input id="oxy" name="oxy"></td>
-							</tr>
-							<tr>
-								<td><label for="performance">Performance</label></td>
-								<td><input id="performance" name="performance"></td>
-								<td><label for="pneum">Pneumatics</label></td>
-								<td><input id="pneum" name="pneum"></td>
-							</tr>
-							<tr>
-								<td><label for="powerplant">Powerplant</label></td>
-								<td><input id="powerplant" name="powerplant"></td>
-								<td><label for="pressurization">Pressurization</label></td>
-								<td><input id="pressurization" name="pressurization"></td>
-							</tr>
-							<tr>
-								<td><label for="profiles">Profiles</label></td>
-								<td><input id="profiles" name="profiles"></td>
-								<td><label for="radar">Radar</label></td>
-								<td><input id="radar" name="radar"></td>
-							</tr>
-							<tr>
-								<td><label for="stall_prot">Stall Protection</label></td>
-								<td><input id="stall_prot" name="stall_prot"></td>
-								<td><label for="mandatory">Mandatory</label></td>
-								<td><input id="mandatory" name="mandatory"></td>
-							</tr>
-						</table>
+								<?php /*SPO name and count populated here */ ?>
+
 						<table id="totalQuestionsTable">
 							<tr>
 								<td><label for="totalQuestions" >Total Questions</label></td>
-								<td><input id="totalQuestions" name="totalQuestions" size="2" readonly ></td>
+								<td><input id="totalQuestions" name="totalQuestions" size="2" value = 0 readonly ></td>
 								<td><label for="questionsNeeded" >To Go:</label></td>
 								<td><input id="questionsNeeded" name="questionsNeeded" size="2" readonly></td>
 							</tr>

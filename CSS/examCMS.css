@@ -64,7 +64,7 @@ button, button#beginExam {
 }
 
 #questionChoicesDiv{
-	height: 105px;
+	height: auto;
 	border: none;
 }
 

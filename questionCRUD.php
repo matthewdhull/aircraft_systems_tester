@@ -3,8 +3,8 @@
 <head>
 	<title>Question Modeling</title>
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8">	
-<!-- 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script> -->
-	<script src="jquery.js"></script>	
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<!-- 	<script src="jquery.js"></script>	 -->
 	<script src="systemChoices.js"></script>   <!-- Imports ERJ / CRJ Aircraft System Lists --> 
 	<style type='text/css'>
 		@import url("CSS/questionCRUD.css");
@@ -84,9 +84,12 @@
 					ans_z: incorrect_z,
 					variant: variantStr
 				}, function(data){
+					
+					$("#question_text, #alternate_wording, #correct_ans, #alt_correct_ans, #last_correct_ans, #incorrect_ans_x, #incorrect_ans_y,#incorrect_ans_z").val(""); 
+					$("#questionCategory").trigger("change");				
+					
 				}, "json");
 				
-				//$("#question_text, #alternate_wording, #correct_ans, #alt_correct_ans, #last_correct_ans, #incorrect_ans_x, #incorrect_ans_y,#incorrect_ans_z").val(""); 
 				return false;
 		});
 		
@@ -432,6 +435,7 @@
 			$("#headerTitle").html("SJTester : ERJ");											
 			acftSwitchPosition = "ERJ";
 			//populateERJSystemChoices();
+			$("#questionCategory").trigger("change");			
 		});
 		
 		$("#crjTitle").click(function(){
@@ -441,7 +445,8 @@
 			$("#acftArrow").removeClass("arrow-left").addClass("arrow-right").css("margin-left", "8px");
 			$("#headerTitle").html("SJTester : CRJ");											
 			acftSwitchPosition = "CRJ";
-			//populateCRJSystemChoices();					
+			//populateCRJSystemChoices();	
+			$("#questionCategory").trigger("change");							
 		});
 		
 		

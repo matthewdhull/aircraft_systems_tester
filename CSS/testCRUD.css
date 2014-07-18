@@ -5,7 +5,7 @@
 	top: 15px;
 	left: 0px;
 	width: 560px;
-	height: 1000px;
+	height: 1400px;
 	min-width: 560px;
 	overflow: hidden;
 	border-right: 5px solid #5c5f79;
@@ -104,3 +104,20 @@ select {
 	color: #454545;
 }
 
+.button {
+  margin: 0 0 0 5px;
+  text-indent: -9999px;
+  cursor: pointer;
+  width: 29px;
+  height: 29px;
+  float: left;
+  text-align: center;
+  background: url(../images/buttons.png) no-repeat;
+}
+.dec {
+  background-position: 0 -29px;
+}
+
+.buttons {
+  padding: 20px 0 0 140px;
+}

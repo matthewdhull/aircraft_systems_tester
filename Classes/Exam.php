@@ -32,6 +32,7 @@ class Exam {
 	public $timestamp;
 	public $generatedID;
 	public $gen_error;
+	public $variant;
 
 	public function __get($name) {
 		return $this->$name;
@@ -43,8 +44,9 @@ class Exam {
 	
 	
 	
-	public function __construct($numQuestionsArr, $insID, $testPwd, $ovrPwd, $crs_type, $len, $id){
-	
+	public function __construct($varnt, $numQuestionsArr, $insID, $testPwd, $ovrPwd, $crs_type, $len, $id){
+		
+		$this->variant = $varnt;
 		$this->num_questions_from_category = $numQuestionsArr;
 		$this->instructorID = $insID;
 		$this->testPassword = $testPwd;
@@ -71,11 +73,127 @@ class Exam {
 	}
 
 
-
+	
 	public function generateTest(){
 	
 		include 'testClass.php';
 		include "XJTestDBConnect.php";
+		
+		$con = mysql_connect($host, $usn, $password);
+
+		mysql_select_db($database, $con);
+		
+		$testObj = array();
+		$idArr = array();
+
+		
+		foreach($this->num_questions_from_category as $k => $v){
+			if ($v > 0){
+			
+				//select all questionID for subcategory
+				//echo "requested ".$v." for ".$k." ";
+				$getIdQuery = "SELECT `questionID` FROM `questions` WHERE `spo_id` = ".$k." AND `variant_id` = ".$this->variant."";
+				$idResult = mysql_query($getIdQuery);
+				$amt = mysql_num_rows($idResult);
+				//echo "totalIDs : ".$amt." ";
+				
+				//add results to array.
+				$tmpArr = array();
+				while($row = mysql_fetch_array($idResult)){
+					//echo "question ID ".$row['questionID'].", ";
+					array_push($tmpArr, $row['questionID']);
+				}
+				
+				
+				//randomly select number of questions desired (5 electrical questions, for example)
+				for($i = 0; $i<$v; $i++){
+					shuffle($tmpArr);
+					array_push($idArr, $tmpArr[0]);
+					unset($tmpArr[0]);
+				}
+			}
+		}	
+		
+		
+		$createTestQuery = "INSERT INTO `createdTests` VALUES ";
+		$createTestQuery .= "(NULL, ";
+		$createTestQuery .= "'".$this->testID."', ";
+		$createTestQuery .= "NULL, ";
+		$createTestQuery .= "'".$this->course_type."', ";
+		$createTestQuery .= "".$this->length.", ";
+		$createTestQuery .= "'".$this->instructorID."', ";
+		$createTestQuery .= "'".$this->testPassword."', ";
+		$createTestQuery .= "'".$this->overridePassword."')";
+		
+		
+		$createTestResult = mysql_query($createTestQuery);
+		if(!$createTestResult){
+			echo "couldn't create test ".mysql_error();
+		}
+		
+		$timeStampQuery = "SELECT `genTestID`, `genDate` FROM `createdTests` ORDER BY `genDate` DESC LIMIT 1";
+		$timeStampResult = mysql_query($timeStampQuery);
+		if(!$timeStampResult){
+			echo "could not get timestamp ".mysql_error();
+		}
+		
+		//fetch generated date and testID AFTER a test has been created.
+		while($row = mysql_fetch_array($timeStampResult)){
+			
+			$this->timestamp = $row['genDate'];
+			$this->generatedID = $row['genTestID'];
+
+		}
+		
+
+		//instantiate new question object for each questionID.
+		foreach ($idArr as $value) {
+ 		   $question = Question::questionFromID($value);
+ 		   $testQ = $question->generate_test_question();
+ 		   
+
+			$insertTestQuestionQuery = "INSERT INTO `usedQuestions` VALUES(";
+			$insertTestQuestionQuery .= "".$this->generatedID.", ";
+			$insertTestQuestionQuery .= "".$testQ['questionID'].", ";
+			$insertTestQuestionQuery .= "'".$testQ['type']."', ";
+			$insertTestQuestionQuery .= "".$testQ['spo_id'].", ";
+			$insertTestQuestionQuery .= "' ',"; //using spo_id instead of subcategory
+			$insertTestQuestionQuery .= "'".$testQ['questionText']."', ";
+			$insertTestQuestionQuery .= "'".$testQ['a']."', ";
+			$insertTestQuestionQuery .= "'".$testQ['b']."', ";
+			$insertTestQuestionQuery .= "'".$testQ['c']."', ";
+			$insertTestQuestionQuery .= "'".$testQ['d']."', ";
+			$insertTestQuestionQuery .= "'".$testQ['key']."')";
+						
+ 		   $tqResult = mysql_query($insertTestQuestionQuery);
+ 		   
+ 		   if(!$tqResult){
+ 		   	  $this->gen_error = $this->gen_error.' Invalid test question insertion query: ' . mysql_error();
+ 		   }
+		}
+		
+		
+		/*
+			fetch attributes of teach test question and insert into the questionsUsed table.
+		*/
+		
+		array_push($testObj, $testQ);
+
+
+		
+		//uncomment to see results
+		$testObj = json_encode($testObj);
+		return $testObj;
+				
+	}
+	
+	//deprecated
+	/*
+	public function generateTest(){
+	
+		include 'testClass.php';
+		include "XJTestDBConnect.php";
+		
 		$con = mysql_connect($host,$usn, $password);
 
 		if (!$con){
@@ -94,7 +212,7 @@ class Exam {
 			
 				//select all questionID for subcategory
 				//echo "requested ".$v." for ".$k." ";
-				$getIdQuery = "SELECT `questionID` FROM `questions` WHERE `subcategory` = '".$k."'";
+				$getIdQuery = "SELECT `questionID` FROM `questions` WHERE `subcategory` = '".$k."' AND `variant_id` = 1";
 				$idResult = mysql_query($getIdQuery);
 				$amt = mysql_num_rows($idResult);
 				//echo "totalIDs : ".$amt." ";
@@ -155,22 +273,14 @@ class Exam {
 		}
 		
 		
-		/*
-			fetch attributes of teach test question and insert into the questionsUsed table.
-		*/
-		
-		array_push($testObj, $testQ);
-		mysql_close($con);
+			//fetch attributes of teach test question and insert into the questionsUsed table.
 
 		
-/*		//uncomment to see results
-		$testObj = json_encode($testObj);
-		return $testObj;
-*/
+		array_push($testObj, $testQ);
 		
 		
 	}
-	
+	*/
 	
 	
 	public static function fetchQuestionsForTest($studentEmpNo, $testPassword, $ovrdPassword){
