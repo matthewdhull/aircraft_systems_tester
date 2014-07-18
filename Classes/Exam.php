@@ -151,6 +151,15 @@ class Exam {
  		   $question = Question::questionFromID($value);
  		   $testQ = $question->generate_test_question();
  		   
+ 		   
+ 		   
+			$questionText = mysql_real_escape_string($testQ['questionText']);
+			$a = mysql_real_escape_string($testQ['a']);
+			$b = mysql_real_escape_string($testQ['b']);
+			$c = mysql_real_escape_string($testQ['c']);			
+			$d = mysql_real_escape_string($testQ['d']);						
+			$key = mysql_real_escape_string($testQ['key']);			
+			
 
 			$insertTestQuestionQuery = "INSERT INTO `usedQuestions` VALUES(";
 			$insertTestQuestionQuery .= "".$this->generatedID.", ";
@@ -158,12 +167,12 @@ class Exam {
 			$insertTestQuestionQuery .= "'".$testQ['type']."', ";
 			$insertTestQuestionQuery .= "".$testQ['spo_id'].", ";
 			$insertTestQuestionQuery .= "' ',"; //using spo_id instead of subcategory
-			$insertTestQuestionQuery .= "'".$testQ['questionText']."', ";
-			$insertTestQuestionQuery .= "'".$testQ['a']."', ";
-			$insertTestQuestionQuery .= "'".$testQ['b']."', ";
-			$insertTestQuestionQuery .= "'".$testQ['c']."', ";
-			$insertTestQuestionQuery .= "'".$testQ['d']."', ";
-			$insertTestQuestionQuery .= "'".$testQ['key']."')";
+			$insertTestQuestionQuery .= "'{$questionText}', ";
+			$insertTestQuestionQuery .= "'{$a}', ";
+			$insertTestQuestionQuery .= "'{$b}', ";
+			$insertTestQuestionQuery .= "'{$c}', ";
+			$insertTestQuestionQuery .= "'{$d}', ";
+			$insertTestQuestionQuery .= "'{$key}')";
 						
  		   $tqResult = mysql_query($insertTestQuestionQuery);
  		   

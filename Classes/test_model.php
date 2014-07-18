@@ -401,7 +401,6 @@ class Test_Model {
 		
 		$modelQuery = "SELECT `test_model_id`, `spo_name` as spo, `count` FROM `testModel` JOIN `SPO` USING (`spo_id`) WHERE `variant_id` = ".$variant." AND `course_type` = '".$course_type."'";
 		
-		
 
 		
 		$modelQueryResult = mysql_query($modelQuery);
@@ -411,14 +410,13 @@ class Test_Model {
 
 		$models = array();
 		$current_id = "";
-		
-        $roww = mysql_fetch_array($modelQueryResult);
-        $current_id = $roww['test_model_id'];
+       
 
         $model = array();        
+		$i = 0;        
         while($row = mysql_fetch_array($modelQueryResult)){
-
-	        
+				        
+							        
 			if ($current_id == $row['test_model_id']){
 				$model[$row['spo']] = $row['count'];
 			}
@@ -431,6 +429,10 @@ class Test_Model {
 				//start new array
 				unset($model);
 				$current_id = $row['test_model_id'];
+				$model = array();
+				
+				//set the first item in the array
+				$model[$row['spo']] = $row['count'];
 			}
 			
 	

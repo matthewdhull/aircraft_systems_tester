@@ -221,6 +221,8 @@ session_cache_limiter('nocache');
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 */ ?>				
 				$("#beginExam").click(function(){
+					$("#beginExam").attr("disabled", "disabled");
+				
 					<?php /*1.validate credentials */?>
 					
 					employeeNo = $("#employeeNo").val();
@@ -241,7 +243,6 @@ session_cache_limiter('nocache');
  					classYr = $("#classDateYear").val();
  					
  					$("#overridePasswordDiv").css("visibility", "hidden");
-					
 					//console.log(employeeNo+" "+fName+" "+lName+" "+syl+" "+qCode+" "+retr+" "+classMo+" "+classDa+" "+classYr);
 				
 					$.post("PHPScripts/getExam.php",{
@@ -283,7 +284,7 @@ session_cache_limiter('nocache');
 							if(data.error === "Override password required for re-login") {
 								$("#overridePasswordDiv").css("visibility", "visible");
 								$("#logonMessage").html(data.error);
-								$("#password").val("");
+								$("#password").val('hi');
 								$("#beginExam").removeAttr("disabled");
 								
 							}
