@@ -531,17 +531,41 @@ class Question {
 		 }
 		
 		mysql_select_db($database, $con);	
+		
+				
+				
+		$question_a = mysql_real_escape_string($this->question_wordings['a']);
+		$question_b = mysql_real_escape_string($this->question_wordings['b']);
+		$correct_ans = mysql_real_escape_string($this->correct_answer);
+		$alt_correct_ans = mysql_real_escape_string($this->alt_correct_answer);
+		$last_correct_ans = mysql_real_escape_string($this->last_correct_answer);
+		$ans_x = mysql_real_escape_string($this->wrong_answers[0]);
+		$ans_y = mysql_real_escape_string($this->wrong_answers[1]);
+		$ans_z = mysql_real_escape_string($this->wrong_answers[2]);
+				
 
 		
-		$updateQuestionQuery = "UPDATE `questions` SET `type` = '".$this->type."', `subcategory` = '".$this->subcategory."', `spo_id` = '".$this->spo."', `eo_id` = '".$this->eo."',  `variant` = '".$this->variant."', `correct_answer` = '".$this->correct_answer."', `alt_correct_answer` = '".$this->alt_correct_answer."', `last_correct_answer` = '".$this->last_correct_answer."', `ans_x` = '".$this->wrong_answers[0]."', `ans_y` = '".$this->wrong_answers[1]."', `ans_z` = '".$this->wrong_answers[2]."', `question_a` = '".$this->question_wordings['a']."', `question_b` = '".$this->question_wordings['b']."' WHERE `questionID` = ".$questionID."";
+		$updateQuestionQuery = "UPDATE `questions` SET `type` = ";
+		$updateQuestionQuery .= "'".$this->type."',";
+		$updateQuestionQuery .= "`subcategory` = ' ',";
+		$updateQuestionQuery .= "`spo_id` = '".$this->spo."',";
+		$updateQuestionQuery .= "`eo_id` = '".$this->eo."', ";
+		$updateQuestionQuery .= "`variant_id` = '".$this->variant."',";
+		$updateQuestionQuery .= "`correct_answer` = '{$correct_ans}',";
+		$updateQuestionQuery .= "`alt_correct_answer` = '{$alt_correct_ans}',";
+		$updateQuestionQuery .= "`last_correct_answer` = '{$last_correct_ans}',";
+		$updateQuestionQuery .= "`ans_x` = '{$ans_x}',";
+		$updateQuestionQuery .= "`ans_y` = '{$ans_y}',";
+		$updateQuestionQuery .= "`ans_z` = '{$ans_z}',";
+		$updateQuestionQuery .= "`question_a` = '{$question_a}',";
+		$updateQuestionQuery .= "`question_b` = '{$question_b}'";
+		$updateQuestionQuery .= "WHERE `questionID` = ".$questionID."";
 		
 		$updateQuestionResult = mysql_query($updateQuestionQuery);
 		
 		if(!$updateQuestionResult) {
 			die ("Could update question with: ($questionsQuery) from DB: " . mysql_error());
 		}
-		mysql_close($con);
-	
 		
 	}
 	

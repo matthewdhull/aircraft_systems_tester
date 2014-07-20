@@ -228,6 +228,8 @@
 			var newIncorrectAnsX = $("#edit_incorrect_ans_x").val();
 			var newIncorrectAnsY = $("#edit_incorrect_ans_y").val();
 			var newIncorrectAnsZ = $("#edit_incorrect_ans_z").val();
+			var variantStr = acftSwitchPosition.toLowerCase();
+			
 			
 			$.post("PHPScripts/updateQuestion.php",{
 				questionID: qID,
@@ -242,7 +244,8 @@
 				last_correct_ans: newLastCorrectAns,
 				ans_x: newIncorrectAnsX,
 				ans_y: newIncorrectAnsY,
-				ans_z:newIncorrectAnsZ
+				ans_z: newIncorrectAnsZ,
+				variant: variantStr
 			}, function(data){
 				$("#questionCategory").trigger("change");
 			});
