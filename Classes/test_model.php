@@ -1,73 +1,13 @@
 <?php
 
 class Test_Model {
-/*	table prototype
-	create table test_model (
-		testID int unsigned not null auto_increment primary key, 
-		course_type char(25) not null, 
-		length int unsigned not null, 
-		air_condition int unsigned not null, 
-		acft_gen int unsigned not null, 
-		apu int unsigned not null, 
-		autopilot int unsigned not null, 
-		crew_awareness int unsigned not null, 
-		elec int unsigned not null, 
-		emerg_equip int unsigned not null, 
-		fire_prot int unsigned not null, 
-		flt_control int unsigned not null, 
-		fuel int unsigned not null, 
-		hydraulics int unsigned not null, 
-		ice_rain_prot int unsigned not null, 
-		ldg_gear_brk int unsigned not null, 
-		lighting int unsigned not null, 
-		limitations int unsigned not null, 
-		oxy int unsigned not null, 
-		performance int unsigned not null,
-		pneum int unsigned not null, 
-		powerplant int unsigned not null, 
-		pressurization int unsigned not null, 
-		profiles int unsigned not null, 
-		radar int unsigned not null, 
-		stall_prot int unsigned not null,
-		mandatory int unsigned not null
-	)
-
-
-
-	const AIR_CONDITION =  "air_condition";
-	const ACFT_GEN = "acft_gen";
-	const APU = "apu";
-	const AUTOPILOT = "autopilot";
-	const CREW_AWARENESS = "crew_awareness";
-	const ELEC = "elec";
-	const EMERG_EQUIP = "emerg_equip";
-	const FIRE_PROT = "fire_prot";
-	const FLT_CONTROL = "flt_control";
-	const FUEL = "fuel";
-	const HYDRAULICS = "hydraulics";
-	const ICE_RAIN_PROT = "ice_rain_prot";
-	const LDG_GEAR_BRK =  "ldg_gear_brk";
-	const LIGHTING = "lighting";
-	const LIMITATIONS = "limitations";
-	const OXY = "oxy";
-	const PERFORMANCE = "performance";
-	const PNEUM = "pneum";
-	const POWERPLANT = "powerplant";
-	const PRESSURIZATION = "pressurization";
-	const PROFILES = "profiles";
-	const RADAR = "radar";
-	const STALL_PROT = "stall_prot";
-	const MANDATORY = "mandatory";
-	
-	public $systems_topics = array(AIR_CONDITION, ACFT_GEN, APU, AUTOPIOT, CREW_AWARENESS, ELEC, EMERG_EQUIP, FIRE_PROT,
-	 FLT_CONTROL, FUEL, HYDRAULICS, ICE_RAIN_PROT, LDG_GEAR_BRK, LIGHTING, LIMITATIONS, OXY, PERFORMANCE, PNEUM, POWERPLANT, PRESSURIZATION, PROFILES, RADAR, STALL_PROT, MANDATORY);
-*/
 
 	public $course_type;
 	public $length;
 	public $num_questions_from_category = array();
 	public $variant;
 	public $testID;
+	public $modelName;
 		
 	
 	public function __get($name) {
@@ -78,15 +18,30 @@ class Test_Model {
 		$this->$name = $value;
 	} 
 	
-	function __construct($vnt, $cType, $len, $num_q_cArr){
+	function __construct($vnt, $cType, $len, $num_q_cArr, $modelNm){
 			
 		$this->course_type = $cType;
 		$this->length = $len;
 		$this->num_questions_from_spo = $num_q_cArr;
 		$this->variant = $vnt;
+		$this->modelName = $modelNm;
 
 	}
 	
+	private static function getConnection(){
+
+        include 'XJTestDBConnect.php';
+
+		$con = mysql_connect( $host, $usn, $password);		
+
+		if (!$con){
+		  die('Could not connect: ' . mysql_error());
+		 }
+		
+		mysql_select_db($database, $con);
+		return $con;
+	
+	}	
 	
 	//returns an unsaved model for a daily quiz
 	public static function modelForDailyQuiz($systems_array){
@@ -124,15 +79,8 @@ class Test_Model {
 		$questionQuantity = array();
 		$length = 0;
 
-        include 'XJTestDBConnect.php';
-        $con = mysql_connect($host, $usn, $password);
-        
-        if(!$con){
-        	die("could not connect: ".mysql_error());
-        }
-        
-        mysql_select_db($database, $con);
-        
+		$con = self::getConnection();        
+
 		foreach($systems_array as $system){
 			$questionQuantity[$system] = $qRow['COUNT(subcategory)'];
 			$length += $qRow['COUNT(subcategory)'];
@@ -149,15 +97,7 @@ class Test_Model {
 	 	//echo "modelFromID".$id."";
         $model = new self(NULL, NULL, NULL);
         
-        include 'XJTestDBConnect.php';
-        $con = mysql_connect($host, $usn, $password);
-        
-        if(!$con){
-        	die("could not connect: ".mysql_error());
-        }
-        
-        mysql_select_db($database, $con);
-        
+		$con = self::getConnection();        
         
         $fetchModelQuery = "SELECT * FROM `test_model` WHERE `course_type` = '".$type."'";
         $fetchModelResult = mysql_query($fetchModelQuery);
@@ -204,8 +144,8 @@ class Test_Model {
         return $model;
 		
 	}
-	
-	
+
+	//virtual constructor to retrieve test model by ID.	
 	public static function modelWithID($test_model_id){
 		
 		$model = new self(NULL, NULL, NULL, NULL);
@@ -240,72 +180,7 @@ class Test_Model {
 		return $model;        
         		
 	}
-	
-	//virtual constructor to retrieve test model by ID.
-	// deprecated
-	/*
-	 public static function modelFromID($id){
-	 	//echo "modelFromID".$id."";
-        $model = new self(NULL, NULL, NULL);
-        
-        include 'XJTestDBConnect.php';
-        $con = mysql_connect($host, $usn, $password);
-        
-        if(!$con){
-        	die("could not connect: ".mysql_error());
-        }
-        
-        mysql_select_db($database, $con);
-        
-        
-        $fetchModelQuery = "SELECT * FROM `test_model` WHERE `testID` = ".$id."";
-        $fetchModelResult = mysql_query($fetchModelQuery);
-        
-        if(!$fetchModelResult){
-        	echo "no result";
-        }
-        
-        $model->testID = $id;
-        while($row = mysql_fetch_array($fetchModelResult)){
-        	$model->course_type = $row['course_type'];
-        	$model->length = $row['length'];
-			$model->num_questions_from_category['air_condition'] = $row['air_condition'];
-			$model->num_questions_from_category['acft_gen'] = $row['acft_gen'];
-			$model->num_questions_from_category['apu'] = $row['apu'];
-			$model->num_questions_from_category['autopilot'] = $row['autopilot'];
-			$model->num_questions_from_category['crew_awareness'] = $row['crew_awareness'];
-			$model->num_questions_from_category['elec'] = $row['elec'];
-			$model->num_questions_from_category['emerg_equip'] = $row['emerg_equip'];
-			$model->num_questions_from_category['fire_prot'] = $row['fire_prot'];
-			$model->num_questions_from_category['flt_control'] = $row['flt_control'];
-			$model->num_questions_from_category['fuel'] = $row['fuel'];
-			$model->num_questions_from_category['hydraulics'] = $row['hydraulics'];
-			$model->num_questions_from_category['ice_rain_prot'] = $row['ice_rain_prot'];
-			$model->num_questions_from_category['ldg_gear_brk'] = $row['ldg_gear_brk'];
-			$model->num_questions_from_category['ldg_gear_brk'] = $row['ldg_gear_brk'];
-			$model->num_questions_from_category['lighting'] = $row['lighting'];
-			$model->num_questions_from_category['limitations'] = $row['limitations'];
-			$model->num_questions_from_category['oxy'] = $row['oxy'];
-			$model->num_questions_from_category['performance'] = $row['performance'];
-			$model->num_questions_from_category['pneum'] = $row['pneum'];
-			$model->num_questions_from_category['powerplant'] = $row['powerplant'];
-			$model->num_questions_from_category['pressurization'] = $row['pressurization'];
-			$model->num_questions_from_category['profiles'] = $row['profiles'];
-			$model->num_questions_from_category['radar'] = $row['radar'];
-			$model->num_questions_from_category['stall_prot'] = $row['stall_prot'];
-			$model->num_questions_from_category['mandatory'] = $row['mandatory'];
-
-	     }
-	     
-        mysql_close($con);
-
-        return $model;
-        
-
-    }
-	*/
-	
-	
+		
 	public function create_new_model(){
 
 		include "XJTestDBConnect.php";
@@ -328,9 +203,12 @@ class Test_Model {
 	         }
 	      }
 	      
+	     $modelNm = mysql_escape_string($this->modelName);
+	     
+	      
 	    $model_identifier = $randstr;
 		
-		$insertNewModelQuery = "INSERT INTO `testModel` (test_model_id, variant_id, spo_id, count, course_type, test_length) ";
+		$insertNewModelQuery = "INSERT INTO `testModel` (test_model_id, variant_id, spo_id, count, course_type, test_length, name) ";
 		$insertNewModelQuery .= "VALUES ";
 
 		$last_key = end(array_keys($this->num_questions_from_spo));
@@ -341,7 +219,9 @@ class Test_Model {
 			$insertNewModelQuery .= "".$v['id'].",";
 			$insertNewModelQuery .= "".$v['count'].",";
 			$insertNewModelQuery .= "'".$this->course_type."', ";		
-			$insertNewModelQuery .= "".$this->length."";	
+			$insertNewModelQuery .= "".$this->length.", ";	
+			$insertNewModelQuery .= "'{$modelNm}'";
+
 			
 		 if($k == $last_key){
 			$insertNewModelQuery .= ")";			  
@@ -362,33 +242,7 @@ class Test_Model {
 		mysql_close($con);
 		
 	}
-	
-/*	
-	public function create_new_model(){
-		include "XJTestDBConnect.php";
-
 		
-		$con = mysql_connect($host,$usn, $password);
-
-		if (!$con){
-		  die('Could not connect: ' . mysql_error());
-		 }
-		
-		mysql_select_db($database, $con);	
-		
-		$newModelQuery = "INSERT INTO `test_model` (course_type, length, air_condition, acft_gen, apu, autopilot, crew_awareness, elec, emerg_equip, fire_prot, flt_control, fuel, hydraulics, ice_rain_prot, ldg_gear_brk, lighting, limitations, oxy, performance, pneum, powerplant, pressurization, profiles, radar, stall_prot, mandatory) VALUES ('".$this->course_type."', '".$this->length."', '".$this->num_questions_from_category['air_condition']."', '".$this->num_questions_from_category['acft_gen']."', '".$this->num_questions_from_category['apu']."', '".$this->num_questions_from_category['autopilot']."', '".$this->num_questions_from_category['crew_awareness']."', '".$this->num_questions_from_category['elec']."', '".$this->num_questions_from_category['emerg_equip']."', '".$this->num_questions_from_category['fire_prot']."', '".$this->num_questions_from_category['flt_control']."', '".$this->num_questions_from_category['fuel']."', '".$this->num_questions_from_category['hydraulics']."',  '".$this->num_questions_from_category['ice_rain_prot']."', '".$this->num_questions_from_category['ldg_gear_brk']."', '".$this->num_questions_from_category['lighting']."', '".$this->num_questions_from_category['limitations']."', '".$this->num_questions_from_category['oxy']."', '".$this->num_questions_from_category['performance']."','".$this->num_questions_from_category['pneum']."', '".$this->num_questions_from_category['powerplant']."', '".$this->num_questions_from_category['pressurization']."', '".$this->num_questions_from_category['profiles']."', '".$this->num_questions_from_category['radar']."', '".$this->num_questions_from_category['stall_prot']."', '".$this->num_questions_from_category['mandatory']."')";
-		
-		$newModelResult = mysql_query($newModelQuery);
-		if(!$newModelResult) {
-			die("Could not run query ($newModelQuery) ".mysql_error());
-		}
-		
-		mysql_close($con);
-		
-	}
-*/	
-	
-	
 	static function showModeledTestsFromType($variant, $course_type){
 		include "XJTestDBConnect.php";
 		$con = mysql_connect($host,$usn, $password);
@@ -399,7 +253,7 @@ class Test_Model {
 		
 		mysql_select_db($database, $con);
 		
-		$modelQuery = "SELECT `test_model_id`, `spo_name` as spo, `count` FROM `testModel` JOIN `SPO` USING (`spo_id`) WHERE `variant_id` = ".$variant." AND `course_type` = '".$course_type."'";
+		$modelQuery = "SELECT `test_model_id`, `spo_name` as spo, `count`, `name` FROM `testModel` JOIN `SPO` USING (`spo_id`) WHERE `variant_id` = ".$variant." AND `course_type` = '".$course_type."'";
 		
 
 		
@@ -409,37 +263,41 @@ class Test_Model {
 		}
 
 		$models = array();
-		$current_id = "";
+		$current_name = "";
        
 
         $model = array();        
 		$i = 0;        
         while($row = mysql_fetch_array($modelQueryResult)){
 				        
-							        
-			if ($current_id == $row['test_model_id']){
-				$model[$row['spo']] = $row['count'];
-			}
-			
+			$model['test_model_id'] = $row['test_model_id'];        
 
 			
-			else {
-				//push current array to $models
-				$models[$current_id] = $model;
-				//start new array
-				unset($model);
-				$current_id = $row['test_model_id'];
-				$model = array();
-				
-				//set the first item in the array
+			if ($current_name == $row['name']){
 				$model[$row['spo']] = $row['count'];
 			}
+
+
+			else {
+				//push current array to $models
+				if($current_name != ""){
+					//if the current_id is null, this is the first model to add to the models array
+					$models[$current_name] = $model;
+				}
+				//start new array
+				unset($model);
+				$current_name = $row['name'];
+								
+				//set the first item in the array
+				$model[$row['spo']] = $row['count'];
+			}		
 			
+
 	
 	  	}      
 	  	
-	 	$models[$current_id] = $model;
-	 	 	
+	 	$models[$current_name] = $model;
+	 		 		 	 	
 	  	$models = json_encode($models);
 	  	
 	  	return $models;
@@ -447,74 +305,6 @@ class Test_Model {
 		mysql_close($con);
 		
 	}
-
-	//deprecated
-	/*
-	static function showModeledTestsFromType($courseType){
-		include "XJTestDBConnect.php";
-		$con = mysql_connect($host,$usn, $password);
-
-		if (!$con){
-		  die('Could not connect: ' . mysql_error());
-		 }
-		
-		mysql_select_db($database, $con);
-		
-		
-		$modelQuery = "SELECT * FROM `test_model` WHERE `course_type` = '".$courseType."'";
-		
-		$modelResult = mysql_query($modelQuery);
-		
-		if(!$modelResult){
-			echo "could not run query ";
-		}
-		
-		$models = array();
-		
-		while($row = mysql_fetch_array($modelResult)) {
-			$modelAttr = array();
-			$modelAttr['testID'] = $row['testID'];
-			$modelAttr['length'] = $row['length'];
-			$modelAttr['course_type'] = $row['course_type'];
-			$modelAttr['air_condition'] = $row['air_condition'];
-			$modelAttr['acft_gen'] = $row['acft_gen'];
-			$modelAttr['apu'] = $row['apu'];
-			$modelAttr['autopilot'] = $row['autopilot'];
-			$modelAttr['crew_awareness'] = $row['crew_awareness'];
-			$modelAttr['elec'] = $row['elec'];
-			$modelAttr['emerg_equip'] = $row['emerg_equip'];
-			$modelAttr['fire_prot'] = $row['fire_prot'];
-			$modelAttr['flt_control'] = $row['flt_control'];
-			$modelAttr['fuel'] = $row['fuel'];
-			$modelAttr['hydraulics'] = $row['hydraulics'];
-			$modelAttr['ice_rain_prot'] = $row['ice_rain_prot'];
-			$modelAttr['ldg_gear_brk'] = $row['ldg_gear_brk'];
-			$modelAttr['ldg_gear_brk'] = $row['ldg_gear_brk'];
-			$modelAttr['lighting'] = $row['lighting'];
-			$modelAttr['limitations'] = $row['limitations'];
-			$modelAttr['oxy'] = $row['oxy'];
-			$modelAttr['performance'] = $row['performance'];			
-			$modelAttr['pneum'] = $row['pneum'];
-			$modelAttr['powerplant'] = $row['powerplant'];
-			$modelAttr['pressurization'] = $row['pressurization'];
-			$modelAttr['profiles'] = $row['profiles'];
-			$modelAttr['radar'] = $row['radar'];
-			$modelAttr['stall_prot'] = $row['stall_prot'];
-			$modelAttr['mandatory'] = $row['mandatory'];
-			
-			array_push($models, $modelAttr);
-		}
-		
-		mysql_close($con);
-		
-		$models = json_encode($models);
-		
-		
-		return $models;
-
-
-	}
-	*/
 	
 	static function removeModelWithID($test_model_id) {
 		$totalModels = array();

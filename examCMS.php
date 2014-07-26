@@ -1,6 +1,6 @@
 <?php
 session_start();
-session_cache_limiter('nocache');
+//session_cache_limiter('nocache');
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -284,7 +284,7 @@ session_cache_limiter('nocache');
 							if(data.error === "Override password required for re-login") {
 								$("#overridePasswordDiv").css("visibility", "visible");
 								$("#logonMessage").html(data.error);
-								$("#password").val('hi');
+								$("#password").val(pwd);
 								$("#beginExam").removeAttr("disabled");
 								
 							}
@@ -300,8 +300,7 @@ session_cache_limiter('nocache');
 					
 					return false;
 				});
-				
-				
+					
 				function appendDivWithOptions(indexedArr, idLetter, elementToAppendTo){
 					var css = 5;
 					var top = 5;
@@ -415,9 +414,7 @@ session_cache_limiter('nocache');
 					bindUnansweredQuestionClick();
 
 				}
-				
-				
-				
+					
 				function showMarkedQuestions(){
 					$("#questionsMarked").children().remove(); <?php /*remove all divs and refresh marked questions. */?>
 					var mkQuestions = 0;
@@ -435,8 +432,7 @@ session_cache_limiter('nocache');
 					appendDivWithOptions(indexes, idLetter, appendee);
 					bindmarkedQuestionClick();
 				}	
-				
-				
+					
 				function setupReviewQuestions(kvalArray){
 					var htmlToInsert = "";
 					var top = 5;
@@ -568,6 +564,29 @@ session_cache_limiter('nocache');
 					});
 				}
 				
+				//bind arrow key events for quick navigation of questions
+				$(document).keydown(function(e) {
+				    switch(e.which) {
+				        case 37: // left
+						$("#previousButton").click();
+				        break;
+				
+				        case 38: // up
+						console.log('up');				        
+				        break;
+				
+				        case 39: // right
+						$("#nextButton").click();						
+				        break;
+				
+				        case 40: // down
+				        break;
+				
+				        default: return; // exit this handler for other keys
+				    }
+				    e.preventDefault(); // prevent the default action (scroll / move caret)
+				});				
+				
 <?php /*
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////			
 //																																				  //
@@ -671,11 +690,11 @@ session_cache_limiter('nocache');
 					$("#questionsMarked").css("visibility", "hidden");
 					$("#questionsUnanswered").css("visibility", "visible");
 				});
+				
 				$("#questionsMarkedTab").click(function(){
 					$("#questionsMarked").css("visibility", "visible");
 					$("#questionsUnanswered").css("visibility", "hidden");
 				});
-				
 
 				$("#qualCode").change(function(){
 					var l5 = "<option value='l5'>L5</option>";

@@ -8,6 +8,7 @@ $instructorID = $_POST['instructorID'];
 $instructorID = 34125;
 $testPassword = $_POST['testPassword'];
 $overridePassword = $_POST['overridePassword'];
+$variant = 1;
 
 
 //retreive model Object by TYPE
@@ -24,8 +25,8 @@ foreach($model->num_questions_from_category as $cat => $num){
 
 
 //new exam object is initialized with the model object's questions/category specifics. 
-$newTest = new Exam($model->num_questions_from_category, $instructorID, $testPassword, $overridePassword, $model->course_type, $model->length, $model->testID);
-
+$newTest = new Exam($variant, $model->num_questions_from_category, $instructorID, $testPassword, $overridePassword, $model->course_type, $model->length, $model->testID);
+//$newTest = new Exam($model->variant, $model->num_questions_from_category, $instructorID, $testPassword, $overridePassword, $model->course_type, $model->length, $model->testID);
 
 
 //returns an array of question objects generated from the supplied model.

@@ -1,25 +1,5 @@
 <?php
 
-
-
-/*
-create table createdTests (
-genTestID int unsigned not null auto_increment primary key,
-testModelID int unsigned not null,
-genDate date not null,
-course_type char(10) not null,
-length int unsigned not null,
-instructorID char(10) not null
-);
-
-create table usedQuestions (
-genTestID int unsigned not null primary key,
-questionID char(10) not null
-);
-
-*/
-
-
 class Exam {
 
 	public $num_questions_from_category = array();
@@ -42,7 +22,20 @@ class Exam {
 		$this->$name = $value;
 	} 
 	
+	private static function getConnection(){
+
+        include 'XJTestDBConnect.php';
+
+		$con = mysql_connect( $host, $usn, $password);		
+
+		if (!$con){
+		  die('Could not connect: ' . mysql_error());
+		 }
+		
+		mysql_select_db($database, $con);
+		return $con;
 	
+	}		
 	
 	public function __construct($varnt, $numQuestionsArr, $insID, $testPwd, $ovrPwd, $crs_type, $len, $id){
 		
@@ -71,18 +64,13 @@ class Exam {
 */
 	
 	}
-
-
 	
 	public function generateTest(){
 	
 		include 'testClass.php';
-		include "XJTestDBConnect.php";
-		
-		$con = mysql_connect($host, $usn, $password);
 
-		mysql_select_db($database, $con);
-		
+		$con = self::getConnection();
+				
 		$testObj = array();
 		$idArr = array();
 
@@ -196,115 +184,14 @@ class Exam {
 				
 	}
 	
-	//deprecated
-	/*
-	public function generateTest(){
-	
-		include 'testClass.php';
-		include "XJTestDBConnect.php";
-		
-		$con = mysql_connect($host,$usn, $password);
-
-		if (!$con){
-		  die('Could not connect: ' . mysql_error());
-		 }
-		
-		mysql_select_db($database, $con);
-		
-
-		
-		$testObj = array();
-		$idArr = array();
-		
-		foreach($this->num_questions_from_category as $k => $v){
-			if ($v > 0){
-			
-				//select all questionID for subcategory
-				//echo "requested ".$v." for ".$k." ";
-				$getIdQuery = "SELECT `questionID` FROM `questions` WHERE `subcategory` = '".$k."' AND `variant_id` = 1";
-				$idResult = mysql_query($getIdQuery);
-				$amt = mysql_num_rows($idResult);
-				//echo "totalIDs : ".$amt." ";
-				
-				//add results to array.
-				$tmpArr = array();
-				while($row = mysql_fetch_array($idResult)){
-					//echo $row['questionID'].", ";
-					array_push($tmpArr, $row['questionID']);
-				}
-				
-				
-				//randomly select number of questions desired (5 electrical questions, for example)
-				for($i = 0; $i<$v; $i++){
-					shuffle($tmpArr);
-					array_push($idArr, $tmpArr[0]);
-					unset($tmpArr[0]);
-				}
-			}
-		}		
-		
-		
-		//insert generated test into db.
-		
-		$createTestQuery = "INSERT INTO `createdTests` VALUES (null, ".$this->testID.", null, '".$this->course_type."', ".$this->length.", '".$this->instructorID."', '".$this->testPassword."', '".$this->overridePassword."')";
-		
-		$createTestResult = mysql_query($createTestQuery);
-		if(!$createTestResult){
-			echo "couldn't create test";
-		}
-		
-		$timeStampQuery = "SELECT `genTestID`, `genDate` FROM `createdTests` ORDER BY `genDate` DESC LIMIT 1";
-		$timeStampResult = mysql_query($timeStampQuery);
-		if(!$timeStampResult){
-			echo "could not get timestamp";
-		}
-		
-		//fetch generated date and testID AFTER a test has been created.
-		while($row = mysql_fetch_array($timeStampResult)){
-			
-			$this->timestamp = $row['genDate'];
-			$this->generatedID = $row['genTestID'];
-
-		}
-		
-
-		//instantiate new question object for each questionID.
-		foreach ($idArr as $value) {
- 		   $question = Question::questionFromID($value);
- 		   $testQ = $question->generate_test_question();
-
-			$insertTestQuestionQuery = "INSERT INTO `usedQuestions` VALUES(".$this->generatedID.",".$testQ['questionID'].", '".$testQ['type']."', '".$testQ['subcategory']."', '".$testQ['questionText']."', '".$testQ['a']."', '".$testQ['b']."', '".$testQ['c']."', '".$testQ['d']."', '".$testQ['key']."')";
- 		   $tqResult = mysql_query($insertTestQuestionQuery);
- 		   
- 		   if(!$tqResult){
- 		   	  $this->gen_error = $this->gen_error.' Invalid test question insertion query: ' . mysql_error();
- 		   }
-		}
-		
-		
-			//fetch attributes of teach test question and insert into the questionsUsed table.
-
-		
-		array_push($testObj, $testQ);
-		
-		
-	}
-	*/
-	
-	
 	public static function fetchQuestionsForTest($studentEmpNo, $testPassword, $ovrdPassword){
 		$finalTest = array();
 		$retrievedOverridePwd = "";
-		include 'testClass.php';
-		include "XJTestDBConnect.php";
-		$con = mysql_connect($host,$usn, $password);
 
-		if (!$con){
-		  die('Could not connect: ' . mysql_error());
-		 }
-		
-		mysql_select_db($database, $con);
-	
+
+		include 'testClass.php';
+		$con = self::getConnection();
+			
 		$fetchIdQuery = "SELECT `genTestID`, unix_timestamp(`genDate`), overridePassword FROM `createdTests` WHERE `testPassword` = '".$testPassword."'";
 		$fetchIdResult = mysql_query($fetchIdQuery);
 		if(!$fetchIdResult){
@@ -430,21 +317,11 @@ class Exam {
 		}
 		
 	}
-	
-	
-	
 
 	public static function gradeExam($testPassword, $employeeNo, $firstName, $lastName, $classDate, $syllabus, $qualCode, $retrain, $qaArr, $doNotGrade){
 		include 'testClass.php';
-		include "XJTestDBConnect.php";
-		$con = mysql_connect($host,$usn, $password);
 
-		if (!$con){
-		  die('Could not connect: ' . mysql_error());
-		 }
-		
-		mysql_select_db($database, $con);
-		
+		$con = self::getConnection();		
 		
 		//object to return:
 		$resultsObject = array();
@@ -544,9 +421,6 @@ class Exam {
 		
 				
 	}
-	
-	
-	
 	
 	public function inspectTest() {
 		$testData = array();

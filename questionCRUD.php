@@ -3,8 +3,8 @@
 <head>
 	<title>Question Modeling</title>
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8">	
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-<!-- 	<script src="jquery.js"></script>	 -->
+<!-- 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script> -->
+	<script src="jquery.js"></script>	
 	<script src="systemChoices.js"></script>   <!-- Imports ERJ / CRJ Aircraft System Lists --> 
 	<style type='text/css'>
 		@import url("CSS/questionCRUD.css");

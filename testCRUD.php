@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+d<!DOCTYPE html>
 <html>
 
 	<head>
@@ -262,6 +262,7 @@
 						var len = $("#testLength").val();
 						var typ = $("#courseType").val();
 						var fleet_type = $("#fleet").val();
+						var modelNm = $("#newTestModelName").val();
 						
 						$("#newTestModelTable :input[class='spo_count_spec']").each(function(){
 							var input = $(this);
@@ -273,7 +274,8 @@
 							variant: fleet_type,
 							length: len,
 							course_type: typ,
-							model: spoAndCount
+							model: spoAndCount,
+							modelName: modelNm
 						}, function(data){});
 						return false;
 					});
@@ -293,12 +295,13 @@
 							
 							$.each(data, function(key, values){	
 								
-								modelTableHTML += "<table id="+key+" class='modelTable'><tr class='testModel'><td><button id="+key+" value='use'>use</button><button value='delete' id="+key+">delete</button></td></tr><td>Model ID: "+key+"</td></tr>";
+								modelTableHTML += "<table id="+values.test_model_id+" class='modelTable'><tr class='testModel'><td><button id="+values.test_model_id+" value='use'>use</button><button value='delete' id="+values.test_model_id+">delete</button></td></tr><td>Name: "+key+"</td></tr>";
 								
-								//console.log(key);
 								
 								$.each( values, function(k, v) {
-									modelTableHTML += "<tr><td>"+k+": </td><td>"+v+"</td></tr>";
+									if (k != 'test_model_id'){
+										modelTableHTML += "<tr><td>"+k+": </td><td>"+v+"</td></tr>";
+									}									
 								});								
 																
 								modelTableHTML += "</table>";
@@ -475,6 +478,9 @@
 							</tr>
 							<tr>
 								<td>System</td><td>No. of questions</td>
+							</tr>
+							<tr>
+								<td>Name</td><td><input type='text' id='newTestModelName' cols=25/></td>
 							</tr>
 								<?php /*SPO name and count populated here */ ?>
 

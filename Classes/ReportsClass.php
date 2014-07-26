@@ -27,8 +27,6 @@ class Reports {
 					
 			return $dateRange;
 	}
-
-
 	
 	public function __get($name) {
 		return $this->$name;
@@ -38,25 +36,10 @@ class Reports {
 		$this->$name = $value;
 	} 
 	
-	
 	private static function getConnection(){
-			//offline connection info.
 
-			$usn = 'root';
-			$password = 'root';
-			$database = 'xjtest';
-			$host = 'localhost';
-			
-/*
-			
-			//online connection info	
-			$host = 'mdhblog.db'; 
-			$usn = 'gv3zF'; 
-			$password = 'p3rn1c10uzSquId'; 
-			$database = 'xjtest';
-	
-*/
-	
+        include 'XJTestDBConnect.php';
+
 		$con = mysql_connect( $host, $usn, $password);		
 
 		if (!$con){
@@ -66,8 +49,8 @@ class Reports {
 		mysql_select_db($database, $con);
 		return $con;
 	
-	}
-	
+	}	
+		
 	public static function questionsForTest($testID){
 			$testQuestionsAndTimeout = array();
 			$testQuestions = array();
@@ -241,7 +224,7 @@ class Reports {
 			return $createdTests;
 		}
 		
-		public static function reportForStudent($instructorEmployeeNo, $admin, $studentEmpNo, $studentReportTestDate){
+	public static function reportForStudent($instructorEmployeeNo, $admin, $studentEmpNo, $studentReportTestDate){
 
 			$con = self::getConnection();
 			
@@ -319,9 +302,9 @@ class Reports {
 			return $report;
 			
 		}	
-		
-		//returns all studentTestRecords for .csv (not json)
-		public static function cumulativeTestStats(){
+	
+	//returns all studentTestRecords for .csv (not json)
+	public static function cumulativeTestStats(){
 		
 			$con = self::getConnection();
 						
@@ -359,11 +342,8 @@ class Reports {
 			
 			return $statsReport;
 		}
-		
-		
-		
-		
-		public static function showAllScores($year, $orgType, $orgSpec){
+	
+	public static function showAllScores($year, $orgType, $orgSpec){
 
 			$con = self::getConnection();
 			
@@ -420,9 +400,9 @@ class Reports {
 			return $statsReport;
 			
 		}
-		
-		//gets ALL instructors authorized on SJTester.
-		public static function getInstructors(){
+	
+	//gets ALL instructors authorized on SJTester.
+	public static function getInstructors(){
 	
 			$con = self::getConnection();		
 			
@@ -453,8 +433,8 @@ class Reports {
 			$instructors = json_encode($instructors);
 			return $instructors;
 		}
-		
-		public static function getInfoForInstructor($idForInstructor){
+	
+	public static function getInfoForInstructor($idForInstructor){
 
 			$con = self::getConnection();
 					
@@ -488,8 +468,8 @@ class Reports {
 			return $instructorInfo;
 						
 		}
-		
-		public static function deleteInstructor($idForInstructor){
+	
+	public static function deleteInstructor($idForInstructor){
 		
 			$con = self::getConnection();
 					
@@ -512,8 +492,8 @@ class Reports {
 			$deleteMessage = json_decode($deleteMessage);
 			return $deleteMessage;
 		}
-		
-		public static function editInstructor($idForInstructor, $firstName, $lastName, $insPassword, $admin, $option) {
+	
+	public static function editInstructor($idForInstructor, $firstName, $lastName, $insPassword, $admin, $option) {
 
 			$con = self::getConnection();
 					
@@ -547,8 +527,8 @@ class Reports {
 			return $editMessage;
 		
 		}
-		
-		public static function ejectQuestion($testID, $questionID){
+	
+	public static function ejectQuestion($testID, $questionID){
 		
 			$con = self::getConnection();
 					
@@ -642,8 +622,8 @@ class Reports {
 			$resultsChangeReport = json_encode($resultsChangeReport);
 			return $resultsChangeReport;
 		}
-		
-		public static function getInstructorsForTestDate($testDate){
+	
+	public static function getInstructorsForTestDate($testDate){
 
 			$con = self::getConnection();
 			
@@ -666,8 +646,8 @@ class Reports {
 			$instructors = json_encode($instructors);
 			return $instructors;
 		}
-		
-		public static function getTestDates(){
+	
+	public static function getTestDates(){
 		
 			$con = self::getConnection();
 
@@ -689,8 +669,8 @@ class Reports {
 			return $testDates;
 		
 		}
-		
-		public static function getTestDatesForInstructor($instructorEmployeeNo){
+	
+	public static function getTestDatesForInstructor($instructorEmployeeNo){
 
 			$con = self::getConnection();					
 			
@@ -712,8 +692,8 @@ class Reports {
 			return $testDates;
 
 		}
-		
-		public static function getScoresForClass($testDate){
+	
+	public static function getScoresForClass($testDate){
 
 			$con = self::getConnection();		
 			
@@ -765,8 +745,8 @@ class Reports {
 			$scoresForClass = json_encode($scoresForClass);
 			return $scoresForClass;
 		}
-		
-		public static function spoAnalysisForClass($testDate, $instructorID){
+	
+	public static function spoAnalysisForClass($testDate, $instructorID){
 		
 			$con = self::getConnection();
 			
@@ -834,7 +814,7 @@ class Reports {
 			return $perSpoAnalysis;
 		}
 
-		public static function spoAnalysisForQuarter($orgSpec, $year){
+	public static function spoAnalysisForQuarter($orgSpec, $year){
 		$con = self::getConnection();
 
 		$dateRange = self::dateRangeForQuarter($orgSpec,$year);
@@ -889,8 +869,8 @@ class Reports {
 		return $perSpoAnalysis;
 	
 	}
-	
-		public static function spoListForAcftType() {
+
+	public static function spoListForAcftType() {
 	
 			$con = self::getConnection();
 	
@@ -914,8 +894,8 @@ class Reports {
 			$spoList = json_encode($spoList);
 			return $spoList;
 		}
-		
-		public static function eoListforSPO($spo_id) {
+	
+	public static function eoListforSPO($spo_id) {
 		$con = self::getConnection();
 
 		$eoList = array();		

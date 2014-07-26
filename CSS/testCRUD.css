@@ -104,6 +104,10 @@ select {
 	color: #454545;
 }
 
+#newTestModelName {
+	width: 100px;
+}
+
 .button {
   margin: 0 0 0 5px;
   text-indent: -9999px;

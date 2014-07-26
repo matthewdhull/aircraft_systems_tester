@@ -36,7 +36,21 @@ class Question {
 	function __set($name, $value) {
 		$this->$name = $value;
 	} 
-			
+
+	private static function getConnection(){
+
+        include 'XJTestDBConnect.php';
+
+		$con = mysql_connect( $host, $usn, $password);		
+
+		if (!$con){
+		  die('Could not connect: ' . mysql_error());
+		 }
+		
+		mysql_select_db($database, $con);
+		return $con;
+	
+	}	
 	
 	//returns a the letter of the correct answer ("A", "D", etc.)
 	function get_answer_key(){
@@ -46,7 +60,6 @@ class Question {
 			}
 		}
 	}
-
 	
 	private function set_answer_choices() {
 		if ($this->type == "tf") {
@@ -66,7 +79,6 @@ class Question {
 		$this->get_answer_key();
 		
 	}
-	
 		
 	private function set_question_wordings($arr){
 		$newArr = array();
@@ -75,7 +87,6 @@ class Question {
 		$this->question_wordings = $newArr;
 		
 	}
-	
 		
 	private function evaluateQuestionType($string){
 		if($string == "tf"){
@@ -94,15 +105,9 @@ class Question {
 	}
 
 	private function getVariantId($variantStr) {
-		include 'XJTestDBConnect.php';
-		$con = mysql_connect($host,$usn, $password);
 
-		if (!$con){
-		  die('Could not connect: ' . mysql_error());
-		 }
-		
-		mysql_select_db($database, $con);	
-		
+		$con = self::getConnection();		
+				
 		$variant_id;	
 
 		$get_variant_id_query = "SELECT `variant_id` FROM `variant` WHERE `variant_name` = '".$variantStr."'";
@@ -167,14 +172,7 @@ class Question {
 		$question = new Question(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 		$question->questionID = $id;
 
-		include 'XJTestDBConnect.php';
-		$con = mysql_connect($host,$usn, $password);
-
-		if (!$con){
-		  die('Could not connect: ' . mysql_error());
-		 }
-		
-		mysql_select_db($database, $con);	
+		$con = self::getConnection();
 				
 		$fetchQuestionQuery = "SELECT questions.type, questions.category, questions.spo_id, SPO.spo_name AS `spo`, EO.element_name AS `eo`, questions.correct_answer, questions.alt_correct_answer, questions.last_correct_answer, questions.ans_x, questions.ans_y, questions.ans_z, questions.question_a, questions.question_b FROM `questions` JOIN `SPO` USING (`spo_id`) JOIN `EO` USING (`eo_id`) WHERE `questionID` = ".$id."";	
 		
@@ -382,15 +380,9 @@ class Question {
 	
 	public function insert_new_question($qType) {
 
-		include 'XJTestDBConnect.php';
-		$con = mysql_connect($host,$usn, $password);
-
-		if (!$con){
-		  die('Could not connect: ' . mysql_error());
-		 }
 		
-		mysql_select_db($database, $con);	
-		
+		$con = self::getConnection();
+				
 		//escape strings prior to insertion
 		$question_a = mysql_real_escape_string($this->question_wordings['a']);
 		$question_b = mysql_real_escape_string($this->question_wordings['b']);
@@ -522,16 +514,9 @@ class Question {
 	}
 	
 	public function update_question($questionID){
-		include 'XJTestDBConnect.php';
-		
-		$con = mysql_connect($host,$usn, $password);
 
-		if (!$con){
-		  die('Could not connect: ' . mysql_error());
-		 }
-		
-		mysql_select_db($database, $con);	
-		
+
+		$con = self::getConnection();		
 				
 				
 		$question_a = mysql_real_escape_string($this->question_wordings['a']);
@@ -575,16 +560,7 @@ class Question {
 		/* echo "view questions called with '".$subcategory."'"; */
 		$questions = array();
 	
-		include 'XJTestDBConnect.php';
-	
-		$con = mysql_connect($host,$usn, $password);
-
-		if (!$con){
-		  die('Could not connect: ' . mysql_error());
-		 }
-		
-		mysql_select_db($database, $con);	
-		
+		$con = self::getConnection();		
 
 $questionsQuery = "select questions.questionID, questions.category, questions.subcategory, SPO.spo_name, EO.element_name, TPO.tpo_number, SPO.spo_number, EO.eo_no, variant.variant_id, questions.type, questions.correct_answer, questions.alt_correct_answer, questions.last_correct_answer, questions.ans_x, questions.ans_y,questions.ans_z, questions.question_a, questions.question_b FROM questions, EO, SPO, TPO, variant WHERE questions.eo_id = EO.eo_id AND questions.spo_id = SPO.spo_id AND SPO.tpo_id = TPO.tpo_id AND variant.variant_name = '".$variant."' AND questions.variant_id = variant.variant_id AND questions.spo_id = ".$spo." ORDER BY EO.eo_no ASC";
 
@@ -631,16 +607,8 @@ $questionsQuery = "select questions.questionID, questions.category, questions.su
 	
 		$questions = array();
 		
-		include 'XJTestDBConnect.php';
-	
-		$con = mysql_connect($host,$usn, $password);
-
-		if (!$con){
-		  die('Could not connect: ' . mysql_error());
-		 }
-		
-		mysql_select_db($database, $con);	
-		
+		$con = self::getConnection();		
+				
 		$questionQuery = "SELECT * FROM `questions` WHERE `questionID` = ".$questionID."";
 		
 		$questionResult = mysql_query($questionQuery);
@@ -685,15 +653,7 @@ $questionsQuery = "select questions.questionID, questions.category, questions.su
 		
 		$message = array();
 		
-		include 'XJTestDBConnect.php';
-		$con = mysql_connect($host,$usn, $password);
-
-		if (!$con){
-		  die('Could not connect: ' . mysql_error());
-		 }
-		
-		mysql_select_db($database, $con);	
-		
+		$con = self::getConnection();				
 		
 		$deleteQuery = "DELETE FROM questions where questionID = ".$qID."";
 		$deleteResult = mysql_query($deleteQuery);
