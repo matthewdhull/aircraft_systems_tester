@@ -10,7 +10,6 @@ $variant = $_POST['variant'];
 $modelName = $_POST['modelName'];
 
 
-$modelName = "daily 1";
 
 //instantiate a new test model object and insert the values from testCRUD.html into the database.
 $newTestModel = new Test_Model($variant, $course_type, $length, $model, $modelName);

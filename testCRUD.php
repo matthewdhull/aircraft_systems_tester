@@ -1,4 +1,4 @@
-d<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 
 	<head>
@@ -58,7 +58,7 @@ d<!DOCTYPE html>
 						}, function(data){
 							$.each(data, function(key, value){	
 								//console.log(key+" "+value);
-								spo += "<tr class='qForSPO'><td><label for='"+value.spo_id+"'>"+value.spo+" ("+value.count+")</label></td><td><input class='spo_count_spec' id='"+value.spo_id+"' name='"+value.spo+"' value=0 readonly><div class='inc button'>+</div><div class='dec button'>-</div></td></tr>";
+								spo += "<tr class='qForSPO'><td><label for='"+value.spo_id+"'>"+value.spo+" (<span style='color: rgb(54,136,251)'>"+value.count+"</span>)</label></td><td><input class='spo_count_spec' id='"+value.spo_id+"' name='"+value.spo+"' value=0 readonly><div class='inc button'>+</div><div class='dec button'>-</div></td></tr>";
 																
 							});	
 							
@@ -477,10 +477,10 @@ d<!DOCTYPE html>
 								</td>
 							</tr>
 							<tr>
-								<td>System</td><td>No. of questions</td>
+								<td>Name</td><td><input type='text' id='newTestModelName' /></td>
 							</tr>
 							<tr>
-								<td>Name</td><td><input type='text' id='newTestModelName' cols=25/></td>
+								<td>SPO</td><td>No. of questions</td>
 							</tr>
 								<?php /*SPO name and count populated here */ ?>
 
