@@ -774,7 +774,7 @@ class Reports {
 			}
 			
 			//get list of SPO's used for the test (identified by genTestID)
-			$spoQuery = "SELECT DISTINCT questions.spo, SPO.spo_name FROM usedQuestions, SPO, questions WHERE usedQuestions.genTestID = ".$genTestID." AND usedQuestions.questionID = questions.questionID AND questions.spo = SPO.spo_number";
+			$spoQuery = "SELECT DISTINCT questions.spo_id, SPO.spo_name FROM usedQuestions, SPO, questions WHERE usedQuestions.genTestID = ".$genTestID." AND usedQuestions.questionID = questions.questionID AND questions.spo_id = SPO.spo_number";
 			$spoResult = mysql_query($spoQuery, $con);
 			if(!$spoResult) {
 				die("Could not run query ($spoQuery) ".mysql_error());
@@ -783,7 +783,7 @@ class Reports {
 			//add all results to the $spoList
 			while($row = mysql_fetch_array($spoResult)){
 				$spo = array();
-				$spo['spo_number'] = $row['spo'];
+				$spo['spo_number'] = $row['spo_id'];
 				$spo['spo_name'] = $row['spo_name'];
 				array_push($spoList, $spo);
 			}
@@ -791,7 +791,7 @@ class Reports {
 			//spo number, spo name, percentage.
 			foreach($spoList as $singleSpec){
 				$spoWithPercentageCorrect = array();
-				$getAmountAskedAndAmountCorrectQuery = "select count(testResults.questionID), SUM(testResults.correct) from testResults, questions where testResults.questionID = questions.questionID and testResults.genTestID = ".$genTestID." and questions.spo = '".$singleSpec['spo_number']."'";
+				$getAmountAskedAndAmountCorrectQuery = "select count(testResults.questionID), SUM(testResults.correct) from testResults, questions where testResults.questionID = questions.questionID and testResults.genTestID = ".$genTestID." and questions.spo_id = '".$singleSpec['spo_number']."'";
 				$queryResult = mysql_query($getAmountAskedAndAmountCorrectQuery);
 				if(!$queryResult){
 					die("Could not run query ($getAmountAskedAndAmountCorrectQuery) ".mysql_error());
