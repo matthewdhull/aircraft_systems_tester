@@ -45,7 +45,7 @@ class Test_Model {
 	
 	//returns an unsaved model for a daily quiz
 	public static function modelForDailyQuiz($systems_array){
-		$model = new self(NULL, NULL, NULL);
+		$model = new self(NULL, NULL, NULL, NULL, NULL);
 		$model->course_type = "DQUIZ";
 		
 		//set all systems to zero questions and then fill in as needed after querying the database for the desired systems in the quiz
@@ -95,7 +95,7 @@ class Test_Model {
 	
 	public static function modelForType($type) {
 	 	//echo "modelFromID".$id."";
-        $model = new self(NULL, NULL, NULL);
+        $model = new self(NULL, NULL, NULL, NULL, NULL);
         
 		$con = self::getConnection();        
         
@@ -148,7 +148,7 @@ class Test_Model {
 	//virtual constructor to retrieve test model by ID.	
 	public static function modelWithID($test_model_id){
 		
-		$model = new self(NULL, NULL, NULL, NULL);
+		$model = new self(NULL, NULL, NULL, NULL, NULL);
 		
         include 'XJTestDBConnect.php';
         $con = mysql_connect($host, $usn, $password);

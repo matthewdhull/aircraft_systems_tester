@@ -109,6 +109,10 @@ select {
 	color: #454545;
 }
 
+#createdTestResults p {
+	font-family: "Times New Roman", serif;
+}
+
 .button {
   margin: 0 0 0 5px;
   text-indent: -9999px;

@@ -15,10 +15,10 @@
 				include 'Classes/contentClass.php';
 				ContentSnippets::showFavicon();
 			?>
+				
 			
-			
-<!-- 			<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script> -->
-			<script src="jquery.js"></script>
+			<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<!-- 			<script src="jquery.js"></script> -->
 			
 			<script type="text/javascript">
 				$(document).ready(function(){
@@ -227,8 +227,9 @@
 					function bindUseEvents(){
 						$("#modelResults :button[value=use]").click(function(){
 							var tID = $(this).attr("id");
+							console.log("tid: "+tID);
 							passwordPair();
-							$("#idToUse").val(tID);
+							$("#idToUse").attr("value", tID);
 							return false;
 						});
 					}
@@ -410,7 +411,7 @@
 						</tr>
 						<tr>
 							<td><select id="viewModeledTestByType">
-									<option value="SY9">SYS</option>
+									<option value="SYS">SYS</option>
 									<option value="UPG">UPG</option>
 									<option value="INS">INS</option>
 							</select></td>
@@ -434,7 +435,7 @@
 						<label for="overridePassword">Override Password</label>
 						<input id="overridePassword" type="text" readonly>
 						<label for="idToUse">Model Assigned?</label>
-						<input id="idToUse" value="NO" type="text" readonly>
+						<input id="idToUse" type="text" readonly>
 						<button id="createTestButton" value="create">create</button>
 						<div id="createdTestResults">
 							<p></p>
@@ -459,7 +460,7 @@
 								<td>Course Type: </td>
 								<td>
 									<select id="courseType">
-										<option value="SY9">SY9</option>
+										<option value="SYS">SYS</option>
 										<option value="UPG">UPG</option>
 										<option value="INS">INS</option>										
 									</select>

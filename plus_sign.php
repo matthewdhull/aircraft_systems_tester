@@ -53,7 +53,7 @@
 						var o = data.override;
 						var	insID = 1;
 						if ((divID === "nh_test") || (divID === "nh_test_title")){
-							testType = "SY9";
+							testType = "SYS";
 						}
 						else if((divID === "upg_test")||(divID === "upg_test_title")){
 							testType = "UPG";
@@ -209,7 +209,7 @@
 				<div class="override_password_title dark_red">Override Password</div>
 			</div>		
 		</div>			
-		<div id="nh_test" value="SY9" class="plus_box blue" >
+		<div id="nh_test" value="SYS" class="plus_box blue" >
 			<div id="nh_test_title">NH</div>
 			<div class="password_info">
 				<div class="test_access_code"></div>
