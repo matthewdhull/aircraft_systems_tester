@@ -1,0 +1,427 @@
+@import url("common.css");
+
+button {
+	width: 120px;
+	height: 30px;
+}
+
+#instructorTasks select {
+	width: 160px;
+}
+
+
+li {
+	list-style: none;
+}
+
+
+table {
+	width: 775px;
+	margin-top: 5px;
+	margin-left: auto;
+	margin-right: auto;
+	left: 0px;
+	right: 0px;
+}	
+
+h4 {
+	text-align: center;
+}
+
+.center {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+
+.cornflowerBlue {
+	display: none;
+	height: auto;
+	width: auto;
+	color: #fff;
+	background-color: #a1a6d2;
+	border: 1px solid #fff;
+}
+
+.avgList {
+	height: auto;
+	width: auto;
+}
+
+.arrow {
+	margin-bottom: 3px;
+}
+
+.arrow-right {
+        width: 0;
+        height: 0;
+        border-top: 15px solid transparent;
+        border-bottom: 15px solid transparent;
+
+        border-left: 15px solid #5c5f79;
+}
+
+.arrow-down {
+        width: 0;
+        height: 0;
+        border-left: 15px solid transparent;
+        border-right: 15px solid transparent;
+
+        border-top: 15px solid #5c5f79;
+}
+
+
+body {
+	background-color: rgb(240,240,240);
+	font-family: sans-serif;
+}
+
+.blue {
+  background-color: rgb(147,206,224);
+}
+
+.blue:hover {
+  background-color: #83a2c8;
+}
+
+.dark_blue {
+	color: #54677f;
+}
+
+.gray {
+  background-color: rgb(220,220,220);
+}
+
+.gray:hover {
+	 background-color: rgb(200,200,200);
+}
+
+.dark_gray {
+	color: rgb(110,110,110);
+}
+
+.red {
+  background-color: rgb(228,111,93);
+}
+
+.red:hover {
+  background-color: #bd5c4d;
+}
+
+.dark_red {
+	color: #7f3e34;
+}
+
+.yellow {
+  background-color:  rgb(255,242,100);
+}
+
+.yellow:hover {
+  background-color: #eae234;
+}
+
+.dark_yellow {
+	color: #7f7931;	
+}
+
+.plus_box {
+	height: 100px;
+	width: 100px;
+}
+
+.plus_sign {
+	height: 80px;
+	width: 80px;
+	position: relative;
+	top: 10px;
+	left: 10px;
+}
+
+.vertical_bar, .horizontal_bar {
+	background-color:white;
+	position: relative;	
+}
+
+.vertical_bar {
+	height: 60px;
+	width: 10px;
+	left: 35px;
+	top: 10px;
+}
+
+.horizontal_bar {
+	width: 60px;
+	height: 10px;
+	left: 10px;
+	bottom: 25px;
+}
+
+
+#loginDiv, table {
+	border: #c9cacc 1px solid;
+}
+				
+#loginDiv {
+	position: absolute;
+	top: 150px;
+	width: 330px;
+	height: 180px;
+	padding: 10px;
+}
+
+#loginDiv table {
+	border: none;
+	width: auto;
+}
+
+#loginMessage, #loggedInMessage {
+	font-size: 80%;
+}
+
+#logoutDiv {
+	position: absolute;
+	left: 70%;
+	top: 5px;
+	margin-right: 10px;
+	background-color: transparent;
+	color: #f5f6fc;
+}
+
+#logoutDiv ul{
+	list-style-type: none;
+	display: inline;
+}
+
+#logoutDiv a{
+	text-decoration: none;
+	color: #414357;
+	font-style: italic;
+	font-size: 90%;
+}
+
+#make_test_controls {
+	position: relative;
+	margin-left: 416px;
+	margin-top: 100px;	
+}
+
+#instructorTasks {
+	position: relative;
+	float: left;
+	height: auto;
+}
+
+#instructorTasks table {
+	
+}
+
+#adminTasks {
+	position: absolute;
+	top: 480px;
+	height: 285px;
+}
+
+#reportTable {
+	padding: 5px;
+}
+
+#reportTable:before {
+	content: "Generate test reports";
+}
+
+#infoDiv {
+	position: absolute;
+	margin-top: 20px;	
+	margin-left: auto;
+	margin-right: auto;	
+	left: 0px;
+	right: 0px;
+	width: 1000px;
+	top: 730px;
+}
+
+#infoDiv table {
+	margin-top: 50px;
+	width: 900px;
+}
+
+#build_test, #nh_test, #upg_test, #daily_quiz {
+	position: relative;
+	margin:10px;
+}
+
+#upg_test, #daily_quiz {
+	visibility: visible;
+}
+
+#build_test{
+}
+
+#nh_test {
+	float:left;
+	left: -240px;
+/*
+	left: -120px;
+	width: 250px;
+	z-index: 1000;
+*/
+}
+
+#nh_test_title{
+	position:relative;
+	float:left;
+	top: 12px;
+	margin-left: 6px;
+	color: white;
+	font-size: 65px;
+	letter-spacing: -7px;	
+	cursor: default;
+}
+
+#upg_test_title{
+	position: relative;
+	float: left;
+	top: 25px;
+	margin-left: 6px;
+	color: white;
+	font-size: 40px;
+	letter-spacing: -2px;
+	cursor: default;
+}
+
+#daily_quiz_title {
+	color: white;
+	position: relative;
+	float: left;
+	margin-top: 7px;
+	margin-left: 4px;
+	text-align: center;
+	font-size: 30px;
+	cursor: default;
+}
+
+
+.password_info{
+	display: none;
+}
+
+.test_access_code {
+	font-size: 28px;
+ 	color: white;	
+ 	float: left;
+ 	position: relative;
+ 	margin-left: 100px;
+ 	top: -70px;
+}
+
+.password_title {
+	position: relative;
+	float: left;
+	text-align: center;
+	height: 20px;
+	width: 80px;
+	top: -75px;
+	margin-left: 110px;
+	line-height: 150%;
+	font-size: 10px;
+}
+
+
+.override_password{
+	position: relative;
+	float: left;
+	height:  15px;
+	font-size: 14px;
+	color:white;
+	text-align: center;
+	margin-left: 125px;
+	top: -72px;
+}
+
+.override_password_title{
+	position: relative;
+	float: left;
+	font-size: 10px;
+	width: 90px;
+	text-align: center;
+	margin-left: 105px;
+	top: -73px;
+}
+
+#upg_test div.password_info div.test_access_code {
+	top: -25px;
+} 
+
+#upg_test div.password_info div.password_title, #upg_test div.password_info div.override_password, #upg_test div.password_info div.override_password_title{
+	top: -30px;
+}
+
+#upg_test{
+	float:left;
+	left: -120px;
+}
+
+#daily_quiz{
+	float: left;
+}
+
+#daily_quiz_builder {
+	position: relative;
+	float: left;
+	width: 1234px;
+	height: 230px;
+	display: none;
+/* 	background-color: #d3d3d3; */
+	
+}
+
+
+.systems_day_container{
+	font-size: 11px;
+	position: relative;
+	float: left;
+	background-color: #dfdfdf;
+	width: 170px;
+	height: 228px;
+	margin: 1px;
+	padding-left: 4px;
+}
+
+.subject {
+	height: 30px;
+}
+
+.subject_header{
+	text-align: center;
+	font-size: 20px;
+	line-height: 180%;
+	padding-top: 5px;
+	height: 40px;
+	color: #b20303;
+	
+}
+
+#day1 {
+  background-color:  rgb(255,242,100);
+}
+
+#day2 {
+  background-color:  rgb(255,230,90);  
+}
+#day3 {
+  background-color:  rgb(255,220,80);
+}
+#day4 {
+  background-color:  rgb(255,210,70);
+}
+#day5 {
+  background-color:  rgb(255,200,60);
+}
+#day6 {
+  background-color:  rgb(255,190,50);
+}
+#day7 {
+  background-color:  rgb(255,180,40);
+}
+
+
