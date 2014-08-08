@@ -640,7 +640,7 @@ session_start();
 								
 								<?php /*allow student to finish test if score is perfect. Else: enable review. */?>
 								if(data.incorrectAnswers === 0){
-									$("#reviewMessage").html("There are no questions to review. Allow Instructor to record your score. You may then close the browser.");
+									//$("#reviewMessage").html("There are no questions to review. Allow Instructor to record your score. You may then close the browser.");
 									clearQuestionFields("");
 									$("#gradeTestMessage").html("");
 									

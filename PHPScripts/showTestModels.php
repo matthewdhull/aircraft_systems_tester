@@ -8,4 +8,5 @@ $course_type = $_POST['course_type'];
 
 echo Test_Model::showModeledTestsFromType($variant, $course_type);
 
+
 ?>

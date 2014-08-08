@@ -17,8 +17,7 @@ $lastName = $_POST['lastName'];
 $password = $_POST['password'];
 $admin = $_POST['admin'];
 $spo_id = $_POST['spo_id'];
-
-
+$variant = $_POST['variant'];
 
 
 $instructorEmployeeNo = $_SESSION['employeeNo'];
@@ -91,6 +90,10 @@ if(isset($_SESSION['name'])){
 	elseif($option == "getEOs"){
 		echo Reports::eoListforSPO($spo_id);
 	}
+}
+
+if($option == "getEnteredEOs"){
+	echo Reports::questionsEnteredEoListForSpo($variant, $spo_id);
 }
 
 ?>

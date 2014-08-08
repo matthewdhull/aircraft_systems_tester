@@ -5,6 +5,7 @@ class Test_Model {
 	public $course_type;
 	public $length;
 	public $num_questions_from_category = array();
+	public $requiredEOs = array();
 	public $variant;
 	public $testID;
 	public $modelName;
@@ -18,11 +19,12 @@ class Test_Model {
 		$this->$name = $value;
 	} 
 	
-	function __construct($vnt, $cType, $len, $num_q_cArr, $modelNm){
+	function __construct($vnt, $cType, $len, $num_q_cArr, $rqdEOs, $modelNm){
 			
 		$this->course_type = $cType;
 		$this->length = $len;
 		$this->num_questions_from_spo = $num_q_cArr;
+		$this->requiredEOs = $rqdEOs;
 		$this->variant = $vnt;
 		$this->modelName = $modelNm;
 
@@ -95,7 +97,7 @@ class Test_Model {
 	
 	public static function modelForType($type) {
 	 	//echo "modelFromID".$id."";
-        $model = new self(NULL, NULL, NULL, NULL, NULL);
+        $model = new self(NULL, NULL, NULL, NULL, NULL, NULL);
         
 		$con = self::getConnection();        
         
@@ -148,7 +150,7 @@ class Test_Model {
 	//virtual constructor to retrieve test model by ID.	
 	public static function modelWithID($test_model_id){
 		
-		$model = new self(NULL, NULL, NULL, NULL, NULL);
+		$model = new self(NULL, NULL, NULL, NULL, NULL, NULL);
 		
         include 'XJTestDBConnect.php';
         $con = mysql_connect($host, $usn, $password);
@@ -171,9 +173,15 @@ class Test_Model {
 			$model->course_type = $row['course_type'];
 			$model->length = $row['test_length'];
 			$model->variant = $row['variant_id'];
-			$model->num_questions_from_category[$row['spo_id']] = $row['count'];	
+			if($row['eo_id'] === NULL) {
+				$model->num_questions_from_category[$row['spo_id']] = $row['count'];
+			}
+			if($row['count'] === NULL){
+				$model->requiredEOs[$row['eo_id']] = $row['spo_id'];				
+			}
+			
+
 		}
-		
         
         mysql_close($con);
         
@@ -188,6 +196,8 @@ class Test_Model {
 		if (!$con){
 		  die('Could not connect: ' . mysql_error());
 		}
+		
+		mysql_select_db($database, $con);			
 	
 		//generate random identifier for new model
 		$length = 6;
@@ -208,7 +218,7 @@ class Test_Model {
 	      
 	    $model_identifier = $randstr;
 		
-		$insertNewModelQuery = "INSERT INTO `testModel` (test_model_id, variant_id, spo_id, count, course_type, test_length, name) ";
+		$insertNewModelQuery = "INSERT INTO `testModel` (test_model_id, variant_id, spo_id, count, eo_id, course_type, test_length, name) ";
 		$insertNewModelQuery .= "VALUES ";
 
 		$last_key = end(array_keys($this->num_questions_from_spo));
@@ -218,6 +228,7 @@ class Test_Model {
 			$insertNewModelQuery .= "".$this->variant.",";			
 			$insertNewModelQuery .= "".$v['id'].",";
 			$insertNewModelQuery .= "".$v['count'].",";
+			$insertNewModelQuery .= "NULL,";
 			$insertNewModelQuery .= "'".$this->course_type."', ";		
 			$insertNewModelQuery .= "".$this->length.", ";	
 			$insertNewModelQuery .= "'{$modelNm}'";
@@ -230,19 +241,49 @@ class Test_Model {
 			$insertNewModelQuery .= "),";			  
 		  }
 						
-		};
+		}
 
-		mysql_select_db($database, $con);	
 
 		$insertNewModelQueryResult = mysql_query($insertNewModelQuery);
 		if(!$insertNewModelQueryResult){
-			die("could not run query ($insertNewModelQuery) ".mysql_error());
+			die("could not run SPO insertion query ($insertNewModelQuery) ".mysql_error());
 		}
+		
+		
+		$insertMandatoryEOsInModelQuery = "INSERT INTO `testModel` (test_model_id, variant_id, spo_id, count, eo_id, course_type, test_length, name) ";
+		$insertMandatoryEOsInModelQuery .= "VALUES ";
+		
+		$last_EO_key = end(array_keys($this->requiredEOs));
+		foreach($this->requiredEOs as $k => $v){		
+			$insertMandatoryEOsInModelQuery .= "('".$model_identifier."',";
+			$insertMandatoryEOsInModelQuery .= "".$this->variant.",";			
+			$insertMandatoryEOsInModelQuery .= "".$v['parentSpo'].",";
+			$insertMandatoryEOsInModelQuery .= "NULL,";
+			$insertMandatoryEOsInModelQuery .= "".$v['eo'].",";
+			$insertMandatoryEOsInModelQuery .= "'".$this->course_type."',";		
+			$insertMandatoryEOsInModelQuery .= "".$this->length.", ";	
+			$insertMandatoryEOsInModelQuery .= "'{$modelNm}'";
+
+			
+		 if($k == $last_EO_key){
+			$insertMandatoryEOsInModelQuery .= ")";			  
+		  }			
+		  else {
+			$insertMandatoryEOsInModelQuery .= "),";			  
+		  }
+						
+		}
+		
+		$insertMandatoryEOsInModelQueryResult = mysql_query($insertMandatoryEOsInModelQuery);
+		if(!$insertMandatoryEOsInModelQueryResult){
+			die("could not run EO insertion query ($insertMandatoryEOsInModelQuery) ".mysql_error());
+		}
+		
 		
 		mysql_close($con);
 		
 	}
-		
+	
 	static function showModeledTestsFromType($variant, $course_type){
 		include "XJTestDBConnect.php";
 		$con = mysql_connect($host,$usn, $password);
@@ -255,7 +296,6 @@ class Test_Model {
 		
 		$modelQuery = "SELECT `test_model_id`, `spo_name` as spo, `count`, `name` FROM `testModel` JOIN `SPO` USING (`spo_id`) WHERE `variant_id` = ".$variant." AND `course_type` = '".$course_type."'";
 		
-
 		
 		$modelQueryResult = mysql_query($modelQuery);
 		if(!$modelQueryResult){
@@ -269,12 +309,14 @@ class Test_Model {
         $model = array();        
 		$i = 0;        
         while($row = mysql_fetch_array($modelQueryResult)){
+        
 				        
-			$model['test_model_id'] = $row['test_model_id'];        
+
 
 			
 			if ($current_name == $row['name']){
 				$model[$row['spo']] = $row['count'];
+				$model['test_model_id'] = $row['test_model_id'];        				
 			}
 
 
@@ -290,6 +332,7 @@ class Test_Model {
 								
 				//set the first item in the array
 				$model[$row['spo']] = $row['count'];
+				$model['test_model_id'] = $row['test_model_id'];        				
 			}		
 			
 
@@ -351,7 +394,7 @@ class Test_Model {
 		mysql_select_db($database, $con);
 		
 		$getQuantityQuery = "SELECT questions.spo_id, spo_name AS spo, count(questions.spo_id) AS count FROM questions INNER JOIN SPO using (spo_id) WHERE questions.variant_id = ".$variant." GROUP BY spo_id";		
-
+		
 		
 		$getQuantityQueryResult = mysql_query($getQuantityQuery);
 		

@@ -8,20 +8,21 @@ $override = "";
 
 $pair = array();
 
+
 function generateRandStr($length){
-      $randstr = "";
-      for($i=0; $i<$length; $i++){
-         $randnum = mt_rand(0,61);
-         if($randnum < 10){
-            $randstr .= chr($randnum+48);
-         }else if($randnum < 36){
-            $randstr .= chr($randnum+55);
-         }else{
-            $randstr .= chr($randnum+61);
-         }
-      }
-      return $randstr;
-   } 
+	$randstr = "";
+	$numbers = "";
+	$letters = "";
+	for ($i = 0; $i < ($length/2); $i++){
+		$numbers .= chr(mt_rand(48,57));
+	}
+	for ($i = 0; $i < ($length/2); $i++){
+		$letters .= chr(mt_rand(97,122));
+	}
+	
+	$randstr = $numbers.$letters;
+	return $randstr;
+}
 
 
 
@@ -51,5 +52,4 @@ mysql_close($con);
 
 $pair = json_encode($pair);
 echo $pair;
-
 ?>

@@ -3,6 +3,7 @@
 class Exam {
 
 	public $num_questions_from_category = array();
+	public $requiredEOs = array();
 	public $instructorID;
 	public $testPassword;
 	public $overridePassword;
@@ -37,10 +38,11 @@ class Exam {
 	
 	}		
 	
-	public function __construct($varnt, $numQuestionsArr, $insID, $testPwd, $ovrPwd, $crs_type, $len, $id){
+	public function __construct($varnt, $numQuestionsArr, $reqdEOs, $insID, $testPwd, $ovrPwd, $crs_type, $len, $id){
 		
 		$this->variant = $varnt;
 		$this->num_questions_from_category = $numQuestionsArr;
+		$this->requiredEOs = $reqdEOs;
 		$this->instructorID = $insID;
 		$this->testPassword = $testPwd;
 		$this->overridePassword = $ovrPwd;
@@ -74,7 +76,71 @@ class Exam {
 		$testObj = array();
 		$idArr = array();
 
-		
+
+		foreach($this->num_questions_from_category as $k => $v){
+			if ($v > 0){
+				
+				//check for mandatory EOs for the current SPO. 
+				//add these EOs to their own separate array (one arr() per SPO) 
+				$mandatoryEOs = array();
+				foreach($this->requiredEOs as $childEoKey => $parentSpoValue){
+					if($parentSpoValue == $k){
+						array_push($mandatoryEOs, $childEoKey);	
+					}
+				}
+				
+				
+				//fetch all questionIDs for a given EO.  Add these to an array
+				$mandatoryEoQuestionIds = array();
+				foreach($mandatoryEOs as $mEO ){
+					$getMandatoryEoQuestionIdQuery = "SELECT `questionID` FROM `questions` WHERE `eo_id` = ".$mEO." AND `variant_id` = ".$this->variant." ";
+					$getMandatoryEoQuestionIdQuery .= "ORDER BY RAND() LIMIT 0,1";
+					$getMandatoryEoQuestionIdQueryResult = mysql_query($getMandatoryEoQuestionIdQuery);
+					if(!$getMandatoryEoQuestionIdQueryResult){
+						die("Could not run query ($getMandatoryEoQuestionIdQuery) ".mysql_error());
+					}
+					
+					else {
+						while($row = mysql_fetch_array($getMandatoryEoQuestionIdQueryResult)){
+							array_push($mandatoryEoQuestionIds, $row['questionID']);
+						}
+					}
+				}
+				
+									
+				//select all questionID for subcategory
+				//echo "requested ".$v." for ".$k." ";
+				 
+				$getIdQuery = "SELECT `questionID` FROM `questions` WHERE `spo_id` = ".$k." ";
+				$getIdQuery .= "AND `questionID` NOT IN (".implode($mandatoryEoQuestionIds, ",").") ";
+				$getIdQuery .= "AND `variant_id` = ".$this->variant."";
+								
+				
+				$idResult = mysql_query($getIdQuery);
+				$amt = mysql_num_rows($idResult);
+				//echo "totalIDs : ".$amt." ";
+				
+				//add results to array.
+				$tmpArr = array();
+				while($row = mysql_fetch_array($idResult)){
+					//echo "question ID ".$row['questionID'].", ";
+					array_push($tmpArr, $row['questionID']);
+				}
+				
+				
+				//randomly select number of questions desired (5 electrical questions, for example)
+				for($i = 0; $i<($v - count($mandatoryEoQuestionIds)); $i++){
+					shuffle($tmpArr);
+					array_push($idArr, $tmpArr[0]);
+					unset($tmpArr[0]);
+				}
+				
+				$idArr = array_merge($idArr, $mandatoryEoQuestionIds);
+			}
+		}	
+
+		//old test selection logic		
+		/*
 		foreach($this->num_questions_from_category as $k => $v){
 			if ($v > 0){
 			
@@ -101,6 +167,7 @@ class Exam {
 				}
 			}
 		}	
+*/
 		
 		
 		$createTestQuery = "INSERT INTO `createdTests` VALUES ";
