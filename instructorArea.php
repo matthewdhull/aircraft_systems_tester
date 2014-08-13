@@ -31,7 +31,21 @@ session_cache_limiter('nocache');
 					var instructorID = "<?php echo $_SESSION['employeeNo'];?>";
 					var pwd = $("#loginPassword");
 
-					var instructorDivHTML = "<div id='editInstructorDiv'><table><tr><td>Submit</td><td>Delete</td><td>Employee No</td><td>First Name</td><td>Last Name</td><td>Password</td><td>Admin?</td></tr><tr><td><button id='updateInstructorInfo'>Submit</button></td><td><button id='deleteInstructorInfo'>Delete</button></td><td><input id='editInstructorID' type='text'></input></td><td><input id='editFirstName'  type='text'></input></td><td><input id='editLastName' type='text'></input></td><td><input id='editPassWord'  type=text'></input></td><td><input id='editAdmin'  type='checkbox'></input></td></tr></table></div>";
+					var instructorDivHTML = "<div id='editInstructorDiv'><table>";
+					instructorDivHTML += "<tr><td>Submit</td><td>Delete</td>";
+					instructorDivHTML += "<td>Employee No</td>";
+					instructorDivHTML += "<td>First Name</td>";
+					instructorDivHTML += "<td>Last Name</td>";
+					instructorDivHTML += "<td>Password</td>";
+					instructorDivHTML += "<td>Admin?</td></tr>";
+					instructorDivHTML += "<tr><td><button id='updateInstructorInfo'>Submit</button></td>";
+					instructorDivHTML += "<td><button id='deleteInstructorInfo'>Delete</button></td>";
+					instructorDivHTML += "<td><input id='editInstructorID' type='text'></input></td>";
+					instructorDivHTML += "<td><input id='editFirstName'  type='text'></input></td>";
+					instructorDivHTML += "<td><input id='editLastName' type='text'></input></td>";
+					instructorDivHTML += "<td><input id='editPassWord'  type=text'></input></td>";
+					instructorDivHTML += "<td><input id='editAdmin'  type='checkbox'></input></td></tr>";
+					instructorDivHTML += "</table></div>";
 					
 					function clearInfo(){
 						$("#infoDiv *").remove();
@@ -87,34 +101,17 @@ session_cache_limiter('nocache');
 					
 					//populates a <select> element with test dates.
 					function populateTestDates(){
-						if(isAdmin === true){						
-							$.post("PHPScripts/admin/getReports.php",{
-								option: "getTestDates"
-							}, function (data){
-								$.each(data, function(key,value){
-									$("#testDateMDY").append("<option value='"+value+"'>"+value+"</option>");
-								});
-								
-								$("#testDateMDY").trigger("change");									
-								
-							}, "json");
+						$.post("PHPScripts/admin/getReports.php",{
+							option: "getTestDates"
+						}, function (data){
+							$.each(data, function(key,value){
+								$("#testDateMDY").append("<option value='"+value+"'>"+value+"</option>");
+							});
 							
-						}
-						else {
-							$.post("PHPScripts/admin/getReports.php",{
-								option: "getInstructorTestDates"
-							}, function (data){
-								$("#testDateMDY option").remove();
-								$("#instructorForDate option").remove();
-								$("#instructorForDate").append("<option value='"+instructorID+"'>"+instructorID+"</option>"); //hard code the instructor id to the current user.
-								$.each(data, function(key,value){
-									$("#testDateMDY").append("<option value='"+value+"'>"+value+"</option>");
-								});
-								
-							}, "json");
-						
-						}
-					}			
+							$("#testDateMDY").trigger("change");									
+							
+						}, "json");
+					}								
 					
 					function getScoresForDate(tDate){
 						var htmlToAdd = "";
@@ -227,20 +224,18 @@ session_cache_limiter('nocache');
 					//gets instructors that administered a test on the selected date.
 					$("#testDateMDY").change(function(){
 						//console.log($(this).val());
-						if(isAdmin === true){
-							var td = $(this).val();
-							var theOption = "getInstructorsForDate";
-							$.post("PHPScripts/admin/getReports.php", {
-								option: theOption,
-								testDate: td
-							}, function(data){
-								$("#instructorForDate option").remove();
-								$.each(data, function(key,value){
-									$("#instructorForDate").append("<option value='"+value+"'>"+value+"</option>");
-								});
-							
-							},"json");
-						}
+						var td = $(this).val();
+						var theOption = "getInstructorsForDate";
+						$.post("PHPScripts/admin/getReports.php", {
+							option: theOption,
+							testDate: td
+						}, function(data){
+							$("#instructorForDate option").remove();
+							$.each(data, function(key,value){
+								$("#instructorForDate").append("<option value='"+value+"'>"+value+"</option>");
+							});
+						
+						},"json");
 					});
 					
 					$("#sortBy").change(function(){ //any change to this will cause the #sortSpecifics to be autopopulated with appropriate choices for the selected criteria.
@@ -250,11 +245,25 @@ session_cache_limiter('nocache');
 						$("#sortSpecifics *").remove();			
 						if(criteria == "month"){
 							specs.removeAttr("disabled");
-							htmlToAdd += "<option value='01'>January</option><option value='02'>February</option><option value='03'>March</option><option value='04'>April</option><option value='05'>May</option><option value='06'>June</option><option value='07'>July</option><option value='08'>August</option><option value='09'>September</option><option value='10'>October</option><option value='11'>November</option><option value='12'>December</option>";
+							htmlToAdd += "<option value='01'>January</option>";
+							htmlToAdd += "<option value='02'>February</option>";
+							htmlToAdd += "<option value='03'>March</option>";
+							htmlToAdd += "<option value='04'>April</option>";
+							htmlToAdd += "<option value='05'>May</option>";
+							htmlToAdd += "<option value='06'>June</option>";
+							htmlToAdd += "<option value='07'>July</option>";
+							htmlToAdd += "<option value='08'>August</option>";
+							htmlToAdd += "<option value='09'>September</option>";
+							htmlToAdd += "<option value='10'>October</option>";
+							htmlToAdd += "<option value='11'>November</option>";
+							htmlToAdd += "<option value='12'>December</option>";
 						}
 						else if(criteria == "quarter"){
 							specs.removeAttr("disabled");
-							htmlToAdd += "<option value='q1'>Q1</option><option value='q2'>Q2</option><option value='q3'>Q3</option><option value='q4'>Q4</option>";
+							htmlToAdd += "<option value='q1'>Q1</option>";
+							htmlToAdd += "<option value='q2'>Q2</option>";
+							htmlToAdd += "<option value='q3'>Q3</option>";
+							htmlToAdd += "<option value='q4'>Q4</option>";
 						}
 						else if(criteria == "year"){ //this will populate the option list from 2011 - to the current year.
 							specs.attr("disabled", "disabled");
@@ -306,7 +315,11 @@ session_cache_limiter('nocache');
 						});
 						
 						
-					$("#createNewTest, #modelNewTest").click(function(){
+					$("#modelNewTest").click(function(){
+						window.location = "testModeling.php";
+					});	
+					
+					$("#createNewTest").click(function(){
 						window.location = "testCRUD.php";
 					});	
 					

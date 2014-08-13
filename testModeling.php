@@ -3,56 +3,23 @@
 <head>
 	<meta charset="utf-8">
 	<title>Test Modeling</title>
-	<link href="jquery-ui.css" rel="stylesheet">
+	<link href="js/jquery-ui.css" rel="stylesheet">
 	<style>
-		
-		
-	
-	#accordion {
-		width: 594px;
-		position: relative;
-		float: left;
-	}
-		
-	#accordion .action-button {
-	    float: right;
-	    display: none;
-	}
-	#accordion .ui-state-active .action-button {
-	    display: inline;
-	}
-	#accordion .spo_count_spec {
-	    width: 25px;
-	    display: inline;
-	    float: right;
-	    margin-top: -5px;
-	    margin-right: 2px;
-	    text-align: center;
-	}
-	
-	ul {
-	    list-style:none;
-	}
-	
-	#testModelOptions {
-		max-width: 600px;
-		margin-left: -40px;
-	}
-	
-	#testModelOptions li{
-		display: inline;
-		padding: 5px;
-		border: 1px solid gray;		
-	}
-	
-	#totalQuestions {
-		width: 25px;
-	}
-
-	
+		@import url('CSS/testModeling.css');
 	</style>
+	
+	<?php
+		include 'Classes/contentClass.php';
+		ContentSnippets::showFavicon();
+	?>
+	
 </head>
 <body>
+		<?php
+			ContentSnippets::doHeader();
+			ContentSnippets::doNavigationBar();
+		?>
+	
 	<ul id="testModelOptions">	
 		<li>
 			<select id='fleet'>
@@ -84,21 +51,49 @@
 				Total Added &nbsp;<input id="totalQuestions" type="text" readonly />
 			</li>
 		</ul>
+		<div id="progressBar"></div>
 		<div id="accordion" style="margin-top: 25px;">
 		</div>
 
 
-<script src="external/jquery/jquery.js"></script>
-<script src="jquery-ui.js"></script>
+<script src="js/external/jquery/jquery.js"></script>
+<script src="js/jquery-ui.js"></script>
 <script>
 	
 
 
 $(document).ready(function(){
 	
+	var isAdmin = false;	
+	
 	//holds spo_ids as key & spo count for increment/decrement events/maxVal checking	
 	var spoCount = [];
 	
+	function clearScreenForLogout(){
+		$("div").css("visibility", "hidden");
+		$("body").html("You are not logged in");
+	}
+					
+	function checkLoginStatus(){
+	
+		$.post("PHPScripts/admin/instructorLogin.php",
+			 function(data){
+				isAdmin = data.admin;
+				if(data.loggedIn == true){
+					if(isAdmin == true){
+						$("#accordion, #testModelOptions").css("visibility", "visible");
+					}
+					else if(isAdmin == false){
+						$("#accordion, #testModelOptions").css("visibility", "hidden");
+					}
+					$("#instructorID").val(data.employeeNo);
+				}
+				else{
+					clearScreenForLogout();
+				}
+			}, "json");
+	}
+						
 	function updateQuantities(){
 		var sum = 0;
 		$("#accordion :input[class='spo_count_spec']").each(function(){
@@ -165,7 +160,7 @@ $(document).ready(function(){
 				var theOpt = "getEnteredEOs";
 				var vnt = $("#fleet").val();
 				var eos = "<ul>";
-				$.post("../PHPScripts/admin/getReports.php", {
+				$.post("PHPScripts/admin/getReports.php", {
 					variant: vnt,
 					spo_id: spoId,
 					option: theOpt
@@ -189,7 +184,7 @@ $(document).ready(function(){
 
 			var spo = "<div id='accordion' style='margin-top: 25px'>";
 
-			$.post("../PHPScripts/getQuestionCount.php", {
+			$.post("PHPScripts/getQuestionCount.php", {
 				variant: variant_type
 			}, function(data){
 				$.each(data, function(key, value){	
@@ -223,6 +218,7 @@ $(document).ready(function(){
 		}
 	
 	$("#submitButton").click(function(){
+		$("#progressBar").css("visibility", "visible");
 		var spoAndCount = [];
 		var mandatoryEOs = [];
 		var len = $("#testLength").val();
@@ -245,14 +241,16 @@ $(document).ready(function(){
 			mandatoryEOs.push(eoSpoPair);
 		});
 		
-		$.post("../PHPScripts/newTestModel.php", {
+		$.post("PHPScripts/newTestModel.php", {
 			variant: fleet_type,
 			length: len,
 			course_type: typ,
 			model: spoAndCount,
 			requiredEOs: mandatoryEOs,
 			modelName: modelNm
-		}, function(data){});
+		}, function(data){
+			$("#progressBar").css("visibility", "hidden");			
+		});
 		return false;
 	});	
 
@@ -269,6 +267,7 @@ $(document).ready(function(){
 	
 	$("#fleet").trigger("change");
 	
+	checkLoginStatus();	
 });
 
 	</script>

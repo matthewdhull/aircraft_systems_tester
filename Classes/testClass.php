@@ -180,7 +180,7 @@ class Question {
 				
 		$fetchQuestionResult = mysql_query($fetchQuestionQuery);
 		if(!$fetchQuestionResult){
-			die("could not run query ($fetchQuestionQuery) ".mysql_error());
+			die("could not run fetch question query for qID = ".$id." ($fetchQuestionQuery) ".mysql_error());
 		}
 		
 		$wordingsArr = array();

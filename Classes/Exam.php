@@ -89,9 +89,9 @@ class Exam {
 					}
 				}
 				
-				
 				//fetch all questionIDs for a given EO.  Add these to an array
-				$mandatoryEoQuestionIds = array();
+				
+				$mandatoryEoQuestionIds = array();		
 				foreach($mandatoryEOs as $mEO ){
 					$getMandatoryEoQuestionIdQuery = "SELECT `questionID` FROM `questions` WHERE `eo_id` = ".$mEO." AND `variant_id` = ".$this->variant." ";
 					$getMandatoryEoQuestionIdQuery .= "ORDER BY RAND() LIMIT 0,1";
@@ -103,41 +103,69 @@ class Exam {
 					else {
 						while($row = mysql_fetch_array($getMandatoryEoQuestionIdQueryResult)){
 							array_push($mandatoryEoQuestionIds, $row['questionID']);
+							//pushing the EO ID twice!!!!!
+							//array_push($idArr, $row['questionID']);
+							//echo "current spo: ".$k."  eoID: ($mEO), questionID: ".$row['questionID']."  ";
 						}
 					}
 				}
 				
-									
-				//select all questionID for subcategory
-				//echo "requested ".$v." for ".$k." ";
-				 
-				$getIdQuery = "SELECT `questionID` FROM `questions` WHERE `spo_id` = ".$k." ";
-				$getIdQuery .= "AND `questionID` NOT IN (".implode($mandatoryEoQuestionIds, ",").") ";
-				$getIdQuery .= "AND `variant_id` = ".$this->variant."";
-								
+				$getIdQuery = "";
+				$remainingQuestionCount = $v - count($mandatoryEoQuestionIds);
+				if(count($mandatoryEoQuestionIds)>0){
+					$getIdQuery = "SELECT `questionID` FROM `questions` WHERE `spo_id` = ".$k." ";
+					$getIdQuery .= "AND `questionID` NOT IN (".implode($mandatoryEoQuestionIds, ",").") ";
+					$getIdQuery .= "AND `variant_id` = ".$this->variant." ";
+					$getIdQuery .= "ORDER BY RAND() LIMIT ".$remainingQuestionCount."";
+
+				}				
+				else {
+					$getIdQuery = "SELECT `questionID` FROM `questions` WHERE `spo_id` = ".$k." ";
+					$getIdQuery .= "AND `variant_id` = ".$this->variant." ";
+					$getIdQuery .= "ORDER BY RAND() LIMIT ".$remainingQuestionCount."";					
+				}
+
+/* 				echo ($getIdQuery)."    "; */
 				
 				$idResult = mysql_query($getIdQuery);
-				$amt = mysql_num_rows($idResult);
-				//echo "totalIDs : ".$amt." ";
+				
+				if(!$idResult){
+					die("could not run query ($getIdQuery) ".mysql_error());
+				}
 				
 				//add results to array.
-				$tmpArr = array();
+/* 				$tmpArr = array(); */
 				while($row = mysql_fetch_array($idResult)){
-					//echo "question ID ".$row['questionID'].", ";
-					array_push($tmpArr, $row['questionID']);
+					array_push($idArr, $row['questionID']);
 				}
-				
-				
+
 				//randomly select number of questions desired (5 electrical questions, for example)
-				for($i = 0; $i<($v - count($mandatoryEoQuestionIds)); $i++){
-					shuffle($tmpArr);
-					array_push($idArr, $tmpArr[0]);
-					unset($tmpArr[0]);
+/*				
+	if(count($tmpArr)>0){
+					for($i = 0; $i<(($v-1) - count($mandatoryEoQuestionIds)); $i++){
+						shuffle($tmpArr);
+						array_push($idArr, $tmpArr[0]);
+						if($tmpArr[0] === NULL){
+							echo "NULL!!!";
+						}
+						unset($tmpArr[0]);
+					}
 				}
+	
+*/
 				
+/* 				echo "count before merge: idArr: ".count($idArr)." manEOS: ".count($mandatoryEoQuestionIds); */
 				$idArr = array_merge($idArr, $mandatoryEoQuestionIds);
+/* 				echo "    count after merge: ".count($idArr); */
+				
 			}
+	
+	
 		}	
+		
+
+/* 		print_r($idArr); */
+		
 
 		//old test selection logic		
 		/*
@@ -200,7 +228,6 @@ class Exam {
 
 		}
 		
-
 		//instantiate new question object for each questionID.
 		foreach ($idArr as $value) {
  		   $question = Question::questionFromID($value);

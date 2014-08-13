@@ -111,7 +111,7 @@ button, button#beginExam {
 	height: 30px;
 	width: 107px;
 	color: white;
-	text-align: right;
+	text-align: center;
 	padding-right: 5px;
 	line-height: 30px;
 	font-family: "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
@@ -247,4 +247,17 @@ button, button#beginExam {
     display:block; 
     width:0;
 }
+
+
+#progressBar {
+	visibility: hidden;
+	background: url(../images/ajax-loader.gif) no-repeat;
+	height: 20px;
+    left: 96px;
+    position: relative;
+    top: 10px;
+    width: 215px;
+    
+   }
+
 

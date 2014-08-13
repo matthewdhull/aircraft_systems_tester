@@ -1,0 +1,62 @@
+@import url("common.css");
+
+h3 {
+	font-weight: normal;
+}
+
+#accordion {
+	width: 635px;
+	position: relative;
+	float: left;
+}
+	
+#accordion .action-button {
+    float: right;
+    display: none;
+}
+#accordion .ui-state-active .action-button {
+    display: inline;
+}
+#accordion .spo_count_spec {
+    width: 25px;
+    display: inline;
+    float: right;
+    margin-top: -5px;
+    margin-right: 2px;
+    text-align: center;
+}
+
+ul {
+    list-style:none;
+}
+
+#testModelOptions {
+	margin-top: 80px;
+	max-width: 700px;
+	margin-left: -40px;
+}
+
+#testModelOptions li{
+	display: inline;
+	padding: 5px 5px 10px 5px;
+	border: 1px solid gray;		
+}
+
+#totalQuestions {
+	width: 25px;
+}
+
+#progressBar {
+	visibility: hidden;
+	background: url(../images/ajax-loader.gif) no-repeat;
+	height: 20px;
+	left: 220px;
+	position: relative;
+	top: -3px;
+	width: 215px;
+}
+
+#navigationBar button{
+	height: 30px;
+}
+	

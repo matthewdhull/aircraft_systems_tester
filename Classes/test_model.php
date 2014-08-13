@@ -95,7 +95,9 @@ class Test_Model {
         return $model;
 	}
 	
-	public static function modelForType($type) {
+	//deprecated
+	/*
+		public static function modelForType($type) {
 	 	//echo "modelFromID".$id."";
         $model = new self(NULL, NULL, NULL, NULL, NULL, NULL);
         
@@ -146,6 +148,7 @@ class Test_Model {
         return $model;
 		
 	}
+		*/
 
 	//virtual constructor to retrieve test model by ID.	
 	public static function modelWithID($test_model_id){
@@ -294,7 +297,7 @@ class Test_Model {
 		
 		mysql_select_db($database, $con);
 		
-		$modelQuery = "SELECT `test_model_id`, `spo_name` as spo, `count`, `name` FROM `testModel` JOIN `SPO` USING (`spo_id`) WHERE `variant_id` = ".$variant." AND `course_type` = '".$course_type."'";
+		$modelQuery = "SELECT `test_model_id`, `spo_name` as spo, `count`, `name` FROM `testModel` JOIN `SPO` USING (`spo_id`) WHERE `variant_id` = ".$variant." AND `course_type` = '".$course_type."' AND `count` IS NOT NULL";
 		
 		
 		$modelQueryResult = mysql_query($modelQuery);

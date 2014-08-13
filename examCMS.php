@@ -223,7 +223,8 @@ session_start();
 */ ?>				
 				$("#beginExam").click(function(){
 					$("#beginExam").attr("disabled", "disabled");
-				
+					$("#progressBar").css("visibility", "visible");		
+					$("#logonMessage").html("Loading...Please Wait");						
 					<?php /*1.validate credentials */?>
 					
 					employeeNo = $("#employeeNo").val();
@@ -278,6 +279,7 @@ session_start();
 							showUnanweredQuestions();
 							$("#gradeButton").removeAttr("disabled");
 							$("#loginDiv").hide();
+							$("#progressBar").css("visibility", "hidden");										
 							$("#questionDiv, #questionsUnansweredTab, #questionsUnanswered, #questionsMarkedTab, #questionsMarked, #gradeExamDiv").css("visibility", "visible");
 						}
 						
@@ -731,8 +733,7 @@ session_start();
 						$("#logonMessage").html("Supply first/last names and valid employee no.");
 					}
 					
-				});				
-				
+				});								
 				$("#qualCode").trigger("change");
 				
 				if(instructorID != "") {
@@ -882,6 +883,7 @@ session_start();
 					</tr>
 				</table>
 			</form>
+			<div id='progressBar'></div>			
 		</div>
 		<div id="questionDiv" style="visibility: hidden">
 			<table id="questionTextTable">

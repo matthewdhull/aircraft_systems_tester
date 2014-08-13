@@ -90,10 +90,12 @@ if(isset($_SESSION['name'])){
 	elseif($option == "getEOs"){
 		echo Reports::eoListforSPO($spo_id);
 	}
+	
+	elseif($option == "getEnteredEOs"){
+		echo Reports::questionsEnteredEoListForSpo($variant, $spo_id);
+	}
+	
 }
 
-if($option == "getEnteredEOs"){
-	echo Reports::questionsEnteredEoListForSpo($variant, $spo_id);
-}
 
 ?>

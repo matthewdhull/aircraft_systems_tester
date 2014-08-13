@@ -13,7 +13,6 @@ $overridePassword = $_POST['overridePassword'];
 //retreive model Object by ID
 $model = Test_Model::modelWithID($id);
 
-
 //new exam object is initialized with the model object's questions/category specifics. 
 $newTest = new Exam($model->variant, $model->num_questions_from_category, $model->requiredEOs, $instructorID, $testPassword, $overridePassword, $model->course_type, $model->length, $model->testID);
 
