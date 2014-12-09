@@ -1,4 +1,4 @@
-<?php
+	<?php
 session_start();
 session_cache_limiter('nocache');
 ?>
@@ -128,6 +128,8 @@ session_cache_limiter('nocache');
 								htmlToAdd += "<tr><td>"+value.name+"</td><td>"+value.employeeNo+"</td><td>"+value.result.charAt(0).toUpperCase() + value.result.slice(1)+"</td><td>"+value.score+"</td></tr>";
 							});
 							htmlToAdd += "</table>";
+							htmlToAdd += "<div id='footer'></div>";
+							
 							$("#infoDiv").append(htmlToAdd);
 							$('html, body').animate({
 							    scrollTop: $("#infoDiv").offset().top
@@ -174,6 +176,8 @@ session_cache_limiter('nocache');
 									});
 								}
 								htmlToAdd += "</ul>";
+								htmlToAdd += "<div id='footer'></div>";
+								
 								$("#infoDiv").append(htmlToAdd);
 								colorRows();
 								$('html, body').animate({
@@ -190,26 +194,75 @@ session_cache_limiter('nocache');
 					function getSPOAnalysisForClass(testDateForClass, administeringInstructorID) {
 						var htmlToAdd = "";
 						var theOption = "getSpoAnalysisForClass";
+
 						$.post("PHPScripts/admin/getReports.php", {
 							option: theOption,
 							testDate: testDateForClass,
 							instructorEmpNo: administeringInstructorID
 						}, function(data){
 							clearInfo();
-							htmlToAdd += "<table><tr><td>SPO</td><td>Description</td><td>Score</td></tr>";
+
+							htmlToAdd += "<table><td>System</td>"; 
+							htmlToAdd += " <td>Class Score</td></tr>";
+							
 							$.each(data, function(key,value){
-								htmlToAdd += "<tr><td>"+value.spo_number+"</td><td>"+value.spo_name+"</td><td>"+value.percentage+"%</td></tr>";
+								htmlToAdd += "<td>"+value.spo_name+"</td><td>"+value.percentage+"%</td></tr>";
 							});
+							
 							htmlToAdd += "</table>";
+				
+							
+							$.post("PHPScripts/admin/getReports.php", {
+								option: "questionsWithIncorrect",
+								testDate: testDateForClass,
+								instructorEmpNo: administeringInstructorID
+							}, function (data){
+
+							htmlToAdd += "<table>";
+							htmlToAdd += "<tr>";
+							htmlToAdd += "<td>Correct Count</td>";
+							htmlToAdd += "<td>SPO</td>";
+							htmlToAdd += "<td>Element</td>";														
+							htmlToAdd += "<td>Question</td>";
+							htmlToAdd += "<td>Correct Ans</td>";														
+							htmlToAdd += "<td>Alt Correct Ans</td>";							
+							htmlToAdd += "<td>Last Correct Ans</td>";							
+							htmlToAdd += "<td>Incorrect Ans 1</td>";							
+							htmlToAdd += "<td>Incorrect Ans 2</td>";						
+							htmlToAdd += "<td>Incorrect Ans 3</td>";							
+							htmlToAdd += "<td>Student Who Missed It</td>";							
+							htmlToAdd += "</tr>";
+
+
+							$.each(data, function(key,value){
+								htmlToAdd += "<tr>";
+								htmlToAdd += "<td>"+value.question.correct_count+"</td>";
+								htmlToAdd += "<td>"+value.question.spo+"</td>";								
+								htmlToAdd += "<td>"+value.question.element+"</td>";
+								htmlToAdd += "<td>"+value.question.question+"</td>";
+								htmlToAdd += "<td>"+value.question.correct_answer+"</td>";																									htmlToAdd += "<td>"+value.question.alternate_correct_answer+"</td>";
+								htmlToAdd += "<td>"+value.question.last_correct_answer+"</td>";
+								htmlToAdd += "<td>"+value.question.incorrect_answer_1+"</td>";
+								htmlToAdd += "<td>"+value.question.incorrect_answer_2+"</td>";
+								htmlToAdd += "<td>"+value.question.incorrect_answer_3+"</td>";
+								htmlToAdd += "<td>"+value.students+"</td>";																													htmlToAdd += "</tr>";									
+							});
+							
+							htmlToAdd += "</table>";														
+							htmlToAdd += "<div id='footer'></div>";
 							$("#infoDiv").append(htmlToAdd);
-							colorRows();							
+							colorRows();										
+								
 							$('html, body').animate({
 							    scrollTop: $("#infoDiv").offset().top
-							}, 1000);		
+							}, 1000);	
+
+								
+							}, "json");	
+							
 
 						},"json");
 					}			
-					
 					
 					$("#reportTypeSelect").change(function(){
 						var employeeNoTableRow = $("#studentEmployeeRow");				 
@@ -218,6 +271,15 @@ session_cache_limiter('nocache');
 						}
 						else {
 							employeeNoTableRow.css("visibility", "hidden");
+						}
+						
+						if($(this).val()=="byDailyQuizHistory"){
+							$("label[for='instructorForDate'], label[for='testDateMDY'], #testDateMDY, #instructorForDate").css("display", "none");
+							$("label[for='classDateMDY'], #classDateMDY").css("display", "block");							
+						}
+						
+						else {
+							$("label[for='instructorForDate'], label[for='testDateMDY'], #testDateMDY, #instructorForDate").css("display", "block");											$("label[for='classDateMDY'], #classDateMDY").css("display", "none");										
 						}
 					});
 					
@@ -590,7 +652,7 @@ session_cache_limiter('nocache');
 							var lName = $("#editLastName").val();
 							var pwd = $("#editPassWord").val();
 							var isAdmin;
-								if($("#editAdmin").attr('checked') === true){	
+								if($("#editAdmin").attr('checked')){	
 								 	isAdmin = 1;
 								}
 								else {
@@ -770,16 +832,17 @@ session_cache_limiter('nocache');
 		<table id="reportTable">
 			<tr>
 				<td><label for="reportTypeSelect">Select Report Type</label></td>
-				<td><label for="testDateMDY">Test Date</label></td>
+				<td><label for="testDateMDY">Test Date</label><label for="classDateMDY">Class Date</label></td>
    				<td><label for="instructorForDate">Select Instructor</label></td>
 			</tr>
 			<tr>
 				<td><select id="reportTypeSelect">
+					<option value="byClassSpoAnalysis">Class SPO Analysis</option>						
+					<option value="byStudentEmployeeID">Single Student Report</option>		
 					<option value="byClass">Class Report</option>
-					<option value="byStudentEmployeeID">Single Student Report</option>	
-					<option value="byClassSpoAnalysis">Class SPO Analysis</option>				
+					<option value="byDailyQuizHistory">Daily Progress</option>			
 				</select></td>
-				<td><select id="testDateMDY"></select></td>
+				<td><select id="testDateMDY"></select><select id="classDateMDY"></select></td>
 				<td><select id="instructorForDate"></select></td>
 			</tr>
 			<tr id="studentEmployeeRow">
@@ -886,7 +949,6 @@ session_cache_limiter('nocache');
 		<li><a href="#" id="logout">-Logout</a></li>
 	</ul>
 </div>
-<div id="infoDiv">
 </div>
 </body>
 </html>

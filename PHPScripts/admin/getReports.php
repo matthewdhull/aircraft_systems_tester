@@ -69,7 +69,9 @@ if(isset($_SESSION['name'])){
 	elseif($option == "getTestDates"){
 		echo Reports::getTestDates();
 	}
-	
+	elseif($option == "getClassDates"){
+		echo Reports::getClassDates();
+	}
 	elseif($option == "getInstructorTestDates"){
 		echo Reports::getTestDatesForInstructor($instructorEmployeeNo);
 	}
@@ -93,6 +95,10 @@ if(isset($_SESSION['name'])){
 	
 	elseif($option == "getEnteredEOs"){
 		echo Reports::questionsEnteredEoListForSpo($variant, $spo_id);
+	}
+	
+	elseif($option == "questionsWithIncorrect"){
+		echo Reports::questionsWithIncorrectForClass($testDate, $idForInstructor);	
 	}
 	
 }

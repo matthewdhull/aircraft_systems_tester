@@ -83,11 +83,13 @@ class Exam {
 				//check for mandatory EOs for the current SPO. 
 				//add these EOs to their own separate array (one arr() per SPO) 
 				$mandatoryEOs = array();
-				foreach($this->requiredEOs as $childEoKey => $parentSpoValue){
+				if(is_array($this->requiredEOs)){
+					foreach($this->requiredEOs as $childEoKey => $parentSpoValue){
 					if($parentSpoValue == $k){
 						array_push($mandatoryEOs, $childEoKey);	
 					}
 				}
+				}					
 				
 				//fetch all questionIDs for a given EO.  Add these to an array
 				

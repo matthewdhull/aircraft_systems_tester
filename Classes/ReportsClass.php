@@ -123,13 +123,20 @@ class Reports {
 			$correctCount = "";
 		
 
-			$getTests = "SELECT DISTINCT createdTests.genTestID, createdTests.testModelID, createdTests.genDate , createdTests.course_type, createdTests.length, createdTests.testPassword FROM createdTests, studentTestRecords WHERE createdTests.instructorID = '".$instructorEmpNo."' AND studentTestRecords.genTestID = createdTests.genTestID";
-			
-						
-												
+			$getTests = "SELECT DISTINCT createdTests.genTestID, ";
+			$getTests .= "createdTests.testModelID, ";
+			$getTests .= "createdTests.genDate, ";
+			$getTests .= "createdTests.course_type, ";
+			$getTests .= "createdTests.length, ";
+			$getTests .= "createdTests.testPassword ";
+			$getTests .= "FROM createdTests, ";
+			$getTests .= "studentTestRecords ";
+			$getTests .= "WHERE createdTests.instructorID = '".$instructorEmpNo."'";
+			$getTests .= "AND studentTestRecords.genTestID = createdTests.genTestID";
+															
 			$getTestResult = mysql_query($getTests);
 			if(!$getTestResult){
-				die("could not run query ($getTests) ".mysql_error());
+				die("could not run getTests query ($getTests) ".mysql_error());
 			}
 					
 			while($row = mysql_fetch_array($getTestResult)){
@@ -181,10 +188,16 @@ class Reports {
 							$subcategory = $subcatRow['subcategory'];
 
 							//get amount of questions asked for a particular category
-							$getNumberOfQuestions = "SELECT ".$subcategory." from test_model, createdTests where test_model.testID = createdTests.testModelID and createdTests.genTestID = ".$aTest['genTestID']."";
+							
+							$getNumberOfQuestions = "SELECT ".$subcategory." ";
+							$getNumberOfQuestions .= "FROM test_model, ";
+							$getNumberOfQuestions .= "createdTests ";
+							$getNumberOfQuestions .= "WHERE test_model.testID = createdTests.testModelID ";
+							$getNumberOfQuestions .= "AND createdTests.genTestID = ".$aTest['genTestID']."";
+							
 							$numberOfQuestions = mysql_query($getNumberOfQuestions);
 							if(!$numberOfQuestions){
-								die("could not run numberOfQuestions query ($getNumberOfQuestions) ".mysql_error());
+								die("could not run numberOfQuestionsQuery ($getNumberOfQuestions) ".mysql_error());
 							}
 							while($noQuestions = mysql_fetch_array($numberOfQuestions)){
 								$qAmountForCategory = $noQuestions[$subcategory];
@@ -198,7 +211,7 @@ class Reports {
 							
 							$correctAmount = mysql_query($getCorrectAmount);
 							if(!$correctAmount){
-								die("could not run correctAmount query ($correctAmount) ".mysql_error());
+								die("could not run correctAmountQuery ($correctAmount) ".mysql_error());
 							}
 							while($correctRow = mysql_fetch_array($correctAmount)){
 								$correctCount = $correctRow['SUM(testResults.correct)'];
@@ -670,6 +683,29 @@ class Reports {
 		
 		}
 	
+	public static function getClassDates(){
+		
+			$con = self::getConnection();
+
+			$testDates = array();
+			$selectTestDateQuery = "SELECT DISTINCT testDate from studentTestRecords ORDER BY testDate DESC";
+			$testDatesResult = mysql_query($selectTestDateQuery);
+			if(!$testDatesResult){
+				die("could not run query ($selectTestDateQuery) ".mysql_error());
+			}
+			while($row = mysql_fetch_array($testDatesResult)){
+				$dateArray = explode("-",$row['testDate']);
+				$formattedDate = $dateArray[1]."-".$dateArray[2]."-".$dateArray[0];
+				array_push($testDates, $formattedDate);
+			}
+			
+			mysql_close($con);
+			
+			$testDates = json_encode($testDates);
+			return $testDates;
+		
+		}	
+	
 	public static function getTestDatesForInstructor($instructorEmployeeNo){
 
 			$con = self::getConnection();					
@@ -791,7 +827,15 @@ class Reports {
 			//spo number, spo name, percentage.
 			foreach($spoList as $singleSpec){
 				$spoWithPercentageCorrect = array();
-				$getAmountAskedAndAmountCorrectQuery = "select count(testResults.questionID), SUM(testResults.correct) from testResults, questions where testResults.questionID = questions.questionID and testResults.genTestID = ".$genTestID." and questions.spo_id = '".$singleSpec['spo_number']."'";
+				
+				$getAmountAskedAndAmountCorrectQuery = "SELECT count(testResults.questionID), ";
+				$getAmountAskedAndAmountCorrectQuery .= "SUM(testResults.correct) ";
+				$getAmountAskedAndAmountCorrectQuery .= "FROM testResults, ";
+				$getAmountAskedAndAmountCorrectQuery .= "questions ";
+				$getAmountAskedAndAmountCorrectQuery .= "WHERE testResults.questionID = questions.questionID ";
+				$getAmountAskedAndAmountCorrectQuery .= "AND testResults.genTestID = ".$genTestID." ";
+				$getAmountAskedAndAmountCorrectQuery .= "AND questions.spo_id = '".$singleSpec['spo_number']."'";
+				
 				$queryResult = mysql_query($getAmountAskedAndAmountCorrectQuery);
 				if(!$queryResult){
 					die("Could not run query ($getAmountAskedAndAmountCorrectQuery) ".mysql_error());
@@ -813,6 +857,184 @@ class Reports {
 			$perSpoAnalysis = json_encode($perSpoAnalysis);
 			return $perSpoAnalysis;
 		}
+	
+	public static function questionsWithIncorrectForClass($testDate, $idForInstructor){
+
+		$con = self::getConnection();
+		
+			$genTestID;
+
+			//format test date.
+			$tempDate = explode("-", $testDate);
+			$testDate = $tempDate[2]."-".$tempDate[0]."-".$tempDate[1];			
+
+
+			//grab genTestID for the instructor/date match.
+			$testIdQuery = "SELECT DISTINCT genTestID ";
+			$testIdQuery .= "FROM studentTestRecords ";
+			$testIdQuery .= "WHERE instructorID = '".$idForInstructor."' ";
+			$testIdQuery .= "AND testDate = '".$testDate."'";
+						
+			$testIdResult = mysql_query($testIdQuery, $con);
+			
+			if(!$testIdResult) {
+				die("Could not run testIDQuery ($testIdQuery) ".mysql_error());
+			}
+			else {
+				while($row = mysql_fetch_array($testIdResult)){
+					$genTestID = $row['genTestID'];
+				}
+			}
+		
+			//get all questionIDs used for a test			
+			$questionIdsDict = array();
+			$questionIds = array();	
+
+
+			$questionsQuery = "SELECT ";
+		    $questionsQuery .= "SUM(correct) AS 'correct count', ";
+		    $questionsQuery .= "questionID, ";
+		    $questionsQuery .= "SPO.spo_name AS spo, ";
+		    $questionsQuery .= "EO.element_name AS element, ";
+		    $questionsQuery .= "questions.question_a AS question, ";
+		    $questionsQuery .= "questions.correct_answer AS 'correct answer', ";
+		    $questionsQuery .= "questions.alt_correct_answer AS 'alternate correct answer', ";
+		    $questionsQuery .= "questions.last_correct_answer AS 'last correct answer', ";
+		    $questionsQuery .= "questions.ans_x AS 'incorrect answer 1', ";
+		    $questionsQuery .= "questions.ans_y 'incorrect answer 2', ";
+		    $questionsQuery .= "questions.ans_z AS 'incorrect answer 3' ";
+		    $questionsQuery .= "FROM testResults ";
+		    $questionsQuery .= "JOIN questions USING (questionID) ";
+		    $questionsQuery .= "JOIN EO USING (eo_id) ";
+		    $questionsQuery .= "JOIN SPO ";
+		    $questionsQuery .= "WHERE (questions.spo_id = SPO.spo_id) ";
+		    $questionsQuery .= "AND genTestID = ".$genTestID." ";
+		    $questionsQuery .= "GROUP BY questionID ";
+		    $questionsQuery .= "ORDER BY SUM(correct)";			 
+
+			$questionIdsQueryResult = mysql_query($questionsQuery, $con);
+			if (!$questionIdsQueryResult){
+				die("could not questionIDsQuery ($questionsQuery) ".mysql_error());
+			}
+			else {
+				while($row = mysql_fetch_array($questionIdsQueryResult)){
+					$a['id']=$row['questionID'];
+					
+					$q = array();
+					$q['correct_count'] = $row['correct count'];
+					$q['spo'] = $row['spo'];
+					$q['element'] = $row['element'];
+					$q['question'] = $row['question'];
+					$q['correct_answer'] = $row['correct answer'];
+					$q['alternate_correct_answer'] = $row['alternate correct answer'];
+					$q['last_correct_answer'] = $row['last correct answer'];
+					$q['incorrect_answer_1'] = $row['incorrect answer 1'];
+					$q['incorrect_answer_2'] = $row['incorrect answer 2'];
+					$q['incorrect_answer_3'] = $row['incorrect answer 3'];					
+					
+					$a['question'] = $q;
+					$a['students']='N/A';					
+					$questionIdsDict['q'.$row['questionID']] = $a;
+				}
+			}
+
+			//take questionIds and form to string for 'IN' statement			
+			$questionIds = array_values($questionIdsDict);
+			$questionIdsString = implode(", ", $questionIds);
+			$questionIdsString = "(".$questionIdsString;
+			$questionIdsString = $questionIdsString.")";
+			
+			
+			$incorrectStudentsQuery = "SELECT DISTINCT ";
+			$incorrectStudentsQuery .= "tr.employeeNo, ";
+			$incorrectStudentsQuery .= "lastName, ";
+			$incorrectStudentsQuery .= "firstName, ";
+			$incorrectStudentsQuery .= "tr.questionID ";
+			$incorrectStudentsQuery .= "FROM testResults tr ";
+            $incorrectStudentsQuery .= "JOIN studentTestRecords str ON (str.employeeNo = tr.employeeNo) ";
+			$incorrectStudentsQuery .= "WHERE tr.genTestID = ".$genTestID." ";
+			$incorrectStudentsQuery .= "AND correct = 0 ";
+			$incorrectStudentsQuery .= "GROUP BY questionID, employeeNo";			
+			
+			$incorrectStudentsQueryResults = mysql_query($incorrectStudentsQuery, $con);
+			if(!$incorrectStudentsQueryResults) {
+				die("could not incorrectStudentsQuery ($incorrectStudentsQuery) ".mysql_error());
+			
+			}
+			
+			//echo "query: ".$incorrectStudentsQuery;
+			
+			
+			$currentId = 0;
+			$newId;
+			$r = array();
+			
+			$numResults = mysql_num_rows($incorrectStudentsQueryResults);
+			$counter = 0;			
+
+			while($row = mysql_fetch_array($incorrectStudentsQueryResults)){
+
+				$newId = $row['questionID'];
+
+			    if (++$counter == $numResults) {
+
+					if($newId != $currentId){					
+
+						if(count($r)>0){
+							$questionIdsDict['q'.$currentId]['students'] =  $r; 											
+						}
+
+						$r = array();
+						
+
+						array_push($r, $row['firstName']." ".$row['lastName']);
+						$questionIdsDict['q'.$newId]['students'] =  $r; 											
+					}
+	
+
+					if($newId == $currentId){
+
+						array_push($r, $row['firstName']." ".$row['lastName']);
+
+						$questionIdsDict['q'.$currentId]['students'] =  $r; 											
+					}
+					
+			    }				
+
+			    else {
+					if($newId != $currentId){					
+						//check if we've filled the array yet
+/* 						if count > 0 */
+						if(count($r)>0){
+	/* 						add old array to value for key in questionIdsDict */
+							$questionIdsDict['q'.$currentId]['students'] =  $r; 											
+							
+						}
+
+	/* 					start new array  */
+						$r = array();
+	/* 					push value into new array */
+						array_push($r, $row['firstName']." ".$row['lastName']);
+
+					}
+	
+					/*if id is same */
+					if($newId == $currentId){
+						/*push value into current array */
+						array_push($r, $row['firstName']." ".$row['lastName']);
+					}
+				}
+
+				$currentId = $row['questionID'];
+
+			}			
+
+			
+			echo json_encode($questionIdsDict);
+			
+			
+		
+	}
 
 	public static function spoAnalysisForQuarter($orgSpec, $year){
 		$con = self::getConnection();

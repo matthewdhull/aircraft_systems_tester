@@ -150,6 +150,17 @@ h4 {
         border-top: 15px solid #5c5f79;
 }
 
+#classDateMDY{
+	display: none;
+}
 
+label[for='classDateMDY']{
+	display: 
+}
+
+#footer {
+	height: 75px;
+	width: 100%;
+}
 
 

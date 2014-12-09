@@ -443,6 +443,7 @@
 						<div id="progressBar"></div>						
 					</div>
 			
+<!--
 				<div id="testModelingDiv" style="visibility: hidden">
 					<form id="newTestModelForm" method="post" action="">
 						<table id="newTestModelTable">
@@ -484,6 +485,7 @@
 								<td>SPO</td><td>No. of questions</td>
 							</tr>
 								<?php /*SPO name and count populated here */ ?>
+						</table>
 
 						<table id="totalQuestionsTable">
 							<tr>
@@ -497,8 +499,9 @@
 								<td><input id="submitButton" type="submit" value="submit" name="submit"></td>
 							</tr>
 					</table>
-				</form>
+					</form>
 			</div>
+-->
 						
 			</div>
 							

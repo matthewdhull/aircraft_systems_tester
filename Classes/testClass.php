@@ -493,13 +493,15 @@ class Question {
 		}
 		
 		
-		$con = mysql_connect($host,$usn, $password);
+		//$con = mysql_connect($host,$usn, $password);
 
+/*
 		if (!$con){
 		  die('Could not connect: ' . mysql_error());
 		 }
 		
 		mysql_select_db($database, $con);	
+*/
 
 		
 		$newQuestionResult = mysql_query($new_question_query);
@@ -509,7 +511,7 @@ class Question {
 		}
 
 		
-		mysql_close($con);
+/* 		mysql_close($con); */
 		
 	}
 	
