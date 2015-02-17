@@ -301,7 +301,14 @@ class Test_Model {
 		
 		mysql_select_db($database, $con);
 		
-		$modelQuery = "SELECT `test_model_id`, `spo_name` as spo, `count`, `name` FROM `testModel` JOIN `SPO` USING (`spo_id`) WHERE `variant_id` = ".$variant." AND `course_type` = '".$course_type."' AND `count` IS NOT NULL";
+		$modelQuery = "SELECT `test_model_id`, ";
+		$modelQuery .= "`spo_name` as spo, ";
+		$modelQuery .= "`count`, `name` ";
+		$modelQuery .= "FROM `testModel` ";
+		$modelQuery .= "JOIN `SPO` USING (`spo_id`) ";
+		$modelQuery .= "WHERE `variant_id` = ".$variant." ";
+		$modelQuery .= "AND `course_type` = '".$course_type."' ";
+		$modelQuery .= "AND `count` IS NOT NULL";
 		
 		
 		$modelQueryResult = mysql_query($modelQuery);
@@ -322,10 +329,12 @@ class Test_Model {
 
 			
 			if ($current_name == $row['name']){
-				$model[$row['spo']] = $row['count'];
-				$model['test_model_id'] = $row['test_model_id'];        				
+				
+				if($row['count'] > 0) {
+    				$model[$row['spo']] = $row['count'];
+    				$model['test_model_id'] = $row['test_model_id'];
+                }				
 			}
-
 
 			else {
 				//push current array to $models
@@ -338,8 +347,10 @@ class Test_Model {
 				$current_name = $row['name'];
 								
 				//set the first item in the array
-				$model[$row['spo']] = $row['count'];
-				$model['test_model_id'] = $row['test_model_id'];        				
+				if($row['count'] > 0){
+    				$model[$row['spo']] = $row['count'];
+    				$model['test_model_id'] = $row['test_model_id'];        				
+                }    				
 			}		
 			
 
