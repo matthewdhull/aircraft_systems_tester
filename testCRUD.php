@@ -17,8 +17,8 @@
 			?>
 				
 			
-			<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-<!-- 			<script src="jquery.js"></script> -->
+<!-- 			<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script> -->
+			<script src="jquery.js"></script>
 			
 			<script type="text/javascript">
 				$(document).ready(function(){
@@ -69,71 +69,6 @@
 						},"json");
 					}
 					
-					//deprecated
-					/*function getNumberOfQuestions(){
-						console.log("function deprecated. use getQuestionQuantityForSPO() instead");
-						$.post("PHPScripts/getQuestionCount.php",null,function(data){
-							var currentText = $("label[for=air_condition]").text();
-							$("label[for=air_condition]").text(currentText+" ("+data.air_condition+")");
-							currentText = $("label[for=acft_gen]").text();
-							$("label[for=acft_gen]").text(currentText+" ("+data.acft_gen+")");
-							currentText = $("label[for=apu]").text();
-							$("label[for=apu]").text(currentText+" ("+data.apu+")");
-							currentText = $("label[for=autopilot]").text();
-							$("label[for=autopilot]").text(currentText+" ("+data.autopilot+")");
-							currentText = $("label[for=crew_awareness]").text();
-							$("label[for=crew_awareness]").text(currentText+" ("+data.crew_awareness+")");
-							currentText = $("label[for=elec]").text();
-							$("label[for=elec]").text(currentText+" ("+data.elec+")");
-							currentText = $("label[for=emerg_equip]").text();
-							$("label[for=emerg_equip]").text(currentText+" ("+data.emerg_equip+")");
-							currentText = $("label[for=fire_prot]").text();
-							$("label[for=fire_prot]").text(currentText+" ("+data.fire_prot+")");
-							currentText = $("label[for=flt_control]").text();
-							$("label[for=flt_control]").text(currentText+" ("+data.flt_control+")");
-							currentText = $("label[for=fuel]").text();
-							 $("label[for=fuel]").text(currentText+" ("+data.fuel+")");
-							currentText = $("label[for=hydraulics]").text();
-							$("label[for=hydraulics]").text(currentText+" ("+data.hydraulics+")");
-							currentText = $("label[for=ice_rain_prot]").text();
-							 $("label[for=ice_rain_prot]").text(currentText+" ("+data.ice_rain_prot+")");
-							currentText = $("label[for=ldg_gear_brk]").text();
-							$("label[for=ldg_gear_brk]").text(currentText+" ("+data.ldg_gear_brk+")");
-							currentText = $("label[for=lighting]").text();
-							 $("label[for=lighting]").text(currentText+" ("+data.lighting+")");
-							currentText = $("label[for=limitations]").text();
-							$("label[for=limitations]").text(currentText+" ("+data.limitations+")");
-							
-							
-							currentText = $("label[for=oxy]").text();
-							$("label[for=oxy]").text(currentText+" ("+data.oxy+")");
-
-
-							currentText = $("label[for=performance]").text();							
-							$("label[for=performance]").text(currentText+" ("+data.performance+")");
-
-
-							currentText = $("label[for=pneum]").text();							
-							$("label[for=pneum]").text(currentText+" ("+data.pneum+")");
-							
-							
-							currentText = $("label[for=powerplant]").text();
-							$("label[for=powerplant]").text(currentText+" ("+data.powerplant+")");
-							currentText = $("label[for=pressurization]").text();
-							$("label[for=pressurization]").text(currentText+" ("+data.pressurization+")");
-							currentText = $("label[for=profiles]").text();
-							$("label[for=profiles]").text(currentText+" ("+data.profiles+")");
-							currentText = $("label[for=radar]").text();
-							$("label[for=radar]").text(currentText+" ("+data.radar+")");
-							currentText = $("label[for=stall_prot]").text();
-							$("label[for=stall_prot]").text(currentText+" ("+data.stall_prot+")");
-							currentText = $("label[for=mandatory]").text();
-							$("label[for=mandatory]").text(currentText+" ("+data.mandatory+")");
-							
-							
-						},"json");
-					}*/
-				
 				<?php /*load current value in questionNeeded on page load. */?>
 					function displayCurrentLength(){
 						var len = $("#testLength").val();
@@ -152,31 +87,8 @@
 					$("#totalQuestions").val(sum);					
 				}
 				
-				
-				
-				//deprecated
-				/*	
-					function updateQuantities(){
-						var neededQty = parseInt($("#testLength").val());
-						var currentQty = parseInt($("#totalQuestions").val());
-						//console.log("needed: "+neededQty+" current: "+currentQty);
-						if(currentQty > neededQty){
-							var amtOver = (neededQty - currentQty);
-							$("#totalQuestions, #questionsNeeded").css("color","red");
-							$("#questionsNeeded").val(amtOver);							
-						}
-						
-						else {
-							var toGo = (neededQty - currentQty);
-							$("#totalQuestions, #questionsNeeded").css("color","black");
-							$("#questionsNeeded").val(toGo);
-						}
-
-					}
-				*/
-					
 					<?php /*set size of all system topic input fields */?>
-					$("#newTestModelTable input:text").attr("size", "2");
+						$("#newTestModelTable input:text").attr("size", "2");
 										
 					<?php /*clear form when test Length value is changed */?>
 					$("#testLength").change(function(){
@@ -354,7 +266,6 @@
 					$("#createTestButton").click(function(){
 						<?php /*show progress bar */?>
 						$("#progressBar").css("visibility", "visible");
-						
 						var modelID = $("#idToUse").val();
 						var	insID = $("#instructorID").val();
 						var	testPwd = $("#testPassword").val();

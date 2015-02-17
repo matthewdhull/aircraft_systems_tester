@@ -14,6 +14,7 @@ class Exam {
 	public $generatedID;
 	public $gen_error;
 	public $variant;
+	public $modelId;
 
 	public function __get($name) {
 		return $this->$name;
@@ -38,7 +39,7 @@ class Exam {
 	
 	}		
 	
-	public function __construct($varnt, $numQuestionsArr, $reqdEOs, $insID, $testPwd, $ovrPwd, $crs_type, $len, $id){
+	public function __construct($varnt, $numQuestionsArr, $reqdEOs, $insID, $testPwd, $ovrPwd, $crs_type, $len, $tId, $mId){
 		
 		$this->variant = $varnt;
 		$this->num_questions_from_category = $numQuestionsArr;
@@ -48,10 +49,12 @@ class Exam {
 		$this->overridePassword = $ovrPwd;
 		$this->course_type = $crs_type;
 		$this->length = $len;
-		$this->testID = $id;
+		$this->testID = $tId;
+		$this->modelId = $mId;
 		
 		$this->gen_error = "";
-/*
+		
+		/*
 		echo "initialized EXAM with : <br />";
 
 		foreach($this->num_questions_from_category as $k => $v){
@@ -136,13 +139,13 @@ class Exam {
 				}
 				
 				//add results to array.
-/* 				$tmpArr = array(); */
+				/*$tmpArr = array(); */
 				while($row = mysql_fetch_array($idResult)){
 					array_push($idArr, $row['questionID']);
 				}
 
 				//randomly select number of questions desired (5 electrical questions, for example)
-/*				
+				/*				
 	if(count($tmpArr)>0){
 					for($i = 0; $i<(($v-1) - count($mandatoryEoQuestionIds)); $i++){
 						shuffle($tmpArr);
@@ -156,9 +159,9 @@ class Exam {
 	
 */
 				
-/* 				echo "count before merge: idArr: ".count($idArr)." manEOS: ".count($mandatoryEoQuestionIds); */
+				/*echo "count before merge: idArr: ".count($idArr)." manEOS: ".count($mandatoryEoQuestionIds); */
 				$idArr = array_merge($idArr, $mandatoryEoQuestionIds);
-/* 				echo "    count after merge: ".count($idArr); */
+				/*echo "    count after merge: ".count($idArr); */
 				
 			}
 	
@@ -166,7 +169,7 @@ class Exam {
 		}	
 		
 
-/* 		print_r($idArr); */
+		/*print_r($idArr); */
 		
 
 		//old test selection logic		
@@ -202,7 +205,7 @@ class Exam {
 		
 		$createTestQuery = "INSERT INTO `createdTests` VALUES ";
 		$createTestQuery .= "(NULL, ";
-		$createTestQuery .= "'".$this->testID."', ";
+		$createTestQuery .= "'".$this->modelId."', ";
 		$createTestQuery .= "NULL, ";
 		$createTestQuery .= "'".$this->course_type."', ";
 		$createTestQuery .= "".$this->length.", ";
@@ -460,7 +463,7 @@ class Exam {
 			array_push($answerKeyArr, $kv);
 		}
 		
-		//Loop through the answer key and compare each submitted answer for comparison.
+		//iterate through the answer key and compare each submitted answer for comparison.
 		$insertResultQuery = "";
 		$incorrectAns = 0;
 		$incorrectQuestionIDs = array();
@@ -470,13 +473,13 @@ class Exam {
 			    if ($qaArr[$key] != $value){
 			    	//$isCorrect = false;
 					$incorrectAns++;
-					$insertResultQuery = "INSERT INTO `testResults` VALUES (null, '".$employeeNo."', ".$genTestID.", ".$key.",  false)"; 
+					$insertResultQuery = "INSERT INTO `testResults` VALUES (null, '".$employeeNo."', ".$genTestID.", ".$key.", '".$qaArr[$key]."', false)"; 
 					$incorrectQuestionIDs[$key] = $value;
 			     
 			    }
 			    elseif($qaArr[$key] == $value){
-			    	//$isCorrect = true;
-			    	$insertResultQuery = "INSERT INTO `testResults` VALUES (null, '".$employeeNo."', ".$genTestID.", ".$key.", true)"; 
+			    	//$isCorrect = true;	
+			    	$insertResultQuery = "INSERT INTO `testResults` VALUES (null, '".$employeeNo."', ".$genTestID.", ".$key.", '".$qaArr[$key]."', true)"; 
 			    }
 			    
 				if($doNotGrade == "false") { //used to prevent grading if the test-taker is an instructor

@@ -163,4 +163,12 @@ label[for='classDateMDY']{
 	width: 100%;
 }
 
-
+#progressBar {
+	visibility: hidden;
+	background: url(../images/ajax-loader.gif) no-repeat;
+	height: 20px;
+	left: 0px;
+	position: relative;
+	top: -3px;
+	width: 215px;
+}

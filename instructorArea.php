@@ -9,10 +9,10 @@ session_cache_limiter('nocache');
 		<title>Instructor Area</title>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8">		
 		
-		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<!-- 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script> -->
 		<script src="calculation.js" type="text/javascript"></script>		
-<!-- 			<script src="jquery.js"></script> -->
-
+			<script src="jquery.js"></script>
+	
 			
 			<?php 
 				include "Classes/contentClass.php";
@@ -194,6 +194,8 @@ session_cache_limiter('nocache');
 					function getSPOAnalysisForClass(testDateForClass, administeringInstructorID) {
 						var htmlToAdd = "";
 						var theOption = "getSpoAnalysisForClass";
+						
+						$("#progressBar").css("visibility", "visible");
 
 						$.post("PHPScripts/admin/getReports.php", {
 							option: theOption,
@@ -220,32 +222,29 @@ session_cache_limiter('nocache');
 
 							htmlToAdd += "<table>";
 							htmlToAdd += "<tr>";
-							htmlToAdd += "<td>Correct Count</td>";
-							htmlToAdd += "<td>SPO</td>";
-							htmlToAdd += "<td>Element</td>";														
+// 							htmlToAdd += "<td>SPO</td>";
 							htmlToAdd += "<td>Question</td>";
 							htmlToAdd += "<td>Correct Ans</td>";														
-							htmlToAdd += "<td>Alt Correct Ans</td>";							
-							htmlToAdd += "<td>Last Correct Ans</td>";							
-							htmlToAdd += "<td>Incorrect Ans 1</td>";							
-							htmlToAdd += "<td>Incorrect Ans 2</td>";						
-							htmlToAdd += "<td>Incorrect Ans 3</td>";							
+							htmlToAdd += "<td>A</td>";							
+							htmlToAdd += "<td>B</td>";							
+							htmlToAdd += "<td>C</td>";							
+							htmlToAdd += "<td>D</td>";						
 							htmlToAdd += "<td>Student Who Missed It</td>";							
 							htmlToAdd += "</tr>";
 
 
 							$.each(data, function(key,value){
 								htmlToAdd += "<tr>";
-								htmlToAdd += "<td>"+value.question.correct_count+"</td>";
-								htmlToAdd += "<td>"+value.question.spo+"</td>";								
-								htmlToAdd += "<td>"+value.question.element+"</td>";
+// 								htmlToAdd += "<td>"+value.question.spo+"</td>";								
 								htmlToAdd += "<td>"+value.question.question+"</td>";
-								htmlToAdd += "<td>"+value.question.correct_answer+"</td>";																									htmlToAdd += "<td>"+value.question.alternate_correct_answer+"</td>";
-								htmlToAdd += "<td>"+value.question.last_correct_answer+"</td>";
-								htmlToAdd += "<td>"+value.question.incorrect_answer_1+"</td>";
-								htmlToAdd += "<td>"+value.question.incorrect_answer_2+"</td>";
-								htmlToAdd += "<td>"+value.question.incorrect_answer_3+"</td>";
-								htmlToAdd += "<td>"+value.students+"</td>";																													htmlToAdd += "</tr>";									
+								htmlToAdd += "<td>"+value.question.correct_answer.toUpperCase()+"</td>";
+								htmlToAdd += "<td>"+value.question.a+"</td>";
+								htmlToAdd += "<td>"+value.question.b+"</td>";
+								htmlToAdd += "<td>"+value.question.c+"</td>";
+								htmlToAdd += "<td>"+value.question.d+"</td>";
+								htmlToAdd += "<td>"+value.students+"</td>";																					
+								htmlToAdd += "</tr>";									
+								
 							});
 							
 							htmlToAdd += "</table>";														
@@ -256,6 +255,8 @@ session_cache_limiter('nocache');
 							$('html, body').animate({
 							    scrollTop: $("#infoDiv").offset().top
 							}, 1000);	
+							
+							$("#progressBar").css("visibility", "hidden");
 
 								
 							}, "json");	
@@ -816,10 +817,12 @@ session_cache_limiter('nocache');
 				<td><button id="createNewTest">Create</button></td>
 				<td>Create a new test</td>
 			</tr>
+<!--
 			<tr>
 				<td><button id="viewTestsButton">View</button></td>
 				<td>View tests you administered</td>
 			</tr>
+-->
 			<tr>
 				<td><button id="takeTestButton">Goto</button></td>
 				<td>Go to the testing page </td>
@@ -840,7 +843,7 @@ session_cache_limiter('nocache');
 					<option value="byClassSpoAnalysis">Class SPO Analysis</option>						
 					<option value="byStudentEmployeeID">Single Student Report</option>		
 					<option value="byClass">Class Report</option>
-					<option value="byDailyQuizHistory">Daily Progress</option>			
+<!-- 					<option value="byDailyQuizHistory">Daily Progress</option>			 -->
 				</select></td>
 				<td><select id="testDateMDY"></select><select id="classDateMDY"></select></td>
 				<td><select id="instructorForDate"></select></td>
@@ -854,11 +857,12 @@ session_cache_limiter('nocache');
 			</tr>
 			<tr>
 				<td><button id="testReport">Generate</button></td>					
+				<td><div id="progressBar"></div></td>
 			</tr>
 		</table>
 	</div>
 	<div id="adminTasks" class="center" style="visibility:hidden">
-	<div id="progressBar"></div>
+
 	<h4>Admin Tasks</h4>
 		<table>
 			<tr>
