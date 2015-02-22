@@ -46,112 +46,6 @@ class Test_Model {
 		return $con;
 	
 	}	
-	
-	//deprecated	
-	//returns an unsaved model for a daily quiz
-	/*public static function modelForDailyQuiz($systems_array){
-		$model = new self(NULL, NULL, NULL, NULL, NULL, NULL);
-		$model->course_type = "DQUIZ";
-		
-		//set all systems to zero questions and then fill in as needed after querying the database for the desired systems in the quiz
-		$model->num_questions_from_category['air_condition'] = 0;
-		$model->num_questions_from_category['acft_gen'] = 0;
-		$model->num_questions_from_category['apu'] = 0;
-		$model->num_questions_from_category['autopilot'] = 0;
-		$model->num_questions_from_category['crew_awareness'] = 0;
-		$model->num_questions_from_category['elec'] = 0;
-		$model->num_questions_from_category['emerg_equip'] = 0;
-		$model->num_questions_from_category['fire_prot'] = 0;
-		$model->num_questions_from_category['flt_control'] = 0;
-		$model->num_questions_from_category['fuel'] = 0;
-		$model->num_questions_from_category['hydraulics'] = 0;
-		$model->num_questions_from_category['ice_rain_prot'] = 0;
-		$model->num_questions_from_category['ldg_gear_brk'] = 0;
-		$model->num_questions_from_category['ldg_gear_brk'] = 0;
-		$model->num_questions_from_category['lighting'] = 0;
-		$model->num_questions_from_category['limitations'] = 0;
-		$model->num_questions_from_category['oxy'] = 0;
-		$model->num_questions_from_category['performance'] = 0;
-		$model->num_questions_from_category['pneum'] = 0;
-		$model->num_questions_from_category['powerplant'] = 0;
-		$model->num_questions_from_category['pressurization'] = 0;
-		$model->num_questions_from_category['profiles'] = 0;
-		$model->num_questions_from_category['radar'] = 0;
-		$model->num_questions_from_category['stall_prot'] = 0;
-		$model->num_questions_from_category['mandatory'] = 0;
-		
-
-		$questionQuantity = array();
-		$length = 0;
-
-		$con = self::getConnection();        
-
-		foreach($systems_array as $system){
-			$questionQuantity[$system] = $qRow['COUNT(subcategory)'];
-			$length += $qRow['COUNT(subcategory)'];
-			$model->num_questions_from_category[$system] = $qRow['COUNT(subcategory)'];
-		}
-		
-    	$model->length = $length;
-		
-		mysql_close($con);        
-        return $model;
-	}*/
-	
-	//deprecated
-	/*
-		public static function modelForType($type) {
-	 	//echo "modelFromID".$id."";
-        $model = new self(NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-        
-		$con = self::getConnection();        
-        
-        $fetchModelQuery = "SELECT * FROM `test_model` WHERE `course_type` = '".$type."'";
-        $fetchModelResult = mysql_query($fetchModelQuery);
-        
-        if(!$fetchModelResult){
-			echo "Couldn't run query $fetchModelQuery ".mysql_error();
-        }
-        
-
-        while($row = mysql_fetch_array($fetchModelResult)){
-	        $model->testID = $row['testID'];
-        	$model->course_type = $row['course_type'];
-        	$model->length = $row['length'];
-			$model->num_questions_from_category['air_condition'] = $row['air_condition'];
-			$model->num_questions_from_category['acft_gen'] = $row['acft_gen'];
-			$model->num_questions_from_category['apu'] = $row['apu'];
-			$model->num_questions_from_category['autopilot'] = $row['autopilot'];
-			$model->num_questions_from_category['crew_awareness'] = $row['crew_awareness'];
-			$model->num_questions_from_category['elec'] = $row['elec'];
-			$model->num_questions_from_category['emerg_equip'] = $row['emerg_equip'];
-			$model->num_questions_from_category['fire_prot'] = $row['fire_prot'];
-			$model->num_questions_from_category['flt_control'] = $row['flt_control'];
-			$model->num_questions_from_category['fuel'] = $row['fuel'];
-			$model->num_questions_from_category['hydraulics'] = $row['hydraulics'];
-			$model->num_questions_from_category['ice_rain_prot'] = $row['ice_rain_prot'];
-			$model->num_questions_from_category['ldg_gear_brk'] = $row['ldg_gear_brk'];
-			$model->num_questions_from_category['ldg_gear_brk'] = $row['ldg_gear_brk'];
-			$model->num_questions_from_category['lighting'] = $row['lighting'];
-			$model->num_questions_from_category['limitations'] = $row['limitations'];
-			$model->num_questions_from_category['oxy'] = $row['oxy'];
-			$model->num_questions_from_category['performance'] = $row['performance'];
-			$model->num_questions_from_category['pneum'] = $row['pneum'];
-			$model->num_questions_from_category['powerplant'] = $row['powerplant'];
-			$model->num_questions_from_category['pressurization'] = $row['pressurization'];
-			$model->num_questions_from_category['profiles'] = $row['profiles'];
-			$model->num_questions_from_category['radar'] = $row['radar'];
-			$model->num_questions_from_category['stall_prot'] = $row['stall_prot'];
-			$model->num_questions_from_category['mandatory'] = $row['mandatory'];
-
-	     }
-	     
-        mysql_close($con);
-
-        return $model;
-		
-	}
-		*/
 
 	//virtual constructor to retrieve test model by ID.	
 	public static function modelWithID($test_model_id){
@@ -300,15 +194,19 @@ class Test_Model {
 		 }
 		
 		mysql_select_db($database, $con);
-		
-		$modelQuery = "SELECT `test_model_id`, ";
-		$modelQuery .= "`spo_name` as spo, ";
-		$modelQuery .= "`count`, `name` ";
-		$modelQuery .= "FROM `testModel` ";
-		$modelQuery .= "JOIN `SPO` USING (`spo_id`) ";
-		$modelQuery .= "WHERE `variant_id` = ".$variant." ";
-		$modelQuery .= "AND `course_type` = '".$course_type."' ";
-		$modelQuery .= "AND `count` IS NOT NULL";
+
+        $modelQuery = "SELECT testModel.test_model_id, ";
+        $modelQuery .= "SPO.spo_name AS spo, ";
+        $modelQuery .= "testModel.count, ";
+        $modelQuery .= "testModel.name ";
+        $modelQuery .= "FROM testModel ";
+        $modelQuery .= "JOIN SPO ON testModel.spo_id = SPO.spo_id ";
+        $modelQuery .= "WHERE testModel.variant_id = ".$variant." ";        
+        $modelQuery .= "AND course_type = '".$course_type."' ";
+        $modelQuery .= "AND testModel.count > 0 ";
+        $modelQuery .= "ORDER BY ";
+        $modelQuery .= "testModel.name, ";
+        $modelQuery .= "SPO.spo_number ASC";			
 		
 		
 		$modelQueryResult = mysql_query($modelQuery);
@@ -330,10 +228,10 @@ class Test_Model {
 			
 			if ($current_name == $row['name']){
 				
-				if($row['count'] > 0) {
+
     				$model[$row['spo']] = $row['count'];
     				$model['test_model_id'] = $row['test_model_id'];
-                }				
+
 			}
 
 			else {
@@ -347,10 +245,10 @@ class Test_Model {
 				$current_name = $row['name'];
 								
 				//set the first item in the array
-				if($row['count'] > 0){
+
     				$model[$row['spo']] = $row['count'];
     				$model['test_model_id'] = $row['test_model_id'];        				
-                }    				
+
 			}		
 			
 
@@ -436,42 +334,6 @@ class Test_Model {
 		
 		return $questionQuantity;		
 	}
-	
-	//deprecated
-	/*public static function getCurrentQuestionQuantity(){
-		
-		$systems = array('air_condition', 'acft_gen','apu', 'autopilot','crew_awareness', 'elec', 'emerg_equip', 'fire_prot', 'flt_control', 'fuel', 'hydraulics',  'ice_rain_prot',  'ldg_gear_brk', 'ldg_gear_brk', 'lighting','limitations', 'oxy', 'performance', 'pneum', 'powerplant', 'pressurization', 'profiles',  'radar', 'stall_prot', 'mandatory');
-
-		$questionQuantity = array();
-		
-		include "XJTestDBConnect.php";
-		$con = mysql_connect($host,$usn, $password);
-
-		if (!$con){
-		  die('Could not connect: ' . mysql_error());
-		 }
-		
-		mysql_select_db($database, $con);
-		
-		foreach($systems as $system){
-			
-			$getQuantity = "SELECT COUNT(subcategory) FROM questions WHERE subcategory = '".$system."'";
-
-			$qResult = mysql_query($getQuantity);
-			if(!$qResult){
-				die("could not run query ($getQuantity) ".mysql_error());
-			}
-			while($qRow = mysql_fetch_array($qResult)){
-				$questionQuantity[$system] = $qRow['COUNT(subcategory)'];
-			}
-		}
-		
-		$questionQuantity = json_encode($questionQuantity);
-		return $questionQuantity;
-
-		mysql_close($con);
-		
-	}*/
 	
 	public static function getSPOForModeling(){
 		$spo = array();

@@ -17,8 +17,8 @@
 			?>
 				
 			
-<!-- 			<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script> -->
-			<script src="jquery.js"></script>
+			<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<!-- 			<script src="jquery.js"></script> -->
 			
 			<script type="text/javascript">
 				$(document).ready(function(){
@@ -208,7 +208,11 @@
 							
 							$.each(data, function(key, values){	
 								
-								modelTableHTML += "<table id="+values.test_model_id+" class='modelTable'><tr class='testModel'><td><button id="+values.test_model_id+" value='use'>use</button><button value='delete' id="+values.test_model_id+">delete</button></td></tr><td>Name: "+key+"</td></tr>";
+								modelTableHTML += "<table id="+values.test_model_id+" class='modelTable'> ";
+								modelTableHTML += "<tr class='testModel'> ";
+								modelTableHTML += "<td><button id="+values.test_model_id+" value='use'>use</button>";
+								modelTableHTML += "<button value='delete' id="+values.test_model_id+">delete</button></td></tr>";
+								modelTableHTML += "<td id='test_model_name'>Name: "+key+"</td></tr>";
 								
 								
 								$.each( values, function(k, v) {

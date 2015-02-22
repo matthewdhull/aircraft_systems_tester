@@ -9,9 +9,9 @@ session_cache_limiter('nocache');
 		<title>Instructor Area</title>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8">		
 		
-<!-- 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script> -->
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 		<script src="calculation.js" type="text/javascript"></script>		
-			<script src="jquery.js"></script>
+<!-- 			<script src="jquery.js"></script> -->
 	
 			
 			<?php 
@@ -827,10 +827,7 @@ session_cache_limiter('nocache');
 				<td><button id="takeTestButton">Goto</button></td>
 				<td>Go to the testing page </td>
 			</tr>
-			<tr>
-				<td><button id="faqButton">FAQ</button></td>
-				<td>Frequently asked questions</td>
-			</tr>			
+
 		</table>
 		<table id="reportTable">
 			<tr>
