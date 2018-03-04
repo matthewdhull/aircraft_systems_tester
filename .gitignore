@@ -10,6 +10,9 @@
 *.pdf
 *.txt
 *.png
+*.sql
+*.DS_Store
+*.csv
 vendor/
 .env
 
