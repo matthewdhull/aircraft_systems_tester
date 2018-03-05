@@ -2,7 +2,7 @@
 
 - ### Read the Requirements [here](https://github.com/matthewdhull/aircraft_systems_tester/blob/task_modeling/Task%20Analysis%20Planning/requirements.md)
 
-- ### The Requirements [Analyis](https://github.com/matthewdhull/aircraft_systems_tester/blob/task_modeling/Task%20Analysis%20Planning/requirementsanalysis.pdf)
+- ### The Requirements [Analysis](https://github.com/matthewdhull/aircraft_systems_tester/blob/task_modeling/Task%20Analysis%20Planning/requirementsanalysis.pdf)
 
 - ### Use [Cases](https://github.com/matthewdhull/aircraft_systems_tester/blob/task_modeling/Task%20Analysis%20Planning/usecasemodel.md)
 
