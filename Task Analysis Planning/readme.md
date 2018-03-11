@@ -13,3 +13,7 @@
 - ### API [documentation](https://github.com/matthewdhull/aircraft_systems_tester/blob/task_modeling/Task%20Analysis%20Planning/api.md)
 
 - ### Testing [Plan](https://github.com/matthewdhull/aircraft_systems_tester/blob/task_modeling/Task%20Analysis%20Planning/testplan.md)
+
+- ### Data Inventory for Interaction [here](https://github.com/matthewdhull/aircraft_systems_tester/blob/task_modeling/Task%20Analysis%20Planning/inventory.md)
+
+- ### Prototypes are [here](https://github.com/matthewdhull/aircraft_systems_tester/blob/task_modeling/Task%20Analysis%20Planning/prototyping.md)
