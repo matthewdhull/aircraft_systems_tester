@@ -20,37 +20,9 @@
 			ContentSnippets::doNavigationBar();
 		?>
 	
-	<ul id="testModelOptions">	
-		<li>
-			<select id='fleet'>
-				<option value=1>ERJ</option>
-				<option value=2>CRJ</option>
-			</select>
-		</li>		
-		<li>
-			<select id="courseType">
-				<option value="SYS">SYS</option>
-				<option value="UPG">UPG</option>
-			</select>
-		</li>		
-			<li>
-				<select id="testLength">
-					<option value="100">100</option>
-					<option value="50">50</option>
-					<option value="25">25</option>
-					<option value="10">10</option>
-				</select>
-			</li>
-			<li>
-				Name&nbsp;<input type='text' id='newTestModelName' />
-			</li>
-			<li>
-				<input id="submitButton" type="submit" value="submit" name="submit">
-			</li>
-			<li>
-				Total Added &nbsp;<input id="totalQuestions" type="text" readonly />
-			</li>
-		</ul>
+
+
+
 		<div id="progressBar"></div>
 		<div id="accordion" style="margin-top: 25px;">
 		</div>

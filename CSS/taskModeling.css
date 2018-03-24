@@ -1,0 +1,52 @@
+@import url("common.css");
+
+#tree {
+    margin-top: 100px;
+}
+
+
+
+button {
+    margin-top: 5px;
+}
+
+.savePhaseButton, .saveTaskButton, .saveSubtaskButton {
+    margin-left: 5px;
+}
+
+.addTaskButton, .addSubTaskButton {
+    display: block;
+}
+
+.phase, .task, .subtask {
+    border: 1px solid #bdbdbd;
+    margin: 1px;
+    padding: 10px;
+    height:-moz-fit-content;
+}
+
+.phase_input, .task_input, .subtask_input {
+    width: 65%;
+}
+
+.phase_order_input, .task_order_input, .subtask_order_input {
+    width: 15px;
+}
+
+.phase {
+    background-color: #ffffff;
+    width:50%;
+}
+
+.task {
+    background-color: #e8e8e8;
+    width:90%;
+}
+
+.subtask {
+    background-color: #bebebe;
+    width: 90%;
+}
+
+
+
