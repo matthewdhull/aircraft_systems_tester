@@ -72,7 +72,7 @@
             }, function(data){
                 $("#"+task_id+"").find(".subtask").remove();
                 $.each(data, function(key,value){
-                    var html = "<div id="+value.id+" class='subtask'>";
+                    var html = "<div id="+value.id+" class='subtask' data-number="+value.number+">";
                     html += "<input type='text' class='subtask_order_input' name='sub_task_order' value="+value.number+"></input>";                
                     html += "<input type='text' class='subtask_input' name='subtask' value='"+value.name+"'></input>";
                     html += "<button class='saveSubtaskButton'>Save Sub-Task</button>";
@@ -80,6 +80,10 @@
                    $("#"+task_id+"").find(".addSubTaskButton").before(html); 
                    bindSaveSubtaskEvent();                
                 });
+                $("#"+task_id+"").find(".subtask").sortElements(function(a, b){
+                    return $(a).attr("data-number") > $(b).attr("data-number") ? 1 : -1;
+                });                 
+                                
             }, "json");
         }
         
@@ -89,17 +93,21 @@
 			}, function(data){
     			$("#"+phase_id+"").find(".task").remove();
                 $.each(data, function(key,value){                                                
-                    var html = "<div id="+value.id+" class='task'>";
+                    var html = "<div id="+value.id+" class='task' data-number="+value.number+">";
                     html += "<input type='text' class='task_order_input' name='task_order' value="+value.number+"></input>";                
                     html += "<input type='text' class='task_input' name='task' value='"+value.name+"'></input>";
                     html += "<button class='saveTaskButton'>Save Task</button>";
                     html += "<button class='addSubTaskButton'>+ Sub-Task</button>";
                     html += "</div>";                
                     $("#"+phase_id+"").find(".addTaskButton").before(html);
+                      
                     bindAddSubTaskEvent();
                     bindSaveTaskEvent();
                     loadSubtasks(value.id); 
                 });
+                $("#"+phase_id+"").find(".task").sortElements(function(a, b){
+                    return $(a).attr("data-number") > $(b).attr("data-number") ? 1 : -1;
+                });                 
                 
 			}, "json");               
         }
@@ -115,15 +123,14 @@
                     html += "<button class='savePhaseButton'>Save Phase</button>";
                     html += "<button class='addTaskButton'>+ Task</button>";
                     html += "</div>";    
-                    $(".addPhaseButton").before(html);  
-                    $("div .phase").sortElements(function(a, b){
-                        return $(a).attr("data-number") > $(b).attr("data-number") ? 1 : -1;
-                    });   
+                    $(".addPhaseButton").before(html);     
                     bindAddTaskButtonEvent();
                     bindSavePhaseEvent();                                                   
                     loadTasks(value.id);                    
                 });
-
+                $("div .phase").sortElements(function(a, b){
+                    return $(a).attr("data-number") > $(b).attr("data-number") ? 1 : -1;
+                });
 			}, "json");         
         
             return false;
