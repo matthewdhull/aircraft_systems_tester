@@ -20,15 +20,31 @@
 
     $(document).ready(function(){
         
+        
+        function loadSubtasks(task_id) {
+            $.post("PHPScripts/getSubtasks.php", {
+                taskId: task_id
+            }, function(data){
+                $("#"+task_id+"").find(".subtask").remove();
+                $.each(data, function(key,value){
+                    var html = "<div class='subtask'>";
+                    html += "<input type='text' class='subtask_order_input' name='sub_task_order' value="+value.number+"></input>";                
+                    html += "<input type='text' class='subtask_input' name='subtask' value='"+value.name+"'></input>";
+                    html += "<button class='saveSubtaskButton'>Save Sub-Task</button>";
+                    html += "</div>";
+                   $("#"+task_id+"").find(".addSubTaskButton").before(html); 
+                   bindSaveSubtaskEvent();                
+                });
+            }, "json");
+        }
+        
         function loadTasks(phase_id){
-            console.log("load tasks for phase: " + phase_id);
-            
 			$.post("PHPScripts/getTasks.php", {
     			phaseId: phase_id
 			}, function(data){
     			$("#"+phase_id+"").find(".task").remove();
                 $.each(data, function(key,value){                                                
-                    var html = "<div class='task'>";
+                    var html = "<div id="+value.id+" class='task'>";
                     html += "<input type='text' class='task_order_input' name='task_order' value="+value.number+"></input>";                
                     html += "<input type='text' class='task_input' name='task' value='"+value.name+"'></input>";
                     html += "<button class='saveTaskButton'>Save Task</button>";
@@ -37,6 +53,7 @@
                     $("#"+phase_id+"").find(".addTaskButton").before(html);
                     bindAddSubTaskEvent();
                     bindSaveTaskEvent();
+                    loadSubtasks(value.id);
                 });
                 
 			}, "json");               
@@ -63,7 +80,25 @@
         
             return false;
         }
+        
+        function bindSaveSubtaskEvent(){
+            $(".saveSubtaskButton").off().click(function(){
+                var task_id = $(this).parent().parent().attr('id');
+                var subtask_number = $(this).siblings(".subtask_order_input").val();
+                var subtask_name = $(this).siblings(".subtask_input").val();
 
+                $.post("PHPScripts/createSubtask.php", {
+                    taskId: task_id,
+                    number: subtask_number,
+                    name: subtask_name
+                }, function(data){
+                    loadSubtasks(task_id);
+                });
+                
+            })
+        }
+        
+        
         function bindSaveTaskEvent(){
             $(".saveTaskButton").off().click(function(){
                 var phase_id = $(this).parent().parent().attr('id');
@@ -103,6 +138,7 @@
                 html += "<button class='saveSubtaskButton'>Save Sub-Task</button>";
                 html += "</div>";
                $(this).before(html);
+               bindSaveSubtaskEvent();
             });
         }    
                 
@@ -153,8 +189,7 @@
 	
 
     <div id='tree'>      
-        <button class='addPhaseButton' name='button' text='button' value='button'> + phase</button>   
-        
+        <button class='addPhaseButton' name='button' text='button' value='button'> + phase</button>       
                  
     </div>
 
