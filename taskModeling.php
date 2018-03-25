@@ -53,7 +53,7 @@
                     $("#"+phase_id+"").find(".addTaskButton").before(html);
                     bindAddSubTaskEvent();
                     bindSaveTaskEvent();
-                    loadSubtasks(value.id);
+                    loadSubtasks(value.id); 
                 });
                 
 			}, "json");               
@@ -98,7 +98,6 @@
             })
         }
         
-        
         function bindSaveTaskEvent(){
             $(".saveTaskButton").off().click(function(){
                 var phase_id = $(this).parent().parent().attr('id');
@@ -119,14 +118,28 @@
             $(".savePhaseButton").off().click(function(){
                 var phase_number = $(this).siblings(".phase_order_input").val()
                 var phase_name = $(this).siblings(".phase_input").val();
+                var anId = $(this).parent().attr("id");
+
+                if (typeof anId === "undefined") {
+                    // phase has not yet been saved.
+    				$.post("PHPScripts/createPhase.php", {
+        				number: phase_number,
+        				name: phase_name
+    				}, function(data){
+                        loadPhases();
+    				});                    
+                }
                 
-				$.post("PHPScripts/createPhase.php", {
-    				number: phase_number,
-    				name: phase_name
-				}, function(data){
-                    loadPhases();
-				});
-                
+                else {
+    				$.post("PHPScripts/updatePhase.php", {
+        				phaseId: anId,
+        				number: phase_number,
+        				name: phase_name
+    				}, function(data){
+                        loadPhases();
+    				}); 
+                }
+
             })
         }
 

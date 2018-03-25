@@ -94,7 +94,20 @@ class Phase {
     }
     
     public function update($Id){
-        // update a phase for an id
+
+		$con = self::getConnection();		
+            
+
+        $updatePhaseQuery = "UPDATE `Phase` SET `Number` = ".$this->number.", `Name` = '".$this->name."' WHERE `Id` =  ".$Id."";
+
+		
+		$updatePhaseResult = mysql_query($updatePhaseQuery);
+		
+		if(!$updatePhaseResult) {
+			die ("Could not update question with: ($updatePhaseQuery) from DB: " . mysql_error());
+		}
+
+        mysql_close($con);
     }
     
     public function destroy($Id){
