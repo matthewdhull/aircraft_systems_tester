@@ -64,7 +64,6 @@ class Task extends Phase {
         
     }
     
-    
     public function createTaskForPhase($PhaseId){
         // insert a new Task into the db
     
@@ -90,6 +89,22 @@ class Task extends Phase {
 		mysql_close($con);
     }
     
+    public function update($Id){
+
+		$con = self::getConnection();		
+            
+
+        $updateTaskQuery = "UPDATE `Task` SET `Number` = ".$this->number.", `Name` = '".$this->name."', `Description` = '".$this->description."' WHERE `Id` =  ".$Id."";
+
+		
+		$updateTaskResult = mysql_query($updateTaskQuery);
+		
+		if(!$updateTaskResult) {
+			die ("Could not update question with: ($updateTaskQuery) from DB: " . mysql_error());
+		}
+
+        mysql_close($con);
+    }    
     
     }
 ?>

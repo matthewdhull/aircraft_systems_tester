@@ -103,14 +103,29 @@
                 var phase_id = $(this).parent().parent().attr('id');
                 var task_number = $(this).siblings(".task_order_input").val();
                 var task_name = $(this).siblings(".task_input").val();
+                var anId = $(this).parent().attr("id");
                 
-                $.post("PHPScripts/createTask.php", {
-                    phaseId: phase_id,
-                    number: task_number,
-                    name: task_name
-                }, function(data){
-                    loadTasks(phase_id);
-                });
+                if(typeof anId === "undefined"){
+                    //task has not been saved
+                    $.post("PHPScripts/createTask.php", {
+                        phaseId: phase_id,
+                        number: task_number,
+                        name: task_name
+                    }, function(data){
+                        loadTasks(phase_id);
+                    });
+                }
+                else {
+    				$.post("PHPScripts/updateTask.php", {
+        				taskId: anId,
+        				number: task_number,
+        				name: task_name
+    				}, function(data){
+                        loadTasks(phase_id);
+    				});                     
+                }
+                
+
             })
         }
 
@@ -131,6 +146,7 @@
                 }
                 
                 else {
+                    // update the phase
     				$.post("PHPScripts/updatePhase.php", {
         				phaseId: anId,
         				number: phase_number,

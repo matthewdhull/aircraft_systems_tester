@@ -83,6 +83,22 @@ class Subtask extends Task {
 		mysql_close($con);
     }
     
+    public function update($Id){
+
+		$con = self::getConnection();		
+            
+
+        $updateSubtaskQuery = "UPDATE `Subtask` SET `Number` = ".$this->number.", `Name` = '".$this->name."', `Description` = '".$this->description."' WHERE `Id` =  ".$Id."";
+
+		
+		$updateSubtaskResult = mysql_query($updateSubtaskQuery);
+		
+		if(!$updateSubtaskResult) {
+			die ("Could not update question with: ($updateSubtaskQuery) from DB: " . mysql_error());
+		}
+
+        mysql_close($con);
+    }     
     
     }
 ?>
