@@ -121,11 +121,13 @@
                     html += "<input type='text' class='phase_order_input' name='phase_order' value="+value.number+"></input>";
                     html += "<input type='text' class='phase_input' name='phase' value='"+value.name+"'></input>";
                     html += "<button class='savePhaseButton'>Save Phase</button>";
+                    html += "<button class='deletePhaseButton'>Delete Phase</button>";                    
                     html += "<button class='addTaskButton'>+ Task</button>";
                     html += "</div>";    
                     $(".addPhaseButton").before(html);     
                     bindAddTaskButtonEvent();
-                    bindSavePhaseEvent();                                                   
+                    bindSavePhaseEvent();    
+                    bindDeletePhaseEvent();                                                                   
                     loadTasks(value.id);                    
                 });
                 $("div .phase").sortElements(function(a, b){
@@ -197,7 +199,28 @@
 
             })
         }
-
+        
+        function bindDeletePhaseEvent(){
+            $(".deletePhaseButton").off().click(function(){
+                var tasks = $(this).parent().find(".task").length;
+                if(length>0){
+                    return false;
+                }
+                
+                else {
+                    var id = $(this).parent().attr("id");
+                    $(this).parent().remove();
+                    console.log("id of phase to delete: " + id);
+        			$.post("PHPScripts/deletePhase.php", {
+            			phaseId: id
+        			}, function(data){
+            			console.log('');
+        			});                       
+                                    
+                }
+            });
+        }
+        
         function bindSavePhaseEvent(){
             $(".savePhaseButton").off().click(function(){
                 var phase_number = $(this).siblings(".phase_order_input").val()
@@ -259,11 +282,13 @@
             html += "<input type='text' class='phase_order_input' name='phase_order' placeholder=''></input>";
             html += "<input type='text' class='phase_input' name='phase' placeholder='A Phase'></input>";
             html += "<button class='savePhaseButton'>Save Phase</button>";
+            html += "<button class='deletePhaseButton'>Delete Phase</button>";
             html += "<button class='addTaskButton'>+ Task</button>";
             html += "</div>";
             $(this).before(html);
              bindAddTaskButtonEvent();
              bindSavePhaseEvent();
+             bindDeletePhaseEvent();
         });
      
         loadPhases();
