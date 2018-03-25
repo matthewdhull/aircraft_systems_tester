@@ -1,6 +1,6 @@
 <?php
 
-include '../Classes/Subtask.php';
+include '../Classes/subtask.php';
 
 $subtaskId = $_POST['subtaskId'];
 $name = $_POST['name'];

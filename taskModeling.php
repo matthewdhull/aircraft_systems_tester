@@ -27,7 +27,7 @@
             }, function(data){
                 $("#"+task_id+"").find(".subtask").remove();
                 $.each(data, function(key,value){
-                    var html = "<div class='subtask'>";
+                    var html = "<div id="+value.id+" class='subtask'>";
                     html += "<input type='text' class='subtask_order_input' name='sub_task_order' value="+value.number+"></input>";                
                     html += "<input type='text' class='subtask_input' name='subtask' value='"+value.name+"'></input>";
                     html += "<button class='saveSubtaskButton'>Save Sub-Task</button>";
@@ -86,14 +86,28 @@
                 var task_id = $(this).parent().parent().attr('id');
                 var subtask_number = $(this).siblings(".subtask_order_input").val();
                 var subtask_name = $(this).siblings(".subtask_input").val();
+                var anId = $(this).parent().attr("id");
 
-                $.post("PHPScripts/createSubtask.php", {
-                    taskId: task_id,
-                    number: subtask_number,
-                    name: subtask_name
-                }, function(data){
-                    loadSubtasks(task_id);
-                });
+                if(typeof anId === "undefined"){
+                    $.post("PHPScripts/createSubtask.php", {
+                        taskId: task_id,
+                        number: subtask_number,
+                        name: subtask_name
+                    }, function(data){
+                        loadSubtasks(task_id);
+                    });
+                }
+                
+                else {
+    				$.post("PHPScripts/updateSubtask.php", {
+        				subtaskId: anId,
+        				number: subtask_number,
+        				name: subtask_name
+    				}, function(data){
+                        loadSubtasks(task_id);
+    				});                      
+                }
+
                 
             })
         }
