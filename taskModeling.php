@@ -76,9 +76,11 @@
                     html += "<input type='text' class='subtask_order_input' name='sub_task_order' value="+value.number+"></input>";                
                     html += "<input type='text' class='subtask_input' name='subtask' value='"+value.name+"'></input>";
                     html += "<button class='saveSubtaskButton'>Save Sub-Task</button>";
+                    html += "<button class='deleteSubtaskButton'>Delete Sub-Task</button>";                    
                     html += "</div>";
                    $("#"+task_id+"").find(".addSubTaskButton").before(html); 
-                   bindSaveSubtaskEvent();                
+                   bindSaveSubtaskEvent();
+                   bindDeleteSubtaskEvent();                
                 });
                 $("#"+task_id+"").find(".subtask").sortElements(function(a, b){
                     return $(a).attr("data-number") > $(b).attr("data-number") ? 1 : -1;
@@ -96,13 +98,16 @@
                     var html = "<div id="+value.id+" class='task' data-number="+value.number+">";
                     html += "<input type='text' class='task_order_input' name='task_order' value="+value.number+"></input>";                
                     html += "<input type='text' class='task_input' name='task' value='"+value.name+"'></input>";
+                    html += "<textarea class='task_description_input' placholder='A task description goes here'></textarea>"
                     html += "<button class='saveTaskButton'>Save Task</button>";
+                    html += "<button class='deleteTaskButton'>Delete Task</button>";                    
                     html += "<button class='addSubTaskButton'>+ Sub-Task</button>";
                     html += "</div>";                
                     $("#"+phase_id+"").find(".addTaskButton").before(html);
                       
                     bindAddSubTaskEvent();
                     bindSaveTaskEvent();
+                    bindDeleteTaskEvent();
                     loadSubtasks(value.id); 
                 });
                 $("#"+phase_id+"").find(".task").sortElements(function(a, b){
@@ -138,6 +143,22 @@
             return false;
         }
         
+        function bindDeleteSubtaskEvent(){
+            $(".deleteSubtaskButton").off().click(function(){
+
+                var id = $(this).parent().attr("id");
+                $(this).parent().remove();
+                
+    			$.post("PHPScripts/deleteSubtask.php", {
+        			subtaskId: id
+    			}, function(data){
+        			console.log(data);
+    			});                       
+                                
+     
+            });             
+        }
+        
         function bindSaveSubtaskEvent(){
             $(".saveSubtaskButton").off().click(function(){
                 var task_id = $(this).parent().parent().attr('id');
@@ -167,6 +188,30 @@
 
                 
             })
+        }
+        
+        function bindDeleteTaskEvent(){
+            $(".deleteTaskButton").off().click(function(){
+                var subtasks = $(this).parent().find(".subtask").length;
+                
+                if(subtasks>0){
+                    // do not delete a phase with any children tasks
+                    console.log('children: '+ subtasks);
+                    return false;
+                }
+                
+                else {
+                    var id = $(this).parent().attr("id");
+                    $(this).parent().remove();
+                    console.log("id of task to delete: " + id);
+        			$.post("PHPScripts/deleteTask.php", {
+            			taskId: id
+        			}, function(data){
+            			console.log(data);
+        			});                       
+                                    
+                }
+            });            
         }
         
         function bindSaveTaskEvent(){
@@ -203,7 +248,8 @@
         function bindDeletePhaseEvent(){
             $(".deletePhaseButton").off().click(function(){
                 var tasks = $(this).parent().find(".task").length;
-                if(length>0){
+                if(tasks>0){
+                    // do not delete a phase with any children tasks
                     return false;
                 }
                 
@@ -257,9 +303,11 @@
                 html += "<input type='text' class='subtask_order_input' name='sub_task_order' placeholder=''></input>";                
                 html += "<input type='text' class='subtask_input' name='subtask' placeholder='A Sub-Task'></input>";
                 html += "<button class='saveSubtaskButton'>Save Sub-Task</button>";
+                html += "<button class='deleteSubtaskButton'>Delete Sub-Task</button>";
                 html += "</div>";
                $(this).before(html);
                bindSaveSubtaskEvent();
+               bindDeleteSubtaskEvent();
             });
         }    
                 
@@ -268,12 +316,15 @@
                 var html = "<div class='task'>";
                 html += "<input type='text' class='task_order_input' name='task_order' placeholder=''></input>";                
                 html += "<input type='text' class='task_input' name='task' placeholder='A Task'></input>";
+                html += "<textarea class='task_description_input' placholder='A task description goes here'></textarea>"                
                 html += "<button class='saveTaskButton'>Save Task</button>";
+                html += "<button class='deleteTaskButton'>Delete Task</button>";
                 html += "<button class='addSubTaskButton'>+ Sub-Task</button>";
                 html += "</div>";                
                 $(this).before(html);
                 bindAddSubTaskEvent();
                 bindSaveTaskEvent();
+                bindDeleteTaskEvent();
             });            
         }        
 

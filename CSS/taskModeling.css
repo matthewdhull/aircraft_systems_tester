@@ -8,6 +8,7 @@
 
 button {
     margin-top: 5px;
+    height: 25px;
 }
 
 .savePhaseButton, .saveTaskButton, .saveSubtaskButton {
@@ -35,7 +36,7 @@ button {
 
 .phase {
     background-color: #ffffff;
-    width:50%;
+    width:70%;
 }
 
 .task {

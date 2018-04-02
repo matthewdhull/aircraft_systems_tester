@@ -98,7 +98,23 @@ class Subtask extends Task {
 		}
 
         mysql_close($con);
-    }     
+    }    
+    
+    public function destroy($Id){
+
+        // delete a phase for an id
+		$con = self::getConnection();				
+		
+		$deleteQuery = "DELETE FROM `Subtask` where Id = ".$Id."";
+		$deleteResult = mysql_query($deleteQuery);
+		if(!$deleteResult){
+			die("could not execute delete query ($deleteQuery) ".mysql_error());
+		}
+				
+		mysql_close($con);        
+        
+    }
+     
     
     }
 ?>
