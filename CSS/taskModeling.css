@@ -34,6 +34,12 @@ button {
     width: 15px;
 }
 
+.task_description_input, .subtask_description_input {
+    margin-top: 5px;
+    width: 68%;
+    font-size: .7em;
+}
+
 .phase {
     background-color: #ffffff;
     width:70%;

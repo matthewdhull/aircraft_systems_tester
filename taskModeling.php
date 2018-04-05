@@ -75,6 +75,7 @@
                     var html = "<div id="+value.id+" class='subtask' data-number="+value.number+">";
                     html += "<input type='text' class='subtask_order_input' name='sub_task_order' value="+value.number+"></input>";                
                     html += "<input type='text' class='subtask_input' name='subtask' value='"+value.name+"'></input>";
+                    html += "<textarea class='subtask_description_input' name='subtask_description' value='"+value.description+"'>"+value.description+"</textarea>"                    
                     html += "<button class='saveSubtaskButton'>Save Sub-Task</button>";
                     html += "<button class='deleteSubtaskButton'>Delete Sub-Task</button>";                    
                     html += "</div>";
@@ -98,7 +99,7 @@
                     var html = "<div id="+value.id+" class='task' data-number="+value.number+">";
                     html += "<input type='text' class='task_order_input' name='task_order' value="+value.number+"></input>";                
                     html += "<input type='text' class='task_input' name='task' value='"+value.name+"'></input>";
-                    html += "<textarea class='task_description_input' placholder='A task description goes here'></textarea>"
+                    html += "<textarea class='task_description_input' name='task_description' value='"+value.description+"'>"+value.description+"</textarea>"
                     html += "<button class='saveTaskButton'>Save Task</button>";
                     html += "<button class='deleteTaskButton'>Delete Task</button>";                    
                     html += "<button class='addSubTaskButton'>+ Sub-Task</button>";
@@ -109,7 +110,7 @@
                     bindSaveTaskEvent();
                     bindDeleteTaskEvent();
                     loadSubtasks(value.id); 
-                });
+                }); 
                 $("#"+phase_id+"").find(".task").sortElements(function(a, b){
                     return $(a).attr("data-number") > $(b).attr("data-number") ? 1 : -1;
                 });                 
@@ -164,13 +165,15 @@
                 var task_id = $(this).parent().parent().attr('id');
                 var subtask_number = $(this).siblings(".subtask_order_input").val();
                 var subtask_name = $(this).siblings(".subtask_input").val();
+                var subtask_description = $(this).siblings(".subtask_description_input").val();
                 var anId = $(this).parent().attr("id");
 
                 if(typeof anId === "undefined"){
                     $.post("PHPScripts/createSubtask.php", {
                         taskId: task_id,
                         number: subtask_number,
-                        name: subtask_name
+                        name: subtask_name,
+                        description: subtask_description
                     }, function(data){
                         loadSubtasks(task_id);
                     });
@@ -180,7 +183,8 @@
     				$.post("PHPScripts/updateSubtask.php", {
         				subtaskId: anId,
         				number: subtask_number,
-        				name: subtask_name
+        				name: subtask_name,
+        				description: subtask_description
     				}, function(data){
                         loadSubtasks(task_id);
     				});                      
@@ -219,6 +223,7 @@
                 var phase_id = $(this).parent().parent().attr('id');
                 var task_number = $(this).siblings(".task_order_input").val();
                 var task_name = $(this).siblings(".task_input").val();
+                var task_description = $(this).siblings(".task_description_input").val();
                 var anId = $(this).parent().attr("id");
                 
                 if(typeof anId === "undefined"){
@@ -226,7 +231,8 @@
                     $.post("PHPScripts/createTask.php", {
                         phaseId: phase_id,
                         number: task_number,
-                        name: task_name
+                        name: task_name,
+                        description: task_description
                     }, function(data){
                         loadTasks(phase_id);
                     });
@@ -235,7 +241,8 @@
     				$.post("PHPScripts/updateTask.php", {
         				taskId: anId,
         				number: task_number,
-        				name: task_name
+        				name: task_name,
+        				description: task_description
     				}, function(data){
                         loadTasks(phase_id);
     				});                     
@@ -302,6 +309,7 @@
                 var html = "<div class='subtask'>";
                 html += "<input type='text' class='subtask_order_input' name='sub_task_order' placeholder=''></input>";                
                 html += "<input type='text' class='subtask_input' name='subtask' placeholder='A Sub-Task'></input>";
+                html += "<textarea class='subtask_description_input' name='subtask_description'></textarea>"
                 html += "<button class='saveSubtaskButton'>Save Sub-Task</button>";
                 html += "<button class='deleteSubtaskButton'>Delete Sub-Task</button>";
                 html += "</div>";
@@ -316,7 +324,7 @@
                 var html = "<div class='task'>";
                 html += "<input type='text' class='task_order_input' name='task_order' placeholder=''></input>";                
                 html += "<input type='text' class='task_input' name='task' placeholder='A Task'></input>";
-                html += "<textarea class='task_description_input' placholder='A task description goes here'></textarea>"                
+                html += "<textarea class='task_description_input' name='task_description'></textarea>"                
                 html += "<button class='saveTaskButton'>Save Task</button>";
                 html += "<button class='deleteTaskButton'>Delete Task</button>";
                 html += "<button class='addSubTaskButton'>+ Sub-Task</button>";
