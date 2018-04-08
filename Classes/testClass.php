@@ -401,7 +401,7 @@ class Question {
 			$new_question_query .= "NULL,";
 			$new_question_query .= "'".$this->subject."', ";
 			$new_question_query .= "'".$this->subcategory."',";
-			$new_question_query .= "'".$this->spo."',";
+			$new_question_query .= "NULL,";
 			$new_question_query .= "'".$this->eo."',";
 			$new_question_query .= "".$this->variant.",";
 			$new_question_query .= "'".$this->type."',";
@@ -412,7 +412,8 @@ class Question {
 			$new_question_query .= "'{$ans_y}',";
 			$new_question_query .= "'{$ans_z}',";
 			$new_question_query .= "'{$question_a}',";
-			$new_question_query .= "'{$question_b}')";
+			$new_question_query .= "'{$question_b}',";
+            $new_question_query .= "'".$this->spo."')";			
 		}
 		
 		
@@ -420,7 +421,7 @@ class Question {
 			$new_question_query = "INSERT INTO `questions` VALUES (NULL,";
 			$new_question_query .= "'".$this->subject."', ";
 			$new_question_query .= "'".$this->subcategory."', ";
-			$new_question_query .= "'".$this->spo."', ";
+			$new_question_query .= "NULL,";
 			$new_question_query .= "'".$this->eo."', ";
 			$new_question_query .= "".$this->variant.",";
 			$new_question_query .= "'".$this->type."',";
@@ -431,7 +432,8 @@ class Question {
 			$new_question_query .= "NULL,";
 			$new_question_query.= "NULL,";
 			$new_question_query .= "'{$question_a}',";
-			$new_question_query .= "'{$question_b}')";
+			$new_question_query .= "'{$question_b}',";
+            $new_question_query .= "'".$this->spo."')";						
 
 		}
 		
@@ -440,7 +442,7 @@ class Question {
 			$new_question_query = "INSERT INTO `questions` VALUES (NULL, ";
 			$new_question_query .= "'".$this->subject."', ";
 			$new_question_query .= "'".$this->subcategory."', ";
-			$new_question_query .= "'".$this->spo."', ";
+			$new_question_query .= "NULL,";
 			$new_question_query .= "'".$this->eo."', ";
 			$new_question_query .= "".$this->variant.",";
 			$new_question_query .= "'".$this->type."', ";
@@ -451,7 +453,8 @@ class Question {
 			$new_question_query .= "NULL,"; 
 			$new_question_query .= "NULL,"; 
 			$new_question_query .= "'{$question_a}',";
-			$new_question_query .= "'{$question_b}')";
+			$new_question_query .= "'{$question_b}',";
+            $new_question_query .= "'".$this->spo."')";									
 
 		}
 		
@@ -459,7 +462,7 @@ class Question {
 			$new_question_query = "INSERT INTO `questions` VALUES (NULL, ";
 			$new_quesiton_query .= "'".$this->subject."', ";
 			$new_quesiton_query .= "'".$this->subcategory."', ";
-			$new_question_query .= "'".$this->spo."', ";
+			$new_question_query .= "NULL,";
 			$new_question_query .= "'".$this->eo."', ";
 			$new_question_query .= "".$this->variant.",";
 			$new_question_query .= "'".$this->type."',";
@@ -470,14 +473,14 @@ class Question {
 			$new_question_query .= "'{$ans_y}',";
 			$new_question_query .= "'{$ans_z}',";
 			$new_question_query .= "'{$question_a}',";
-			$new_question_query .= "'{$question_b}')";
-			
+			$new_question_query .= "'{$question_b}',";
+            $new_question_query .= "'".$this->spo."')";												
 		}
 		elseif($qType=="ac"){
 			$new_question_query = "INSERT INTO `questions` VALUES (NULL, ";
 			$new_question_query .= "'".$this->subject."', ";
 			$new_question_query .= "'".$this->subcategory."', ";
-			$new_question_query .= "'".$this->spo."', ";
+			$new_question_query .= "NULL,";
 			$new_question_query .= "'".$this->eo."', ";
 			$new_question_query .= "".$this->variant.",";
 			$new_question_query .= "'".$this->type."', ";
@@ -488,7 +491,8 @@ class Question {
 			$new_question_query .= "NULL, ";
 			$new_question_query .= "NULL, ";
 			$new_question_query .= "'{$question_a}',";
-			$new_question_query .= "'{$question_b}')";
+            $new_question_query .= "'{$question_b}',";			
+			$new_question_query .= "'".$this->spo."')";									
 		
 		}
 		
@@ -564,7 +568,26 @@ class Question {
 	
 		$con = self::getConnection();		
 
-$questionsQuery = "select questions.questionID, questions.category, questions.subcategory, SPO.spo_name, EO.element_name, TPO.tpo_number, SPO.spo_number, EO.eo_no, variant.variant_id, questions.type, questions.correct_answer, questions.alt_correct_answer, questions.last_correct_answer, questions.ans_x, questions.ans_y,questions.ans_z, questions.question_a, questions.question_b FROM questions, EO, SPO, TPO, variant WHERE questions.eo_id = EO.eo_id AND questions.spo_id = SPO.spo_id AND SPO.tpo_id = TPO.tpo_id AND variant.variant_name = '".$variant."' AND questions.variant_id = variant.variant_id AND questions.spo_id = ".$spo." ORDER BY EO.eo_no ASC";
+        $questionsQuery = "SELECT q.questionID";
+        $questionsQuery .= ", t.Name task_name";
+        $questionsQuery .= ", s.Name subtask_name";
+        $questionsQuery .= ", p.Number phase_number";
+        $questionsQuery .= ", t.Number task_number";
+        $questionsQuery .= ", s.Number subtask_number";
+        $questionsQuery .= ", q.type";
+        $questionsQuery .= ", q.correct_answer";
+        $questionsQuery .= ", q.alt_correct_answer";
+        $questionsQuery .= ", q.last_correct_answer";
+        $questionsQuery .= ", q.ans_x";
+        $questionsQuery .= ", q.ans_y";
+        $questionsQuery .= ", q.ans_z";
+        $questionsQuery .= ", q.question_a";
+        $questionsQuery .= ", q.question_b ";
+        $questionsQuery .= "FROM questions q ";
+        $questionsQuery .= "JOIN Subtask s ON q.subtask_id = s.Id ";
+        $questionsQuery .= "JOIN Task t ON s.TaskId = t.Id ";
+        $questionsQuery .= "JOIN Phase p ON t.PhaseId = p.Id ";
+        $questionsQuery .= "WHERE q.subtask_id = ".$spo."";
 
 
 		
@@ -582,8 +605,10 @@ $questionsQuery = "select questions.questionID, questions.category, questions.su
 			$questionAttr['type'] = $row['type'];
 			
 			//creates conactenated TPO/SPO reference "11.11.16" for electrical, etc.
-			$questionAttr['jta'] = $row['tpo_number'].".".$row['tpo_number'].".".$row['spo_number'].".".$row['eo_no'];
+			//$questionAttr['jta'] = $row['tpo_number'].".".$row['tpo_number'].".".$row['spo_number'].".".$row['eo_no'];
+            $questionAttr['jta'] = $row['phase_number'].".".$row['task_number'].".".$row['subtask_number'];			
 			$questionAttr['spo_eo_description'] = $row['spo_name']." - ".$row['element_name'];
+            $questionAttr['spo_eo_description'] = $row['task_name']." - ".$row['subtask_name'];			
 			$questionAttr['question_a'] = $row['question_a'];
 			$questionAttr['question_b'] = $row['question_b'];
 			$questionAttr['correct_answer'] = $row['correct_answer'];

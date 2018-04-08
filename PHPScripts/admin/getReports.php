@@ -89,6 +89,10 @@ if(isset($_SESSION['name'])){
 	elseif($option == "getSPOList") {
 		echo Reports::spoListForAcftType();
 	}
+	
+    elseif($option == "getSubtasks") {
+		echo Reports::getSubtasks();
+	}	
 	elseif($option == "getEOs"){
 		echo Reports::eoListforSPO($spo_id);
 	}

@@ -1153,6 +1153,31 @@ class Reports {
 			$spoList = json_encode($spoList);
 			return $spoList;
 		}
+		
+	public static function getSubtasks() {
+	
+			$con = self::getConnection();
+	
+			$subtasks = array();		
+			
+			$getSubtaskQuery = "SELECT `Subtask`.`id`, `Subtask`.`name` FROM `Subtask`";	
+			
+			$getSubtaskResult = mysql_query($getSubtaskQuery, $con);
+			if(!$getSubtaskResult){
+				die("could not run query ($getSubtaskQuery) ".mysql_error());
+			}
+			else {
+				while($row = mysql_fetch_array($getSubtaskResult)){
+					$subtask = array();
+					$subtask['id'] = $row['id'];
+					$subtask['name'] = $row['name'];
+					array_push($subtasks, $subtask);
+				}
+			}
+			mysql_close($con);		
+			$subtasks = json_encode($subtasks);
+			return $subtasks;
+		}		
 	
 	//shows the total EO List for a given SPO
 	public static function eoListforSPO($spo_id) {

@@ -94,11 +94,30 @@ function populateSystemChoices(){
 		$("#questionCategory").trigger("change");		
 
 	}, "json");	
-	
-
-
-	
 }
+
+
+function populateViewSubtaskChoices(){
+
+
+	var opt = "getSubtasks";
+	var spoList;
+
+	$.post("PHPScripts/admin/getReports.php", {
+		option: opt
+	}, function(data){
+		$.each(data, function(key,value){
+			spoList += "<option id="+value.id+" value="+value.id+">"+value.name+"</option>";
+		});
+		
+		
+		$("#subcategory option, #questionCategory option").remove();
+		$("#subcategory, #questionCategory").append(spoList);
+		$("#questionCategory").trigger("change");		
+
+	}, "json");	
+}
+
 
 
 /*
@@ -155,6 +174,28 @@ function populateERJSPOChoices(){
 	
 }
 
+
+function populateEditSubtaskChoices(){	
+
+	var opt = "getSubtasks";
+	var spoList;
+
+	$.post("PHPScripts/admin/getReports.php", {
+		option: opt
+	}, function(data){
+		$.each(data, function(key,value){
+			spoList += "<option id="+value.id+" value="+value.id+">"+value.name+"</option>";
+		});
+		
+		$("#spo option, #edit_spo option").remove();
+		$("#spo, #edit_spo").append(spoList);
+		var spo_id = $("#spo").children(":selected").attr("id");			
+		populateEOsForSPO(spo_id);
+	}, "json");	
+	
+	
+}
+
 function tableForQuestion(questionID,type, jta, spo_eo_description, question_a, question_b, correct_ans, alt_correct_ans, last_correct_ans, ans_x, ans_y, ans_z) {
 	var html = "";
 	var tableContent = "";
@@ -166,7 +207,7 @@ function tableForQuestion(questionID,type, jta, spo_eo_description, question_a, 
 	var table = $('<table></table>').addClass('singleQuestion').attr('id', "t"+questionID);
 	
 	tableContent += ("<tr><td><button value='edit' id='e"+questionID+"'>Edit</button><button value='delete' id='d"+questionID+"'>Delete</button></td></tr>");
-	tableContent += ("<tr><td>Question Type:</td><td>"+questionTypes[type]+"</td></tr><tr><td>JTA:</td><td>"+jta+"</td></tr><tr><td>SPO-EO:</td><td>"+spo_eo_description+"</td></tr><tr><td>Question Wording A:</td><td>"+question_a+"</td></tr><tr><td>Question Wording B:</td><td>"+question_b+"</td></tr> ");
+	tableContent += ("<tr><td>Question Type:</td><td>"+questionTypes[type]+"</td></tr><tr><td>Task Ref No.:</td><td>"+jta+"</td></tr><tr><td>Task-Subtask:</td><td>"+spo_eo_description+"</td></tr><tr><td>Question Wording A:</td><td>"+question_a+"</td></tr><tr><td>Question Wording B:</td><td>"+question_b+"</td></tr> ");
 	
  	if (type != "nc"){
  		tableContent += tro + tdo + "Correct Answer:" + tdc;

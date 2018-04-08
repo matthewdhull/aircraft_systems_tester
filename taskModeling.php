@@ -13,8 +13,8 @@
 		ContentSnippets::showFavicon();
 	?>
 	
-<script src="js/external/jquery/jquery.js"></script>
-<script>
+    <script src="js/external/jquery/jquery.js"></script>
+    <script>
 	
 
 
@@ -354,7 +354,7 @@
     })
     
     
-    	</script>
+	</script>
     
     
     </head>
@@ -362,17 +362,14 @@
 	
 </head>
 <body>
-<!--
 		<?php
 			ContentSnippets::doHeader();
 			ContentSnippets::doNavigationBar();
 		?>
--->
 	
 
     <div id='tree'>      
-        <button class='addPhaseButton' name='button' text='button' value='button'> + phase</button>       
-                 
+        <button class='addPhaseButton' name='button' text='button' value='button'> + phase</button>                      
     </div>
 
 
