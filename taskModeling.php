@@ -65,6 +65,31 @@
         };
      
     })();        
+
+
+        function loadElements(subtask_id) {
+            $.post("PHPScripts/getElements.php", {
+                subtaskId: subtask_id
+            }, function(data){
+                $("#"+subtask_id+"").find(".element").remove();
+                $.each(data, function(key,value){
+                    var html = "<div id="+value.id+" class='element' data-number="+value.number+">";                    
+                    html += "<input type='text' class='element_order_input' name='element_order' value="+value.number+"></input>";
+                    html += "<input type='text' class='element_input' name='element' value='"+value.name+"'></input>";                    
+                    html += "<textarea class='element_description_input' name='element_description' value='"+value.description+"'>"+value.description+"</textarea>";
+                    html += "<button class='saveElementButton'>Save Element</button>";
+                    html += "<button class='deleteElementButton'>Delete Element</button>";
+                    html += "</div>";
+                   $("#"+subtask_id+"").find(".addElementButton").before(html); 
+                   bindSaveElementEvent();
+                   bindDeleteElementEvent();                
+                });
+                $("#"+subtask_id+"").find(".element").sortElements(function(a, b){
+                    return $(a).attr("data-number") > $(b).attr("data-number") ? 1 : -1;
+                });                 
+                                
+            }, "json");
+        }
         
         function loadSubtasks(task_id) {
             $.post("PHPScripts/getSubtasks.php", {
@@ -77,11 +102,14 @@
                     html += "<input type='text' class='subtask_input' name='subtask' value='"+value.name+"'></input>";
                     html += "<textarea class='subtask_description_input' name='subtask_description' value='"+value.description+"'>"+value.description+"</textarea>"                    
                     html += "<button class='saveSubtaskButton'>Save Sub-Task</button>";
-                    html += "<button class='deleteSubtaskButton'>Delete Sub-Task</button>";                    
+                    html += "<button class='deleteSubtaskButton'>Delete Sub-Task</button>";
+                    html += "<button class='addElementButton'>+ Element</button>";                                        
                     html += "</div>";
                    $("#"+task_id+"").find(".addSubTaskButton").before(html); 
+                   bindAddElementEvent();
                    bindSaveSubtaskEvent();
-                   bindDeleteSubtaskEvent();                
+                   bindDeleteSubtaskEvent();
+                   loadElements(value.id);                
                 });
                 $("#"+task_id+"").find(".subtask").sortElements(function(a, b){
                     return $(a).attr("data-number") > $(b).attr("data-number") ? 1 : -1;
@@ -144,6 +172,22 @@
             return false;
         }
         
+        function bindDeleteElementEvent(){
+            $(".deleteElementButton").off().click(function(){
+
+                var id = $(this).parent().attr("id");
+                $(this).parent().remove();
+                
+    			$.post("PHPScripts/deleteElement.php", {
+        			elementId: id
+    			}, function(data){
+        			console.log(data);
+    			});                       
+                                
+     
+            });             
+        }        
+        
         function bindDeleteSubtaskEvent(){
             $(".deleteSubtaskButton").off().click(function(){
 
@@ -158,6 +202,39 @@
                                 
      
             });             
+        }
+
+        function bindSaveElementEvent(){
+            $(".saveElementButton").off().click(function(){
+                var subtask_id = $(this).parent().parent().attr('id');
+                var element_number = $(this).siblings(".element_order_input").val();
+                var element_name = $(this).siblings(".element_input").val();
+                var element_description = $(this).siblings(".element_description_input").val();
+                var anId = $(this).parent().attr("id");
+
+                if(typeof anId === "undefined"){
+                    $.post("PHPScripts/createElement.php", {
+                        subtaskId: subtask_id,
+                        number: element_number,
+                        name: element_name,
+                        description: element_description
+                    }, function(data){
+                        loadElements(subtask_id);
+                    });
+                }
+                
+                else {
+    				$.post("PHPScripts/updateElement.php", {
+        				elementId: anId,
+        				number: element_number,
+        				name: element_name,
+        				description: element_description
+    				}, function(data){
+                        loadElements(subtask_id);
+    				});                      
+                }
+  
+            })
         }
         
         function bindSaveSubtaskEvent(){
@@ -304,6 +381,21 @@
             })
         }
 
+        function bindAddElementEvent(){
+            $(".addElementButton").off().click(function(){
+                var html = "<div class='element'>";
+                html += "<input type='text' class='element_order_input' name='element_order' placeholder=''></input>";                
+                html += "<input type='text' class='element_input' name='element' placeholder='An Element'></input>";
+                html += "<textarea class='element_description_input' name='element_description'></textarea>"
+                html += "<button class='saveElementButton'>Save Element</button>";
+                html += "<button class='deleteElementButton'>Delete Element</button>";
+                html += "</div>";
+               $(this).before(html);
+               bindSaveElementEvent();
+               bindDeleteElementEvent();
+            });
+        }         
+
         function bindAddSubTaskEvent(){
             $(".addSubTaskButton").off().click(function(){
                 var html = "<div class='subtask'>";
@@ -314,6 +406,7 @@
                 html += "<button class='deleteSubtaskButton'>Delete Sub-Task</button>";
                 html += "</div>";
                $(this).before(html);
+               bindAddElementEvent();
                bindSaveSubtaskEvent();
                bindDeleteSubtaskEvent();
             });
