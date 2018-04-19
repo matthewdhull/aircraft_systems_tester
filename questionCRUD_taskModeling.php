@@ -3,8 +3,8 @@
 <head>
 	<title>Question Modeling</title>
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8">	
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-<!-- 	<script src="jquery.js"></script>	 -->
+<!-- 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js">< /script> -->
+	<script src="jquery.js"></script>	
 	<script src="systemChoices.js"></script>   <!-- Imports ERJ / CRJ Aircraft System Lists --> 
 	<style type='text/css'>
 		@import url("CSS/questionCRUD.css");
@@ -51,7 +51,7 @@
 							clearScreenForLogout();
 						}
 					}, "json");
-			}
+			  }
 
 			
 			$("#submit_new_question_button").click(function(){
@@ -164,7 +164,7 @@
 							});
 							
 							//get EOs from SPO and auto-select EO for the current question being edited
-							populateEOsForSPO($("#edit_spo").val(), eo_id);
+							populateElementsForSubtask("#edit_spo".val(), eo_id);
 		
 							
 						}, "json");			
@@ -518,12 +518,12 @@
 		
 		$("#spo").change(function(){
 			var spo_id = $("#spo").children(":selected").attr("id");			
-			populateEOsForSPO(spo_id,null);
+			populateElementsForSubtask(spo_id, null);
 		});
 		
 		$("#edit_spo").change(function(){
 			var spo_id = $("#edit_spo").children(":selected").attr("id");			
-			populateEOsForSPO(spo_id,null);
+			populateElementsForSubtask(spo_id, null);
 		});
 		
 
@@ -589,14 +589,14 @@
 						</tr>
 				
 						<tr>
-							<td>SPO:</td>
+							<td>Subtask:</td>
 							<td><select id="spo">
 									<?php/*Auto-populated with SPO list*/?>
 								</select>
 							</td>
 						</tr>
 						<tr>
-							<td>EO:</td>
+							<td>Element:</td>
 							<td><select id="eo">
 									<?php/*Auto-populated with EO list predicated from SPO selection*/?>							
 								</select>
@@ -697,14 +697,14 @@
 							</select></td>
 						</tr>
 						<tr>
-							<td>SPO:</td>
+							<td>Subtask:</td>
 							<td><select id="edit_spo">
 									<?php/*Auto-populated with SPO list*/?>
 								</select>
 							</td>
 						</tr>
 						<tr>
-							<td>EO:</td>
+							<td>Element:</td>
 							<td><select id="edit_eo">
 									<?php/*Auto-populated with EOs predicated from selected SPO*/?>
 								</select>
@@ -774,7 +774,7 @@
 				<input type="hidden" id="editID" value="" name=""></input>
 				<table>
 					<tr>
-						<td>SPO Name: </td>
+						<td>Subtask: </td>
 						<td> <select id="questionCategory" name="questionCategory">
 							<?php /* auto-populated with system choices. */ ?>
 							</select> 

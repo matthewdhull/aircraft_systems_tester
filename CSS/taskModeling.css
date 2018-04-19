@@ -19,7 +19,7 @@ button {
     display: block;
 }
 
-.phase, .task, .subtask {
+.phase, .task, .subtask, .element {
     border: 1px solid #bdbdbd;
     margin: 1px;
     padding: 10px;
@@ -30,19 +30,34 @@ button {
     width: 65%;
 }
 
-.phase_order_input, .task_order_input, .subtask_order_input {
-    width: 15px;
+.element_input {
+    width: 47%;
 }
 
-.task_description_input, .subtask_description_input {
+.phase_order_input, .task_order_input, .subtask_order_input, .element_order_input {
+    width: 15px;
+    margin-right: .5%;
+}
+
+.task_description_input, .subtask_description_input{
     margin-top: 5px;
     width: 68%;
     font-size: .7em;
 }
 
+.element_description_input {
+    margin-top: 5px;
+    width: 50%;
+    font-size: .7em;
+}
+
+.key_verbs {
+    margin-right: .5%;
+}
+
 .phase {
     background-color: #ffffff;
-    width:70%;
+    width:73%;
 }
 
 .task {
@@ -52,6 +67,11 @@ button {
 
 .subtask {
     background-color: #bebebe;
+    width: 90%;
+}
+
+.element {
+    background-color: #8a8a8a;
     width: 90%;
 }
 

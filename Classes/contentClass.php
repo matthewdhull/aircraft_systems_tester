@@ -26,7 +26,8 @@ class ContentSnippets {
 				@import url("CSS/common.css");
 			</style>
 			
-			<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<!-- 			<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script> -->
+			<script src="jquery.js"></script>
 			<script type="text/javascript">
 				$(document).ready(function(){
 						$("#instructorAreaNav").click(function(){
@@ -38,9 +39,13 @@ class ContentSnippets {
 							return false;
 						});			
 						$("#questionModelingNav").click(function(){
-							window.location = "questionCRUD.php";
+							window.location = "questionCRUD_taskModeling.php";
 							return false;
-						});			
+						});
+						$("#taskModelingNav").click(function(){
+							window.location = "taskModeling.php";
+							return false;
+						});										
 						
 
 				});
@@ -50,6 +55,7 @@ class ContentSnippets {
 					<li><button id="instructorAreaNav">Instructor Area</button></li>
 					<li><button id="testModelingNav">Test Modeling</button></li>
 					<li><button id="questionModelingNav">Question Modeling</button></li>			
+					<li><button id="taskModelingNav">Task Modeling</button></li>
 				</ul>	
 			</div>
 		<?php

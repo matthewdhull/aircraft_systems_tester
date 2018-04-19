@@ -5,6 +5,7 @@ class Phase {
 
     public $number;    
     public $name;
+    public $key_verb_id;
     
 
 
@@ -31,9 +32,10 @@ class Phase {
 	
 	}	
 
-    public function __construct($Number, $Name) {
+    public function __construct($Number, $Name, $KeyVerbId) {
         $this->number = $Number;
         $this->name = $Name;        
+        $this->key_verb_id = $KeyVerbId;
     }
     
     public function get($Id){
@@ -46,7 +48,14 @@ class Phase {
         
         $phases = array();
         
-        $get_all_phases_query = "SELECT * from Phase";
+        $get_all_phases_query = "SELECT "; 
+        $get_all_phases_query .= "p.Id,";
+        $get_all_phases_query .= "p.Number,";
+        $get_all_phases_query .= "p.Name,";
+        $get_all_phases_query .= "p.bloomId,";
+        $get_all_phases_query .= "b.ordinality ";
+        $get_all_phases_query .= "FROM Phase p ";
+        $get_all_phases_query .= "JOIN blooms_taxonomy b ON p.bloomId = b.Id";
         
 		$get_all_phases_result = mysql_query($get_all_phases_query);
 
@@ -60,7 +69,9 @@ class Phase {
     		$phase = array();
     		$phase['id'] = $row['Id'];
     		$phase['number'] = $row['Number'];    		
-            $phase['name'] = $row['Name'];    		    		
+            $phase['name'] = $row['Name'];
+            $phase['bloomId'] = $row['bloomId'];    
+            $phase['ordinality'] = $row['ordinality'];		    		
 			
 			array_push($phases, $phase);
 		}
@@ -81,7 +92,8 @@ class Phase {
         $insert_phase_query = "INSERT INTO `Phase` VALUES(";
         $insert_phase_query .= "NULL,";
         $insert_phase_query .= "".$this->number.",";
-        $insert_phase_query .= "'".$this->name."'";
+        $insert_phase_query .= "'".$this->name."',";
+        $insert_phase_query .= "".$this->key_verb_id."";
         $insert_phase_query .= ")";     
         
         $new_phase_result = mysql_query($insert_phase_query);
@@ -98,7 +110,7 @@ class Phase {
 		$con = self::getConnection();		
             
 
-        $updatePhaseQuery = "UPDATE `Phase` SET `Number` = ".$this->number.", `Name` = '".$this->name."' WHERE `Id` =  ".$Id."";
+        $updatePhaseQuery = "UPDATE `Phase` SET `Number` = ".$this->number.", `Name` = '".$this->name."', `bloomId` = ".$this->key_verb_id." WHERE `Id` =  ".$Id."";
 
 		
 		$updatePhaseResult = mysql_query($updatePhaseQuery);

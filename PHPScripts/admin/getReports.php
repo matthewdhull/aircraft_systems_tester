@@ -18,6 +18,7 @@ $password = $_POST['password'];
 $admin = $_POST['admin'];
 $spo_id = $_POST['spo_id'];
 $variant = $_POST['variant'];
+$subtaskId = $_POST['subtaskId'];
 
 
 $instructorEmployeeNo = $_SESSION['employeeNo'];
@@ -95,6 +96,10 @@ if(isset($_SESSION['name'])){
 	}	
 	elseif($option == "getEOs"){
 		echo Reports::eoListforSPO($spo_id);
+	}
+	
+	elseif($option == "getElements"){
+    	echo Reports::elementListForSubtask($subtaskId);
 	}
 	
 	elseif($option == "getEnteredEOs"){

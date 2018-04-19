@@ -20,6 +20,7 @@
 
     $(document).ready(function(){
         
+        var blooms_levels;        
         jQuery.fn.sortElements = (function(){
      
         var sort = [].sort;
@@ -65,8 +66,62 @@
         };
      
     })();        
+        
+        
+        function addKeyVerbsForLevel(ord){       
+            return $.ajax({
+                url: "PHPScripts/getBloomsVerbs.php",
+                method: "POST",
+                data: { ordinality: ord},
+                dataType: "json"
+            });       
+        }
+        
+        
+        function bindBloomsLevelChangeEvent(ordinality){
+            $(this).find("option[id=o"+ordinality+"]").attr("selected", "selected");
 
+            $( ".blooms_level" ).on( "change", function(event, bloomId) {
+                
+                var ord = $(this).children(":selected").attr("id");                
+                ord = ord.slice(1);
+                
+                var self = this;
+                
+                var v = addKeyVerbsForLevel(ord);
+                var w = $.when(v);
+                w.done(function(){
+                    var kv;
+                    $.each(v.responseJSON, function(key,value){
+                        kv += "<option id="+value.id+">"+value.key_verb+"</option>";
+                    });
+                    $(self).siblings('.key_verbs').find('option').remove();
+                    $(self).siblings('.key_verbs').append(kv);
+                    
+                    if(typeof bloomId != 'undefined'){
+                        console.log(' bloomy: '+bloomId);
+                        $(self).siblings('.key_verbs').find("option[id="+bloomId+"]").attr("selected", "selected");
+                    }
+                    
+                });
+                            
 
+            });
+        }        
+
+        function addBloomsLevels(){
+            
+            $.post("PHPScripts/getBlooms.php", 
+                function(data){
+                    blooms_levels = "<select class='blooms_level'>";                    
+                    $.each(data, function(key,value){
+                        blooms_levels += "<option id=o"+value.ordinality+">"+value.ordinality+"-"+value.level+"</option>";
+                    });
+                    blooms_levels += "</select>";
+                }
+            ,"json");
+        }
+        
         function loadElements(subtask_id) {
             $.post("PHPScripts/getElements.php", {
                 subtaskId: subtask_id
@@ -152,18 +207,28 @@
     			$("div .phase").remove();
                 $.each(data, function(key,value){
                     var html = "<div id="+value.id+" class='phase' data-number="+value.number+">";
+                    html += "Bloom's Level " + blooms_levels;
+                    html += "<br />";                                
                     html += "<input type='text' class='phase_order_input' name='phase_order' value="+value.number+"></input>";
+                    html += "<select class='key_verbs'></select>";
                     html += "<input type='text' class='phase_input' name='phase' value='"+value.name+"'></input>";
                     html += "<button class='savePhaseButton'>Save Phase</button>";
                     html += "<button class='deletePhaseButton'>Delete Phase</button>";                    
                     html += "<button class='addTaskButton'>+ Task</button>";
                     html += "</div>";    
                     $(".addPhaseButton").before(html);     
+                    
+                    $("#"+value.id+"").find(".blooms_level").find("option[id=o"+value.ordinality+"]").attr("selected", "selected");
+                    
                     bindAddTaskButtonEvent();
                     bindSavePhaseEvent();    
-                    bindDeletePhaseEvent();                                                                   
+                    bindDeletePhaseEvent();
+                    bindBloomsLevelChangeEvent(value.ordinality);
+                    $("#"+value.id+"").find(".blooms_level").trigger("change", [value.bloomId]);
                     loadTasks(value.id);                    
                 });
+                
+                
                 $("div .phase").sortElements(function(a, b){
                     return $(a).attr("data-number") > $(b).attr("data-number") ? 1 : -1;
                 });
@@ -354,6 +419,8 @@
         function bindSavePhaseEvent(){
             $(".savePhaseButton").off().click(function(){
                 var phase_number = $(this).siblings(".phase_order_input").val()
+                var bloom_level = $(this).siblings(".key_verbs").children(":selected").attr("id");
+                console.log("key verb id: " + bloom_level);
                 var phase_name = $(this).siblings(".phase_input").val();
                 var anId = $(this).parent().attr("id");
 
@@ -361,7 +428,8 @@
                     // phase has not yet been saved.
     				$.post("PHPScripts/createPhase.php", {
         				number: phase_number,
-        				name: phase_name
+        				name: phase_name,
+        				key_verb_id: bloom_level
     				}, function(data){
                         loadPhases();
     				});                    
@@ -372,7 +440,8 @@
     				$.post("PHPScripts/updatePhase.php", {
         				phaseId: anId,
         				number: phase_number,
-        				name: phase_name
+        				name: phase_name,
+                        key_verb_id: bloom_level        				
     				}, function(data){
                         loadPhases();
     				}); 
@@ -430,19 +499,39 @@
         }        
 
         $(".addPhaseButton").click(function(){
-            var html = "<div class='phase'>";
-            html += "<input type='text' class='phase_order_input' name='phase_order' placeholder=''></input>";
-            html += "<input type='text' class='phase_input' name='phase' placeholder='A Phase'></input>";
-            html += "<button class='savePhaseButton'>Save Phase</button>";
-            html += "<button class='deletePhaseButton'>Delete Phase</button>";
-            html += "<button class='addTaskButton'>+ Task</button>";
-            html += "</div>";
-            $(this).before(html);
-             bindAddTaskButtonEvent();
-             bindSavePhaseEvent();
-             bindDeletePhaseEvent();
+            var v = addKeyVerbsForLevel(1);
+            var w = $.when(v);
+            var z;
+            var self = this;
+
+            w.done(function(){
+                $.each(v.responseJSON, function(index,value){
+                    z += "<option id="+value.id+">"+value.key_verb+"</option>";                    
+                });
+                
+                var html = "<div class='phase'>";
+                html += "Bloom's Level " + blooms_levels;
+                html += "<br />"; 
+                html += "<input type='text' class='phase_order_input' name='phase_order' placeholder=''></input>";
+                html += "<select class='key_verbs'></select>";                           
+                html += "<input type='text' class='phase_input' name='phase' placeholder='A Phase'></input>";
+                html += "<button class='savePhaseButton'>Save Phase</button>";
+                html += "<button class='deletePhaseButton'>Delete Phase</button>";
+                html += "<button class='addTaskButton'>+ Task</button>";
+                html += "</div>";                                                         
+                $(self).before(html);
+                bindAddTaskButtonEvent();
+                bindSavePhaseEvent();
+                bindDeletePhaseEvent();
+                bindBloomsLevelChangeEvent();                            
+                $(self).prev("div .phase").find(".key_verbs").append(z);
+            });
+
         });
-     
+        
+        
+        addBloomsLevels();
+        addKeyVerbsForLevel(1);
         loadPhases();
     })
     

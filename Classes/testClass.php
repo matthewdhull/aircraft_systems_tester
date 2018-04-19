@@ -402,7 +402,7 @@ class Question {
 			$new_question_query .= "'".$this->subject."', ";
 			$new_question_query .= "'".$this->subcategory."',";
 			$new_question_query .= "NULL,";
-			$new_question_query .= "'".$this->eo."',";
+            $new_question_query .= "NULL,";			
 			$new_question_query .= "".$this->variant.",";
 			$new_question_query .= "'".$this->type."',";
 			$new_question_query .= "'{$correct_ans}',";
@@ -413,7 +413,8 @@ class Question {
 			$new_question_query .= "'{$ans_z}',";
 			$new_question_query .= "'{$question_a}',";
 			$new_question_query .= "'{$question_b}',";
-            $new_question_query .= "'".$this->spo."')";			
+            $new_question_query .= "'".$this->spo."',";
+            $new_question_query .= "'".$this->eo."')";            			
 		}
 		
 		
@@ -422,7 +423,7 @@ class Question {
 			$new_question_query .= "'".$this->subject."', ";
 			$new_question_query .= "'".$this->subcategory."', ";
 			$new_question_query .= "NULL,";
-			$new_question_query .= "'".$this->eo."', ";
+			$new_question_query .= "NULL,";			
 			$new_question_query .= "".$this->variant.",";
 			$new_question_query .= "'".$this->type."',";
 			$new_question_query .= "'{$correct_ans}',";
@@ -433,7 +434,8 @@ class Question {
 			$new_question_query.= "NULL,";
 			$new_question_query .= "'{$question_a}',";
 			$new_question_query .= "'{$question_b}',";
-            $new_question_query .= "'".$this->spo."')";						
+            $new_question_query .= "'".$this->spo."',";
+            $new_question_query .= "'".$this->eo."')";            			
 
 		}
 		
@@ -443,7 +445,7 @@ class Question {
 			$new_question_query .= "'".$this->subject."', ";
 			$new_question_query .= "'".$this->subcategory."', ";
 			$new_question_query .= "NULL,";
-			$new_question_query .= "'".$this->eo."', ";
+			$new_question_query .= "NULL,";
 			$new_question_query .= "".$this->variant.",";
 			$new_question_query .= "'".$this->type."', ";
 			$new_question_query .= "'{$correct_ans}',";
@@ -454,7 +456,8 @@ class Question {
 			$new_question_query .= "NULL,"; 
 			$new_question_query .= "'{$question_a}',";
 			$new_question_query .= "'{$question_b}',";
-            $new_question_query .= "'".$this->spo."')";									
+            $new_question_query .= "'".$this->spo."',";
+            $new_question_query .= "'".$this->eo."')";            			
 
 		}
 		
@@ -463,7 +466,7 @@ class Question {
 			$new_quesiton_query .= "'".$this->subject."', ";
 			$new_quesiton_query .= "'".$this->subcategory."', ";
 			$new_question_query .= "NULL,";
-			$new_question_query .= "'".$this->eo."', ";
+			$new_question_query .= "NULL,";
 			$new_question_query .= "".$this->variant.",";
 			$new_question_query .= "'".$this->type."',";
 			$new_question_query .= "NULL,";
@@ -474,14 +477,15 @@ class Question {
 			$new_question_query .= "'{$ans_z}',";
 			$new_question_query .= "'{$question_a}',";
 			$new_question_query .= "'{$question_b}',";
-            $new_question_query .= "'".$this->spo."')";												
+            $new_question_query .= "'".$this->spo."',";
+            $new_question_query .= "'".$this->eo."')";            			
 		}
 		elseif($qType=="ac"){
 			$new_question_query = "INSERT INTO `questions` VALUES (NULL, ";
 			$new_question_query .= "'".$this->subject."', ";
 			$new_question_query .= "'".$this->subcategory."', ";
 			$new_question_query .= "NULL,";
-			$new_question_query .= "'".$this->eo."', ";
+			$new_question_query .= "NULL,";
 			$new_question_query .= "".$this->variant.",";
 			$new_question_query .= "'".$this->type."', ";
 			$new_question_query .= "'{$correct_ans}',";
@@ -492,7 +496,8 @@ class Question {
 			$new_question_query .= "NULL, ";
 			$new_question_query .= "'{$question_a}',";
             $new_question_query .= "'{$question_b}',";			
-			$new_question_query .= "'".$this->spo."')";									
+            $new_question_query .= "'".$this->spo."',";
+            $new_question_query .= "'".$this->eo."')";            			
 		
 		}
 		
@@ -539,8 +544,8 @@ class Question {
 		$updateQuestionQuery = "UPDATE `questions` SET `type` = ";
 		$updateQuestionQuery .= "'".$this->type."',";
 		$updateQuestionQuery .= "`subcategory` = ' ',";
-		$updateQuestionQuery .= "`spo_id` = '".$this->spo."',";
-		$updateQuestionQuery .= "`eo_id` = '".$this->eo."', ";
+		$updateQuestionQuery .= "NULL,";
+		$updateQuestionQuery .= "NULL,";
 		$updateQuestionQuery .= "`variant_id` = '".$this->variant."',";
 		$updateQuestionQuery .= "`correct_answer` = '{$correct_ans}',";
 		$updateQuestionQuery .= "`alt_correct_answer` = '{$alt_correct_ans}',";
@@ -550,6 +555,8 @@ class Question {
 		$updateQuestionQuery .= "`ans_z` = '{$ans_z}',";
 		$updateQuestionQuery .= "`question_a` = '{$question_a}',";
 		$updateQuestionQuery .= "`question_b` = '{$question_b}'";
+        $new_question_query .= "'".$this->spo."',";
+        $new_question_query .= "'".$this->eo."')";            					
 		$updateQuestionQuery .= "WHERE `questionID` = ".$questionID."";
 		
 		$updateQuestionResult = mysql_query($updateQuestionQuery);
@@ -571,9 +578,11 @@ class Question {
         $questionsQuery = "SELECT q.questionID";
         $questionsQuery .= ", t.Name task_name";
         $questionsQuery .= ", s.Name subtask_name";
+        $questionsQuery .= ", e.Name element_name";
         $questionsQuery .= ", p.Number phase_number";
         $questionsQuery .= ", t.Number task_number";
         $questionsQuery .= ", s.Number subtask_number";
+        $questionsQuery .= ", e.Number element_number";
         $questionsQuery .= ", q.type";
         $questionsQuery .= ", q.correct_answer";
         $questionsQuery .= ", q.alt_correct_answer";
@@ -585,6 +594,7 @@ class Question {
         $questionsQuery .= ", q.question_b ";
         $questionsQuery .= "FROM questions q ";
         $questionsQuery .= "JOIN Subtask s ON q.subtask_id = s.Id ";
+        $questionsQuery .= "JOIN Element e ON q.element_id = e.Id ";
         $questionsQuery .= "JOIN Task t ON s.TaskId = t.Id ";
         $questionsQuery .= "JOIN Phase p ON t.PhaseId = p.Id ";
         $questionsQuery .= "WHERE q.subtask_id = ".$spo."";
@@ -606,9 +616,9 @@ class Question {
 			
 			//creates conactenated TPO/SPO reference "11.11.16" for electrical, etc.
 			//$questionAttr['jta'] = $row['tpo_number'].".".$row['tpo_number'].".".$row['spo_number'].".".$row['eo_no'];
-            $questionAttr['jta'] = $row['phase_number'].".".$row['task_number'].".".$row['subtask_number'];			
+            $questionAttr['jta'] = $row['phase_number'].".".$row['task_number'].".".$row['subtask_number'].".".$row['element_number'];			
 			$questionAttr['spo_eo_description'] = $row['spo_name']." - ".$row['element_name'];
-            $questionAttr['spo_eo_description'] = $row['task_name']." - ".$row['subtask_name'];			
+            $questionAttr['spo_eo_description'] = $row['task_name']." - ".$row['subtask_name']." - ".$row['element_name'];			
 			$questionAttr['question_a'] = $row['question_a'];
 			$questionAttr['question_b'] = $row['question_b'];
 			$questionAttr['correct_answer'] = $row['correct_answer'];
