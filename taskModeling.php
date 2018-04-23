@@ -77,7 +77,6 @@
             });       
         }
         
-        
         function bindBloomsLevelChangeEvent(ordinality){
             $(this).find("option[id=o"+ordinality+"]").attr("selected", "selected");
 
@@ -99,7 +98,6 @@
                     $(self).siblings('.key_verbs').append(kv);
                     
                     if(typeof bloomId != 'undefined'){
-                        console.log(' bloomy: '+bloomId);
                         $(self).siblings('.key_verbs').find("option[id="+bloomId+"]").attr("selected", "selected");
                     }
                     
@@ -108,6 +106,15 @@
 
             });
         }        
+
+        function getBloomsLevelRange(sl,el){
+            return $.ajax({
+                url: "PHPScripts/getBloomsLevelsForRange.php",
+                method: "POST",
+                data: {startLevel: sl, endLevel: el},
+                dataType: "json"
+            });
+        }
 
         function addBloomsLevels(){
             
@@ -147,58 +154,145 @@
         }
         
         function loadSubtasks(task_id) {
-            $.post("PHPScripts/getSubtasks.php", {
-                taskId: task_id
-            }, function(data){
-                $("#"+task_id+"").find(".subtask").remove();
-                $.each(data, function(key,value){
-                    var html = "<div id="+value.id+" class='subtask' data-number="+value.number+">";
-                    html += "<input type='text' class='subtask_order_input' name='sub_task_order' value="+value.number+"></input>";                
-                    html += "<input type='text' class='subtask_input' name='subtask' value='"+value.name+"'></input>";
-                    html += "<textarea class='subtask_description_input' name='subtask_description' value='"+value.description+"'>"+value.description+"</textarea>"                    
-                    html += "<button class='saveSubtaskButton'>Save Sub-Task</button>";
-                    html += "<button class='deleteSubtaskButton'>Delete Sub-Task</button>";
-                    html += "<button class='addElementButton'>+ Element</button>";                                        
-                    html += "</div>";
-                   $("#"+task_id+"").find(".addSubTaskButton").before(html); 
-                   bindAddElementEvent();
-                   bindSaveSubtaskEvent();
-                   bindDeleteSubtaskEvent();
-                   loadElements(value.id);                
-                });
-                $("#"+task_id+"").find(".subtask").sortElements(function(a, b){
-                    return $(a).attr("data-number") > $(b).attr("data-number") ? 1 : -1;
-                });                 
+            
+            
+            var parent_bloom_level = parseInt($("#"+task_id+"").find(".blooms_level").children(":selected").attr("id").slice(1));
+            
+            if (parent_bloom_level < 6) { // go to the next lower bloom's level unless we are already there.
+                parent_bloom_level += 1;
+            }
+            
+            var keyVerbs = addKeyVerbsForLevel(parent_bloom_level);
+            var theVerbs = $.when(keyVerbs);
+            var verbOptions;                
+        
+            
+            var blooms_level_restricted = getBloomsLevelRange(parent_bloom_level,6);
+            var restricted_blooms = $.when(blooms_level_restricted);
+            var blooms_options = "<select class='blooms_level'>";
+            var self = this;            
+            
+            theVerbs.done(function(){
+                
+                $.each(keyVerbs.responseJSON, function(index,value){
+                    verbOptions += "<option id="+value.id+">"+value.key_verb+"</option>";
+                }); 
+                
+                
+                restricted_blooms.done(function(){
+                    
+                    $.each(blooms_level_restricted.responseJSON, function(index, value){
+                        blooms_options += "<option id=o"+value.ordinality+">"+value.ordinality+"-"+value.level+"</option>";
+                    });                    
+                
+                    blooms_options += "</select>";
+                    
                                 
-            }, "json");
+                    $.post("PHPScripts/getSubtasks.php", {
+                        taskId: task_id
+                    }, function(data){
+                        $("#"+task_id+"").find(".subtask").remove();
+                        $.each(data, function(key,value){
+                            var html = "<div id="+value.id+" class='subtask' data-number="+value.number+">";
+                            html += "Bloom's Level " + blooms_options;
+                            html += "<br />";                                                     
+                            html += "<input type='text' class='subtask_order_input' name='sub_task_order' value="+value.number+"></input>";                
+                            html += "<select class='key_verbs'></select>";                                                    
+                            html += "<input type='text' class='subtask_input' name='subtask' value='"+value.name+"'></input>";
+                            html += "<textarea class='subtask_description_input' name='subtask_description' value='"+value.description+"'>"+value.description+"</textarea>"                    
+                            html += "<button class='saveSubtaskButton'>Save Sub-Task</button>";
+                            html += "<button class='deleteSubtaskButton'>Delete Sub-Task</button>";
+                            html += "<button class='addElementButton'>+ Element</button>";                                        
+                            html += "</div>";
+                           $("#"+task_id+"").find(".addSubTaskButton").before(html); 
+                           bindAddElementEvent();
+                           bindSaveSubtaskEvent();
+                           bindDeleteSubtaskEvent();
+                           loadElements(value.id);
+                           bindBloomsLevelChangeEvent(value.ordinality);
+                            $("#"+task_id+"").find("#"+value.id+"").find(".key_verbs").append(verbOptions); 
+                            $("#"+task_id+"").find("#"+value.id+"").find(".key_verbs").find("option[id="+value.bloomId+"]").attr("selected", "selected");
+                        });
+                        $("#"+task_id+"").find(".subtask").sortElements(function(a, b){
+                            return $(a).attr("data-number") > $(b).attr("data-number") ? 1 : -1;
+                        });                 
+                                        
+                    }, "json");
+
+                });
+            });
         }
         
         function loadTasks(phase_id){
-			$.post("PHPScripts/getTasks.php", {
-    			phaseId: phase_id
-			}, function(data){
-    			$("#"+phase_id+"").find(".task").remove();
-                $.each(data, function(key,value){                                                
-                    var html = "<div id="+value.id+" class='task' data-number="+value.number+">";
-                    html += "<input type='text' class='task_order_input' name='task_order' value="+value.number+"></input>";                
-                    html += "<input type='text' class='task_input' name='task' value='"+value.name+"'></input>";
-                    html += "<textarea class='task_description_input' name='task_description' value='"+value.description+"'>"+value.description+"</textarea>"
-                    html += "<button class='saveTaskButton'>Save Task</button>";
-                    html += "<button class='deleteTaskButton'>Delete Task</button>";                    
-                    html += "<button class='addSubTaskButton'>+ Sub-Task</button>";
-                    html += "</div>";                
-                    $("#"+phase_id+"").find(".addTaskButton").before(html);
-                      
-                    bindAddSubTaskEvent();
-                    bindSaveTaskEvent();
-                    bindDeleteTaskEvent();
-                    loadSubtasks(value.id); 
-                }); 
-                $("#"+phase_id+"").find(".task").sortElements(function(a, b){
-                    return $(a).attr("data-number") > $(b).attr("data-number") ? 1 : -1;
-                });                 
+            
+            var parent_bloom_level = parseInt($("#"+phase_id+"").find(".blooms_level").children(":selected").attr("id").slice(1));
+            
+            if (parent_bloom_level < 6) { // go to the next lower bloom's level unless we are already there.
+                parent_bloom_level += 1;
+            }
+            
+            var keyVerbs = addKeyVerbsForLevel(parent_bloom_level);
+            var theVerbs = $.when(keyVerbs);
+            var verbOptions;                
+        
+            
+            var blooms_level_restricted = getBloomsLevelRange(parent_bloom_level,6);
+            var restricted_blooms = $.when(blooms_level_restricted);
+            var blooms_options = "<select class='blooms_level'>";
+            var self = this;            
+            
+            theVerbs.done(function(){
                 
-			}, "json");               
+                $.each(keyVerbs.responseJSON, function(index,value){
+                    verbOptions += "<option id="+value.id+">"+value.key_verb+"</option>";
+                }); 
+                
+                
+                restricted_blooms.done(function(){
+                    
+                    $.each(blooms_level_restricted.responseJSON, function(index, value){
+                        blooms_options += "<option id=o"+value.ordinality+">"+value.ordinality+"-"+value.level+"</option>";
+                    });                    
+                
+                    blooms_options += "</select>";
+        			
+        			$.post("PHPScripts/getTasks.php", {
+            			phaseId: phase_id
+        			}, function(data){
+            			$("#"+phase_id+"").find(".task").remove();
+                        $.each(data, function(key,value){                                             
+
+                            var html = "<div id="+value.id+" class='task' data-number="+value.number+">";
+                            html += "Bloom's Level " + blooms_options;
+                            html += "<br />";                         
+                            html += "<input type='text' class='task_order_input' name='task_order' value="+value.number+"></input>";                
+                            html += "<select class='key_verbs'></select>";                        
+                            html += "<input type='text' class='task_input' name='task' value='"+value.name+"'></input>";
+                            html += "<textarea class='task_description_input' name='task_description' value='"+value.description+"'>"+value.description+"</textarea>"
+                            html += "<button class='saveTaskButton'>Save Task</button>";
+                            html += "<button class='deleteTaskButton'>Delete Task</button>";                    
+                            html += "<button class='addSubTaskButton'>+ Sub-Task</button>";
+                            html += "</div>";        
+                                    
+                            $("#"+phase_id+"").find(".addTaskButton").before(html);                              
+                            bindAddSubTaskEvent();
+                            bindSaveTaskEvent();
+                            bindDeleteTaskEvent();
+                            loadSubtasks(value.id); 
+                            bindBloomsLevelChangeEvent(value.ordinality);
+                            $("#"+phase_id+"").find("#"+value.id+"").find(".key_verbs").append(verbOptions); 
+                            $("#"+phase_id+"").find("#"+value.id+"").find(".key_verbs").find("option[id="+value.bloomId+"]").attr("selected", "selected");                                                       
+                        }); 
+             
+                        $("#"+phase_id+"").find(".task").sortElements(function(a, b){
+                            return $(a).attr("data-number") > $(b).attr("data-number") ? 1 : -1;
+                        });                 
+                    
+                    }, "json");               
+    			
+                });
+                
+            });                               	
         }
         
         function loadPhases(){
@@ -306,6 +400,8 @@
             $(".saveSubtaskButton").off().click(function(){
                 var task_id = $(this).parent().parent().attr('id');
                 var subtask_number = $(this).siblings(".subtask_order_input").val();
+                var bloom_level = $(this).siblings(".key_verbs").children(":selected").attr("id");
+                console.log("subtask key verb id: " + bloom_level);                              
                 var subtask_name = $(this).siblings(".subtask_input").val();
                 var subtask_description = $(this).siblings(".subtask_description_input").val();
                 var anId = $(this).parent().attr("id");
@@ -315,7 +411,8 @@
                         taskId: task_id,
                         number: subtask_number,
                         name: subtask_name,
-                        description: subtask_description
+                        description: subtask_description,
+                        key_verb_id: bloom_level
                     }, function(data){
                         loadSubtasks(task_id);
                     });
@@ -326,7 +423,8 @@
         				subtaskId: anId,
         				number: subtask_number,
         				name: subtask_name,
-        				description: subtask_description
+        				description: subtask_description,
+        				key_verb_id: bloom_level
     				}, function(data){
                         loadSubtasks(task_id);
     				});                      
@@ -364,6 +462,8 @@
             $(".saveTaskButton").off().click(function(){
                 var phase_id = $(this).parent().parent().attr('id');
                 var task_number = $(this).siblings(".task_order_input").val();
+                var bloom_level = $(this).siblings(".key_verbs").children(":selected").attr("id");
+                console.log("task key verb id: " + bloom_level);              
                 var task_name = $(this).siblings(".task_input").val();
                 var task_description = $(this).siblings(".task_description_input").val();
                 var anId = $(this).parent().attr("id");
@@ -374,7 +474,8 @@
                         phaseId: phase_id,
                         number: task_number,
                         name: task_name,
-                        description: task_description
+                        description: task_description,
+                        key_verb_id: bloom_level
                     }, function(data){
                         loadTasks(phase_id);
                     });
@@ -384,7 +485,8 @@
         				taskId: anId,
         				number: task_number,
         				name: task_name,
-        				description: task_description
+        				description: task_description,
+        				key_verb_id: bloom_level
     				}, function(data){
                         loadTasks(phase_id);
     				});                     
@@ -467,34 +569,114 @@
 
         function bindAddSubTaskEvent(){
             $(".addSubTaskButton").off().click(function(){
-                var html = "<div class='subtask'>";
-                html += "<input type='text' class='subtask_order_input' name='sub_task_order' placeholder=''></input>";                
-                html += "<input type='text' class='subtask_input' name='subtask' placeholder='A Sub-Task'></input>";
-                html += "<textarea class='subtask_description_input' name='subtask_description'></textarea>"
-                html += "<button class='saveSubtaskButton'>Save Sub-Task</button>";
-                html += "<button class='deleteSubtaskButton'>Delete Sub-Task</button>";
-                html += "</div>";
-               $(this).before(html);
-               bindAddElementEvent();
-               bindSaveSubtaskEvent();
-               bindDeleteSubtaskEvent();
+                
+                var parent_bloom_level = parseInt($(this).parent().find(".blooms_level").children(":selected").attr("id").slice(1));
+
+                if (parent_bloom_level < 6) { // go to the next lower bloom's level unless we are already there.
+                    parent_bloom_level += 1;
+                }
+                
+                var keyVerbs = addKeyVerbsForLevel(parent_bloom_level);
+                var theVerbs = $.when(keyVerbs);
+                var verbOptions;                
+            
+                
+                var blooms_level_restricted = getBloomsLevelRange(parent_bloom_level,6);
+                var restricted_blooms = $.when(blooms_level_restricted);
+                var blooms_options = "<select class='blooms_level'>";
+                var self = this;
+                
+                theVerbs.done(function(){
+                    
+                    $.each(keyVerbs.responseJSON, function(index,value){
+                        verbOptions += "<option id="+value.id+">"+value.key_verb+"</option>";
+                    });
+                    
+                    restricted_blooms.done(function(){
+                        
+                        $.each(blooms_level_restricted.responseJSON, function(index, value){
+                            blooms_options += "<option id=o"+value.ordinality+">"+value.ordinality+"-"+value.level+"</option>";
+                        });
+                        
+                        blooms_options += "</select>";                
+                        
+                        var html = "<div class='subtask'>";
+                        html += "Bloom's Level " + blooms_options;
+                        html += "<br />";                                             
+                        html += "<input type='text' class='subtask_order_input' name='sub_task_order' placeholder=''></input>";                
+                        html += "<select class='key_verbs'></select>";                        
+                        html += "<input type='text' class='subtask_input' name='subtask' placeholder='A Sub-Task'></input>";
+                        html += "<textarea class='subtask_description_input' name='subtask_description'></textarea>"
+                        html += "<button class='saveSubtaskButton'>Save Sub-Task</button>";
+                        html += "<button class='deleteSubtaskButton'>Delete Sub-Task</button>";
+                        html += "</div>";
+                       $(self).before(html);
+                       bindAddElementEvent();
+                       bindSaveSubtaskEvent();
+                       bindDeleteSubtaskEvent();
+                       bindBloomsLevelChangeEvent();
+                       $(self).prev("div .subtask").find(".key_verbs").append(verbOptions);                       
+                    });
+                });
             });
         }    
                 
         function bindAddTaskButtonEvent(){
             $(".addTaskButton").off().click(function(){
-                var html = "<div class='task'>";
-                html += "<input type='text' class='task_order_input' name='task_order' placeholder=''></input>";                
-                html += "<input type='text' class='task_input' name='task' placeholder='A Task'></input>";
-                html += "<textarea class='task_description_input' name='task_description'></textarea>"                
-                html += "<button class='saveTaskButton'>Save Task</button>";
-                html += "<button class='deleteTaskButton'>Delete Task</button>";
-                html += "<button class='addSubTaskButton'>+ Sub-Task</button>";
-                html += "</div>";                
-                $(this).before(html);
-                bindAddSubTaskEvent();
-                bindSaveTaskEvent();
-                bindDeleteTaskEvent();
+                var parent_bloom_level = parseInt($(this).parent().find(".blooms_level").children(":selected").attr("id").slice(1));
+                
+                
+                if (parent_bloom_level < 6) { // go to the next lower bloom's level unless we are already there.
+                    parent_bloom_level += 1;
+                }
+                
+                var keyVerbs = addKeyVerbsForLevel(parent_bloom_level);
+                var theVerbs = $.when(keyVerbs);
+                var verbOptions;                
+            
+                
+                var blooms_level_restricted = getBloomsLevelRange(parent_bloom_level,6);
+                var restricted_blooms = $.when(blooms_level_restricted);
+                var blooms_options = "<select class='blooms_level'>";
+                var self = this;
+                
+
+                
+                theVerbs.done(function(){
+                    
+                    $.each(keyVerbs.responseJSON, function(index,value){
+                        verbOptions += "<option id="+value.id+">"+value.key_verb+"</option>";
+                    });
+                    
+                    restricted_blooms.done(function(){
+                        
+                        $.each(blooms_level_restricted.responseJSON, function(index, value){
+                            blooms_options += "<option id=o"+value.ordinality+">"+value.ordinality+"-"+value.level+"</option>";
+                        });
+                        
+                        blooms_options += "</select>";
+                        
+                        var html = "<div class='task'>";
+                        html += "Bloom's Level " + blooms_options;
+                        html += "<br />";                     
+                        html += "<input type='text' class='task_order_input' name='task_order' placeholder=''></input>";                
+                        html += "<select class='key_verbs'></select>";
+                        html += "<input type='text' class='task_input' name='task' placeholder='A Task'></input>";
+                        html += "<textarea class='task_description_input' name='task_description'></textarea>"                
+                        html += "<button class='saveTaskButton'>Save Task</button>";
+                        html += "<button class='deleteTaskButton'>Delete Task</button>";
+                        html += "<button class='addSubTaskButton'>+ Sub-Task</button>";
+                        html += "</div>";           
+                        $(self).before(html);
+                        bindAddSubTaskEvent();
+                        bindSaveTaskEvent();
+                        bindDeleteTaskEvent();
+                        bindBloomsLevelChangeEvent();
+                        $(self).prev("div .task").find(".key_verbs").append(verbOptions);
+                    });
+                
+                });
+
             });            
         }        
 

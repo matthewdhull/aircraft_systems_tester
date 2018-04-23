@@ -5,8 +5,8 @@ include 'task.php';
 class Subtask extends Task {
     
     
-    public function __construct ($Number, $Name, $Description){
-        parent::__construct ($Number, $Name, $Description);
+    public function __construct ($Number, $Name, $Description, $KeyVerbId){
+        parent::__construct ($Number, $Name, $Description, $KeyVerbId);
     }    
     
 	private static function getConnection(){
@@ -30,7 +30,16 @@ class Subtask extends Task {
         
         $subtasks = array();
         
-        $get_all_subtasks_for_task_query = "SELECT * FROM Subtask WHERE TaskId = '".$TaskId."'";
+        $get_all_subtasks_for_task_query = "SELECT "; 
+        $get_all_subtasks_for_task_query .= "s.Id,";
+        $get_all_subtasks_for_task_query .= "s.Number,";
+        $get_all_subtasks_for_task_query .= "s.Name,";
+        $get_all_subtasks_for_task_query .= "s.Description,";
+        $get_all_subtasks_for_task_query .= "s.bloomId,";
+        $get_all_subtasks_for_task_query .= "b.ordinality ";
+        $get_all_subtasks_for_task_query .= "FROM Subtask s ";
+        $get_all_subtasks_for_task_query .= "JOIN blooms_taxonomy b ON s.bloomId = b.Id ";  
+        $get_all_subtasks_for_task_query .= "WHERE s.TaskId = ".$TaskId." ";         
         
 		$get_all_subtasks_for_task_result = mysql_query($get_all_subtasks_for_task_query);
 
@@ -44,8 +53,10 @@ class Subtask extends Task {
     		$subtask = array();
     		$subtask['id'] = $row['Id'];   
     		$subtask['number'] = $row['Number'];    		
-            $subtask['name'] = $row['Name'];    
+            $subtask['name'] = $row['Name'];
             $subtask['description'] = $row['Description'];		    		
+            $subtask['bloomId'] = $row['bloomid'];
+            $subtask['ordinality'] = $row['ordinality'];
 			
 			array_push($subtasks, $subtask);
 		}
@@ -70,7 +81,8 @@ class Subtask extends Task {
         $insert_subtask_query .= "".$TaskId.",";
         $insert_subtask_query .= "".$this->number.",";
         $insert_subtask_query .= "'".$this->name."',";
-        $insert_subtask_query .= "'".$this->description."'";        
+        $insert_subtask_query .= "'".$this->description."',";        
+        $insert_subtask_query .= "".$this->key_verb_id."";
         $insert_subtask_query .= ")";     
         
         
@@ -88,7 +100,7 @@ class Subtask extends Task {
 		$con = self::getConnection();		
             
 
-        $updateSubtaskQuery = "UPDATE `Subtask` SET `Number` = ".$this->number.", `Name` = '".$this->name."', `Description` = '".$this->description."' WHERE `Id` =  ".$Id."";
+        $updateSubtaskQuery = "UPDATE `Subtask` SET `Number` = ".$this->number.", `Name` = '".$this->name."', `Description` = '".$this->description."', `bloomId` = ".$this->key_verb_id." WHERE `Id` =  ".$Id."";
 
 		
 		$updateSubtaskResult = mysql_query($updateSubtaskQuery);

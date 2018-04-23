@@ -65,6 +65,36 @@ class Blooms {
 		
 		return $levels;              
     }    
+
+    public function getLevelsForRange($startLevel, $endLevel) {
+       $con = self::getConnection();
+        
+        $levels = array();
+        
+        $get_all_levels_query = "SELECT DISTINCT `ordinality`, `level` FROM `blooms_taxonomy` WHERE `ordinality` BETWEEN ".$startLevel." AND ".$endLevel."";
+        
+		$get_all_levels_result = mysql_query($get_all_levels_query);
+
+		if (!$get_all_levels_result) {
+	    	echo "Could not successfully run query ($get_all_levels_result) from DB: " . mysql_error();
+		}
+
+        
+		while($row = mysql_fetch_array($get_all_levels_result)) {
+    		
+			$level = array();
+			$level['ordinality'] = $row['ordinality'];
+			$level['level'] = ucfirst($row['level']);
+
+			array_push($levels, $level);
+		}
+		
+		mysql_close($con);
+		
+		$levels = json_encode($levels);
+		
+		return $levels;            
+    }        
     
     public function getKeyVerbsForLevel($ordinality) {
        $con = self::getConnection();
@@ -94,7 +124,7 @@ class Blooms {
 		
 		return $verbs;          
     }
-    
+
     
     }
 ?>

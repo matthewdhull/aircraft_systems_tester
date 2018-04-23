@@ -6,12 +6,14 @@ class Task extends Phase {
     
     public $number;
     public $name;
-    public $description;   
+    public $description;
+    public $key_verb_id;
 
-    public function __construct($Number, $Name, $Description) {
+    public function __construct($Number, $Name, $Description, $KeyVerbId) {
         $this->number = $Number;
         $this->name = $Name; 
-        $this->description = $Description;       
+        $this->description = $Description;
+        $this->key_verb_id = $KeyVerbId;
     }
     
     
@@ -35,8 +37,17 @@ class Task extends Phase {
         $con = self::getConnection();
         
         $tasks = array();
-        
-        $get_all_tasks_for_phase_query = "SELECT * FROM Task WHERE PhaseId = '".$PhaseId."'";
+                        
+        $get_all_tasks_for_phase_query = "SELECT "; 
+        $get_all_tasks_for_phase_query .= "t.Id,";
+        $get_all_tasks_for_phase_query .= "t.Number,";
+        $get_all_tasks_for_phase_query .= "t.Name,";
+        $get_all_tasks_for_phase_query .= "t.Description,";
+        $get_all_tasks_for_phase_query .= "t.bloomId,";
+        $get_all_tasks_for_phase_query .= "b.ordinality ";
+        $get_all_tasks_for_phase_query .= "FROM Task t ";
+        $get_all_tasks_for_phase_query .= "JOIN blooms_taxonomy b ON t.bloomId = b.Id ";  
+        $get_all_tasks_for_phase_query .= "WHERE t.PhaseId = ".$PhaseId." ";      
         
 		$get_all_tasks_for_phase_result = mysql_query($get_all_tasks_for_phase_query);
 
@@ -51,7 +62,9 @@ class Task extends Phase {
     		$task['id'] = $row['Id'];   
     		$task['number'] = $row['Number'];    		
             $task['name'] = $row['Name'];    
-            $task['description'] = $row['Description'];		    		
+            $task['description'] = $row['Description'];
+            $task['bloomId'] = $row['bloomId'];
+            $task['ordinality'] = $row['ordinality'];
 			
 			array_push($tasks, $task);
 		}
@@ -76,7 +89,8 @@ class Task extends Phase {
         $insert_task_query .= "".$PhaseId.",";
         $insert_task_query .= "".$this->number.",";
         $insert_task_query .= "'".$this->name."',";
-        $insert_task_query .= "'".$this->description."'";        
+        $insert_task_query .= "'".$this->description."',";
+        $insert_task_query .= "".$this->key_verb_id."";        
         $insert_task_query .= ")";     
         
         
@@ -94,7 +108,7 @@ class Task extends Phase {
 		$con = self::getConnection();		
             
 
-        $updateTaskQuery = "UPDATE `Task` SET `Number` = ".$this->number.", `Name` = '".$this->name."', `Description` = '".$this->description."' WHERE `Id` =  ".$Id."";
+        $updateTaskQuery = "UPDATE `Task` SET `Number` = ".$this->number.", `Name` = '".$this->name."', `Description` = '".$this->description."', `bloomId` = ".$this->key_verb_id." WHERE `Id` =  ".$Id."";
 
 		
 		$updateTaskResult = mysql_query($updateTaskQuery);
