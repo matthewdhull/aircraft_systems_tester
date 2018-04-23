@@ -67,6 +67,7 @@
      
     })();        
         
+        var phaseOrder = 0;
         
         function addKeyVerbsForLevel(ord){       
             return $.ajax({
@@ -319,7 +320,8 @@
                     bindDeletePhaseEvent();
                     bindBloomsLevelChangeEvent(value.ordinality);
                     $("#"+value.id+"").find(".blooms_level").trigger("change", [value.bloomId]);
-                    loadTasks(value.id);                    
+                    loadTasks(value.id);
+                    phaseOrder = parseInt(value.number) + 1;
                 });
                 
                 
@@ -691,10 +693,19 @@
                     z += "<option id="+value.id+">"+value.key_verb+"</option>";                    
                 });
                 
+                phaseOrder = parseInt($(self).prev("div .phase").find('.phase_order_input').val());
+                
+                if (isNaN(phaseOrder)) {
+                    phaseOrder = 1;    
+                }
+                else {
+                    phaseOrder +=1;
+                }
+                
                 var html = "<div class='phase'>";
                 html += "Bloom's Level " + blooms_levels;
                 html += "<br />"; 
-                html += "<input type='text' class='phase_order_input' name='phase_order' placeholder=''></input>";
+                html += "<input type='text' class='phase_order_input' name='phase_order' value="+phaseOrder+"></input>";
                 html += "<select class='key_verbs'></select>";                           
                 html += "<input type='text' class='phase_input' name='phase' placeholder='A Phase'></input>";
                 html += "<button class='savePhaseButton'>Save Phase</button>";
@@ -705,7 +716,7 @@
                 bindAddTaskButtonEvent();
                 bindSavePhaseEvent();
                 bindDeletePhaseEvent();
-                bindBloomsLevelChangeEvent();                            
+                bindBloomsLevelChangeEvent();                       
                 $(self).prev("div .phase").find(".key_verbs").append(z);
             });
 
