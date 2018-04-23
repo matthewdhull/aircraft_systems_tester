@@ -134,7 +134,7 @@
             $.post("PHPScripts/getElements.php", {
                 subtaskId: subtask_id
             }, function(data){
-                $("#"+subtask_id+"").find(".element").remove();
+                $("div#"+subtask_id+".subtask").find(".element").remove();
                 $.each(data, function(key,value){
                     var html = "<div id="+value.id+" class='element' data-number="+value.number+">";                    
                     html += "<input type='text' class='element_order_input' name='element_order' value="+value.number+"></input>";
@@ -143,7 +143,7 @@
                     html += "<button class='saveElementButton'>Save Element</button>";
                     html += "<button class='deleteElementButton'>Delete Element</button>";
                     html += "</div>";
-                   $("#"+subtask_id+"").find(".addElementButton").before(html); 
+                   $("div#"+subtask_id+".subtask").find(".addElementButton").before(html); 
                    bindSaveElementEvent();
                    bindDeleteElementEvent();                
                 });
@@ -157,7 +157,8 @@
         function loadSubtasks(task_id) {
             
             
-            var parent_bloom_level = parseInt($("#"+task_id+"").find(".blooms_level").children(":selected").attr("id").slice(1));
+            var parent_bloom_level = parseInt($("div#"+task_id+".task").find(".blooms_level").children(":selected").attr("id").slice(1));
+            //console.log("task parent_bloom_level: " + parent_bloom_level);
             
             if (parent_bloom_level < 6) { // go to the next lower bloom's level unless we are already there.
                 parent_bloom_level += 1;
@@ -192,7 +193,7 @@
                     $.post("PHPScripts/getSubtasks.php", {
                         taskId: task_id
                     }, function(data){
-                        $("#"+task_id+"").find(".subtask").remove();
+                        $("div#"+task_id+".task").find(".subtask").remove();
                         $.each(data, function(key,value){
                             var html = "<div id="+value.id+" class='subtask' data-number="+value.number+">";
                             html += "Bloom's Level " + blooms_options;
@@ -205,14 +206,14 @@
                             html += "<button class='deleteSubtaskButton'>Delete Sub-Task</button>";
                             html += "<button class='addElementButton'>+ Element</button>";                                        
                             html += "</div>";
-                           $("#"+task_id+"").find(".addSubTaskButton").before(html); 
+                           $("div#"+task_id+".task").find(".addSubTaskButton").before(html); 
                            bindAddElementEvent();
                            bindSaveSubtaskEvent();
                            bindDeleteSubtaskEvent();
                            loadElements(value.id);
                            bindBloomsLevelChangeEvent(value.ordinality);
-                            $("#"+task_id+"").find("#"+value.id+"").find(".key_verbs").append(verbOptions); 
-                            $("#"+task_id+"").find("#"+value.id+"").find(".key_verbs").find("option[id="+value.bloomId+"]").attr("selected", "selected");
+                            $("div#"+task_id+".task").find("div#"+value.id+".subtask").find(".key_verbs").append(verbOptions); 
+                            $("div#"+task_id+".task").find("div#"+value.id+".subtask").find(".key_verbs").find("option[id="+value.bloomId+"]").attr("selected", "selected");
                         });
                         $("#"+task_id+"").find(".subtask").sortElements(function(a, b){
                             return $(a).attr("data-number") > $(b).attr("data-number") ? 1 : -1;
@@ -226,7 +227,8 @@
         
         function loadTasks(phase_id){
             
-            var parent_bloom_level = parseInt($("#"+phase_id+"").find(".blooms_level").children(":selected").attr("id").slice(1));
+            var parent_bloom_level = parseInt($("div#"+phase_id+".phase").find(".blooms_level").children(":selected").attr("id").slice(1));
+            //console.log("parent phase bloom level: " + parent_bloom_level);
             
             if (parent_bloom_level < 6) { // go to the next lower bloom's level unless we are already there.
                 parent_bloom_level += 1;
@@ -281,8 +283,8 @@
                             bindDeleteTaskEvent();
                             loadSubtasks(value.id); 
                             bindBloomsLevelChangeEvent(value.ordinality);
-                            $("#"+phase_id+"").find("#"+value.id+"").find(".key_verbs").append(verbOptions); 
-                            $("#"+phase_id+"").find("#"+value.id+"").find(".key_verbs").find("option[id="+value.bloomId+"]").attr("selected", "selected");                                                       
+                            $("div#"+phase_id+".phase").find("div#"+value.id+".task").find(".key_verbs").append(verbOptions); 
+                            $("div#"+phase_id+".phase").find("div#"+value.id+".task").find(".key_verbs").find("option[id="+value.bloomId+"]").attr("selected", "selected");                                                       
                         }); 
              
                         $("#"+phase_id+"").find(".task").sortElements(function(a, b){
@@ -717,6 +719,9 @@
                 bindSavePhaseEvent();
                 bindDeletePhaseEvent();
                 bindBloomsLevelChangeEvent();                       
+                
+                
+                
                 $(self).prev("div .phase").find(".key_verbs").append(z);
             });
 

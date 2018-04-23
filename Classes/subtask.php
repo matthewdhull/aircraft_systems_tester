@@ -55,7 +55,7 @@ class Subtask extends Task {
     		$subtask['number'] = $row['Number'];    		
             $subtask['name'] = $row['Name'];
             $subtask['description'] = $row['Description'];		    		
-            $subtask['bloomId'] = $row['bloomid'];
+            $subtask['bloomId'] = $row['bloomId'];
             $subtask['ordinality'] = $row['ordinality'];
 			
 			array_push($subtasks, $subtask);
