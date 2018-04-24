@@ -1,3 +1,3 @@
 <?php
-header('Location: http://www.tinyurl.com/sjtester')
+header("Location: https://matthewdhull.nfshost.com/instructorArea.php");
 ?>

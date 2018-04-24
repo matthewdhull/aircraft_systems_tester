@@ -78,10 +78,14 @@
             });       
         }
         
-        function bindBloomsLevelChangeEvent(ordinality){
-            $(this).find("option[id=o"+ordinality+"]").attr("selected", "selected");
-
-            $( ".blooms_level" ).on( "change", function(event, bloomId) {
+        function bindBloomsLevelChangeEvent(ordinality,path){
+            $(path).find("option[id=o"+ordinality+"]").attr("selected", "selected");
+            
+            if (path === null) {
+                path = ".blooms_level";
+            }
+            
+            $(path).on( "change", function(event, bloomId) {
                 
                 var ord = $(this).children(":selected").attr("id");                
                 ord = ord.slice(1);
@@ -211,9 +215,9 @@
                            bindSaveSubtaskEvent();
                            bindDeleteSubtaskEvent();
                            loadElements(value.id);
-                           bindBloomsLevelChangeEvent(value.ordinality);
-                            $("div#"+task_id+".task").find("div#"+value.id+".subtask").find(".key_verbs").append(verbOptions); 
-                            $("div#"+task_id+".task").find("div#"+value.id+".subtask").find(".key_verbs").find("option[id="+value.bloomId+"]").attr("selected", "selected");
+                           var path = "div#"+task_id+".task div#"+value.id+".subtask .blooms_level";
+                           bindBloomsLevelChangeEvent(value.ordinality, path);
+                           $(path).trigger("change", [value.bloomId]);
                         });
                         $("#"+task_id+"").find(".subtask").sortElements(function(a, b){
                             return $(a).attr("data-number") > $(b).attr("data-number") ? 1 : -1;
@@ -282,9 +286,9 @@
                             bindSaveTaskEvent();
                             bindDeleteTaskEvent();
                             loadSubtasks(value.id); 
-                            bindBloomsLevelChangeEvent(value.ordinality);
-                            $("div#"+phase_id+".phase").find("div#"+value.id+".task").find(".key_verbs").append(verbOptions); 
-                            $("div#"+phase_id+".phase").find("div#"+value.id+".task").find(".key_verbs").find("option[id="+value.bloomId+"]").attr("selected", "selected");                                                       
+                            var path = "div#"+phase_id+".phase div#"+value.id+".task .blooms_level";
+                            bindBloomsLevelChangeEvent(value.ordinality, path);
+                            $(path).trigger("change", [value.bloomId]);
                         }); 
              
                         $("#"+phase_id+"").find(".task").sortElements(function(a, b){
@@ -320,7 +324,8 @@
                     bindAddTaskButtonEvent();
                     bindSavePhaseEvent();    
                     bindDeletePhaseEvent();
-                    bindBloomsLevelChangeEvent(value.ordinality);
+                    var path = "div#"+value.id+".phase .blooms_level";
+                    bindBloomsLevelChangeEvent(value.ordinality, path);
                     $("#"+value.id+"").find(".blooms_level").trigger("change", [value.bloomId]);
                     loadTasks(value.id);
                     phaseOrder = parseInt(value.number) + 1;
@@ -405,7 +410,7 @@
                 var task_id = $(this).parent().parent().attr('id');
                 var subtask_number = $(this).siblings(".subtask_order_input").val();
                 var bloom_level = $(this).siblings(".key_verbs").children(":selected").attr("id");
-                console.log("subtask key verb id: " + bloom_level);                              
+                //console.log("subtask key verb id: " + bloom_level);                              
                 var subtask_name = $(this).siblings(".subtask_input").val();
                 var subtask_description = $(this).siblings(".subtask_description_input").val();
                 var anId = $(this).parent().attr("id");
@@ -718,7 +723,7 @@
                 bindAddTaskButtonEvent();
                 bindSavePhaseEvent();
                 bindDeletePhaseEvent();
-                bindBloomsLevelChangeEvent();                       
+                bindBloomsLevelChangeEvent(null,null);                       
                 
                 
                 
