@@ -35,7 +35,7 @@ class ContentSnippets {
 							return false;
 						});			
 						$("#testModelingNav").click(function(){
-							window.location = "testModeling.php";
+							window.location = "testModeling_taskModeling.php";
 							return false;
 						});			
 						$("#questionModelingNav").click(function(){

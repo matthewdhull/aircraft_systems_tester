@@ -174,7 +174,23 @@ class Question {
 
 		$con = self::getConnection();
 				
-		$fetchQuestionQuery = "SELECT questions.type, questions.category, questions.spo_id, SPO.spo_name AS `spo`, EO.element_name AS `eo`, questions.correct_answer, questions.alt_correct_answer, questions.last_correct_answer, questions.ans_x, questions.ans_y, questions.ans_z, questions.question_a, questions.question_b FROM `questions` JOIN `SPO` USING (`spo_id`) JOIN `EO` USING (`eo_id`) WHERE `questionID` = ".$id."";	
+        $fetchQuestionQuery = "SELECT q.type, ";
+        $fetchQuestionQuery .= "q.category, ";
+        $fetchQuestionQuery .= "q.subtask_id spo_id, ";
+        $fetchQuestionQuery .= "s.name AS spo, ";
+        $fetchQuestionQuery .= "e.name AS eo, ";
+        $fetchQuestionQuery .= "q.correct_answer, ";
+        $fetchQuestionQuery .= "q.alt_correct_answer, ";
+        $fetchQuestionQuery .= "q.last_correct_answer, ";
+        $fetchQuestionQuery .= "q.ans_x, ";
+        $fetchQuestionQuery .= "q.ans_y, ";
+        $fetchQuestionQuery .= "q.ans_z, ";
+        $fetchQuestionQuery .= "q.question_a, ";
+        $fetchQuestionQuery .= "q.question_b ";
+        $fetchQuestionQuery .= "FROM questions q ";
+        $fetchQuestionQuery .= "JOIN Subtask s ON q.subtask_id = s.Id ";
+        $fetchQuestionQuery .= "JOIN element e ON q.element_id = e.Id ";
+        $fetchQuestionQuery .= "WHERE `questionID` = ".$id." ";			
 		
 		
 				

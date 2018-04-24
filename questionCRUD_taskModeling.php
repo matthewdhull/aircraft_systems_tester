@@ -5,7 +5,7 @@
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8">	
 <!-- 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js">< /script> -->
 	<script src="jquery.js"></script>	
-	<script src="systemChoices.js"></script>   <!-- Imports ERJ / CRJ Aircraft System Lists --> 
+	<script src="systemChoices.js"></script>   <!-- Imports subtasks Lists --> 
 	<style type='text/css'>
 		@import url("CSS/questionCRUD.css");
 	</style>
@@ -26,7 +26,7 @@
 			
 			var ERJ = "erj";
 			var CRJ = "crj";
-			var acftSwitchPosition = "ERJ";
+			var acftSwitchPosition = "DVA";
 			
 			$("#adminAreaOnly").css("visibility", "hidden");
 			$("#category").css("visibility", "hidden");
@@ -68,7 +68,7 @@
 				var incorrect_x = $("#incorrect_ans_x").val();
 				var incorrect_y = $("#incorrect_ans_y").val();
 				var incorrect_z = $("#incorrect_ans_z").val(); 
-				var variantStr = acftSwitchPosition.toLowerCase();
+				var variantStr = $(".select_variant").val().toLowerCase();
 
 				$.post("PHPScripts/newQuestion.php", {
 					type: questionType,
@@ -193,7 +193,7 @@
 		
 		$("#questionCategory").change(function(){
 				var questionCategory = $("#questionCategory").val();
-				var variant_type = acftSwitchPosition.toLowerCase();
+				var variant_type = $(".select_variant").val().toLowerCase();
 				currentSubcategory = questionCategory;
 				$("#questions_from_subcategory table").remove();
 			$.post("PHPScripts/viewQuestions.php", {
@@ -213,7 +213,6 @@
 			return false;
 		
 		});
-		
 		
 		$("#edit_question_button").click(function(){
 			var qID =  $("#editID").val();
@@ -432,28 +431,10 @@
 
 		});
 		
-		$("#erjTitle").click(function(){
-			$(this).css("color", "#00d36c");
-			$("#crjTitle").css("color", "#d9d9d9");
-			$("#acftSwitch").animate({"margin-left": '2px'},'fast');
-			$("#acftArrow").removeClass("arrow-right").addClass("arrow-left").css("margin-right", "6px");			
-			$("#headerTitle").html("SJTester : ERJ");											
-			acftSwitchPosition = "ERJ";
-			//populateERJSystemChoices();
-			$("#questionCategory").trigger("change");			
+		$(".select_variant").change(function(){
+    		$("#headerTitle").html("SJTester : "+$(this).val()+"");
+			$("#questionCategory").trigger("change");							    		
 		});
-		
-		$("#crjTitle").click(function(){
-			$(this).css("color", "#00d36c");
-			$("#erjTitle").css("color", "#d9d9d9");
-			$("#acftSwitch").animate({"margin-left": '71px'}, 'fast');			
-			$("#acftArrow").removeClass("arrow-left").addClass("arrow-right").css("margin-left", "8px");
-			$("#headerTitle").html("SJTester : CRJ");											
-			acftSwitchPosition = "CRJ";
-			//populateCRJSystemChoices();	
-			$("#questionCategory").trigger("change");							
-		});
-		
 		
 		$("#editTitle").click(function(){
 			$(this).css("color", "#00d36c");
@@ -482,17 +463,6 @@
 		
 		});
 		
-		
-		function acftToggleSwitch(){
-			if(acftSwitchPosition == "ERJ"){
-				$("#crjTitle").click();
-			}
-			else if(acftSwitchPosition == "CRJ"){
-				$("#erjTitle").click();
-			}
-		
-		}
-		
 		function toggleSwitch(){
 			if(switchPosition == "CREATE"){
 				$("#editTitle").click();
@@ -508,11 +478,7 @@
 		$("#toggleSwitch").click(function(){
 			toggleSwitch();
 		});
-		
-		$("#acftToggleSwitch").click(function(){
-			acftToggleSwitch();
-		});
-		
+			
 		
 		$("#type").trigger("change");
 		
@@ -543,7 +509,7 @@
 <body>
 
 	<?php
-		$addendum = " : ERJ";
+		$addendum = " : DVA";
 		ContentSnippets::doHeader($addendum);
 		ContentSnippets::doNavigationBar();
 	?>
@@ -553,6 +519,7 @@
 
 
 			<div id="toggleAcftQuestionArea">
+<!--
 				<h4 id="erjTitle">ERJ</h4>
 				<div id="acftToggleSwitch">
 					<div id="acftSwitch">
@@ -560,6 +527,12 @@
 					</div>
 				</div>
 				<h4 id="crjTitle">CRJ</h4>
+-->
+				<select class='select_variant'>
+    				<option value='DVA'>DVA</option>    				
+    				<option value='ERJ'>ERJ</option>
+    				<option value='CRJ'>CRJ</option>
+				</select>
 			</div>
 
 			

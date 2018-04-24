@@ -163,11 +163,6 @@
             
             var parent_bloom_level = parseInt($("div#"+task_id+".task").find(".blooms_level").children(":selected").attr("id").slice(1));
             //console.log("task parent_bloom_level: " + parent_bloom_level);
-            
-            if (parent_bloom_level < 6) { // go to the next lower bloom's level unless we are already there.
-                parent_bloom_level += 1;
-            }
-            
             var keyVerbs = addKeyVerbsForLevel(parent_bloom_level);
             var theVerbs = $.when(keyVerbs);
             var verbOptions;                
@@ -219,7 +214,7 @@
                            bindBloomsLevelChangeEvent(value.ordinality, path);
                            $(path).trigger("change", [value.bloomId]);
                         });
-                        $("#"+task_id+"").find(".subtask").sortElements(function(a, b){
+                        $("div#"+task_id+".task .subtask").sortElements(function(a, b){
                             return $(a).attr("data-number") > $(b).attr("data-number") ? 1 : -1;
                         });                 
                                         
@@ -232,12 +227,7 @@
         function loadTasks(phase_id){
             
             var parent_bloom_level = parseInt($("div#"+phase_id+".phase").find(".blooms_level").children(":selected").attr("id").slice(1));
-            //console.log("parent phase bloom level: " + parent_bloom_level);
-            
-            if (parent_bloom_level < 6) { // go to the next lower bloom's level unless we are already there.
-                parent_bloom_level += 1;
-            }
-            
+
             var keyVerbs = addKeyVerbsForLevel(parent_bloom_level);
             var theVerbs = $.when(keyVerbs);
             var verbOptions;                
@@ -580,10 +570,6 @@
             $(".addSubTaskButton").off().click(function(){
                 
                 var parent_bloom_level = parseInt($(this).parent().find(".blooms_level").children(":selected").attr("id").slice(1));
-
-                if (parent_bloom_level < 6) { // go to the next lower bloom's level unless we are already there.
-                    parent_bloom_level += 1;
-                }
                 
                 var keyVerbs = addKeyVerbsForLevel(parent_bloom_level);
                 var theVerbs = $.when(keyVerbs);
@@ -623,7 +609,7 @@
                        bindAddElementEvent();
                        bindSaveSubtaskEvent();
                        bindDeleteSubtaskEvent();
-                       bindBloomsLevelChangeEvent();
+                       bindBloomsLevelChangeEvent(null,null);
                        $(self).prev("div .subtask").find(".key_verbs").append(verbOptions);                       
                     });
                 });
@@ -634,10 +620,6 @@
             $(".addTaskButton").off().click(function(){
                 var parent_bloom_level = parseInt($(this).parent().find(".blooms_level").children(":selected").attr("id").slice(1));
                 
-                
-                if (parent_bloom_level < 6) { // go to the next lower bloom's level unless we are already there.
-                    parent_bloom_level += 1;
-                }
                 
                 var keyVerbs = addKeyVerbsForLevel(parent_bloom_level);
                 var theVerbs = $.when(keyVerbs);
@@ -680,7 +662,7 @@
                         bindAddSubTaskEvent();
                         bindSaveTaskEvent();
                         bindDeleteTaskEvent();
-                        bindBloomsLevelChangeEvent();
+                        bindBloomsLevelChangeEvent(null,null);
                         $(self).prev("div .task").find(".key_verbs").append(verbOptions);
                     });
                 

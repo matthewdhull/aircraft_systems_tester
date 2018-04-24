@@ -98,7 +98,7 @@ class Exam {
 				
 				$mandatoryEoQuestionIds = array();		
 				foreach($mandatoryEOs as $mEO ){
-					$getMandatoryEoQuestionIdQuery = "SELECT `questionID` FROM `questions` WHERE `eo_id` = ".$mEO." AND `variant_id` = ".$this->variant." ";
+					$getMandatoryEoQuestionIdQuery = "SELECT `questionID` FROM `questions` WHERE `element_id` = ".$mEO." AND `variant_id` = ".$this->variant." ";
 					$getMandatoryEoQuestionIdQuery .= "ORDER BY RAND() LIMIT 0,1";
 					$getMandatoryEoQuestionIdQueryResult = mysql_query($getMandatoryEoQuestionIdQuery);
 					if(!$getMandatoryEoQuestionIdQueryResult){
@@ -118,14 +118,14 @@ class Exam {
 				$getIdQuery = "";
 				$remainingQuestionCount = $v - count($mandatoryEoQuestionIds);
 				if(count($mandatoryEoQuestionIds)>0){
-					$getIdQuery = "SELECT `questionID` FROM `questions` WHERE `spo_id` = ".$k." ";
+					$getIdQuery = "SELECT `questionID` FROM `questions` WHERE `subtask_id` = ".$k." ";
 					$getIdQuery .= "AND `questionID` NOT IN (".implode($mandatoryEoQuestionIds, ",").") ";
 					$getIdQuery .= "AND `variant_id` = ".$this->variant." ";
 					$getIdQuery .= "ORDER BY RAND() LIMIT ".$remainingQuestionCount."";
 
 				}				
 				else {
-					$getIdQuery = "SELECT `questionID` FROM `questions` WHERE `spo_id` = ".$k." ";
+					$getIdQuery = "SELECT `questionID` FROM `questions` WHERE `subtask_id` = ".$k." ";
 					$getIdQuery .= "AND `variant_id` = ".$this->variant." ";
 					$getIdQuery .= "ORDER BY RAND() LIMIT ".$remainingQuestionCount."";					
 				}
@@ -168,39 +168,6 @@ class Exam {
 	
 		}	
 		
-
-		/*print_r($idArr); */
-		
-
-		//old test selection logic		
-		/*
-		foreach($this->num_questions_from_category as $k => $v){
-			if ($v > 0){
-			
-				//select all questionID for subcategory
-				//echo "requested ".$v." for ".$k." ";
-				$getIdQuery = "SELECT `questionID` FROM `questions` WHERE `spo_id` = ".$k." AND `variant_id` = ".$this->variant."";
-				$idResult = mysql_query($getIdQuery);
-				$amt = mysql_num_rows($idResult);
-				//echo "totalIDs : ".$amt." ";
-				
-				//add results to array.
-				$tmpArr = array();
-				while($row = mysql_fetch_array($idResult)){
-					//echo "question ID ".$row['questionID'].", ";
-					array_push($tmpArr, $row['questionID']);
-				}
-				
-				
-				//randomly select number of questions desired (5 electrical questions, for example)
-				for($i = 0; $i<$v; $i++){
-					shuffle($tmpArr);
-					array_push($idArr, $tmpArr[0]);
-					unset($tmpArr[0]);
-				}
-			}
-		}	
-*/
 		
 		
 		$createTestQuery = "INSERT INTO `createdTests` VALUES ";

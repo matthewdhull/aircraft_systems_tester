@@ -145,3 +145,8 @@ button, input[type="submit"]{
 	width: 47px;
 }	
 
+.select_variant {
+	height: 25px;
+	margin-top: 3%;
+	width: 35%;
+}

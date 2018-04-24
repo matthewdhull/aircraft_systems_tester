@@ -106,6 +106,10 @@ if(isset($_SESSION['name'])){
 		echo Reports::questionsEnteredEoListForSpo($variant, $spo_id);
 	}
 	
+	elseif($option == "getEnteredElements") {
+    	echo Reports::questionsEnteredElementsListForSubtask($spo_id);
+	}
+	
 	elseif($option == "questionsWithIncorrect"){
 		echo Reports::questionsWithIncorrectForClass($testDate, $idForInstructor);	
 	}

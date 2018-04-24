@@ -8,8 +8,8 @@ session_start();
 	<head>
 		<title>Exam</title>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8">	
-		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-<!-- 		<script src='jquery.js'> </script> -->
+<!-- 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script> -->
+		<script src='jquery.js'> </script>
 		<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" /> <!--CSS for date picker-->				
 		<script src="http://code.jquery.com/ui/1.10.0/jquery-ui.js"></script>		
 		<script src="shufflePlugin.js"></script>				

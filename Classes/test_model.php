@@ -195,18 +195,19 @@ class Test_Model {
 		
 		mysql_select_db($database, $con);
 
-        $modelQuery = "SELECT testModel.test_model_id, ";
-        $modelQuery .= "SPO.spo_name AS spo, ";
-        $modelQuery .= "testModel.count, ";
-        $modelQuery .= "testModel.name ";
-        $modelQuery .= "FROM testModel ";
-        $modelQuery .= "JOIN SPO ON testModel.spo_id = SPO.spo_id ";
-        $modelQuery .= "WHERE testModel.variant_id = ".$variant." ";        
-        $modelQuery .= "AND course_type = '".$course_type."' ";
-        $modelQuery .= "AND testModel.count > 0 ";
-        $modelQuery .= "ORDER BY ";
-        $modelQuery .= "testModel.name, ";
-        $modelQuery .= "SPO.spo_number ASC";			
+        $modelQuery .= "SELECT ";
+        $modelQuery .= "tm.test_model_id, ";
+        $modelQuery .= "CONCAT(UCASE(LEFT(bt.key_verb, 1)), SUBSTRING(bt.key_verb, 2),' ',s.Name) spo, ";
+        $modelQuery .= "tm.count, ";
+        $modelQuery .= "tm.name ";
+        $modelQuery .= "FROM testModel tm ";
+        $modelQuery .= "JOIN Subtask s ON tm.spo_id = s.Id ";
+        $modelQuery .= "JOIN blooms_taxonomy bt ON bt.Id = s.bloomId ";
+        $modelQuery .= "WHERE tm.variant_id = ".$variant." ";
+        $modelQuery .= "AND tm.course_type = '".$course_type."' ";
+        $modelQuery .= "AND tm.count > 0 ";
+        $modelQuery .= "ORDER BY tm.name, ";
+        $modelQuery .= "s.Number ASC";
 		
 		
 		$modelQueryResult = mysql_query($modelQuery);
@@ -334,6 +335,51 @@ class Test_Model {
 		
 		return $questionQuantity;		
 	}
+	
+    public static function getQuestionQuantityForSubtask(){
+    				
+    		$questionQuantity = array();
+    		
+    		include "XJTestDBConnect.php";
+    		$con = mysql_connect($host,$usn, $password);
+    
+    		if (!$con){
+    		  die('Could not connect: ' . mysql_error());
+    		 }
+    		
+    		mysql_select_db($database, $con);
+
+            $getQuantityQuery .= "SELECT q.subtask_id, ";
+            $getQuantityQuery .= "s.Name AS subtask, ";
+            $getQuantityQuery .= "COUNT(q.subtask_id) AS count ";
+            $getQuantityQuery .= "FROM questions q ";
+            $getQuantityQuery .= "JOIN Subtask s ON q.subtask_id = s.Id ";
+            $getQuantityQuery .= "GROUP BY s.Id ";
+    		
+    		
+    		$getQuantityQueryResult = mysql_query($getQuantityQuery);
+    		
+    		
+    		if(!$getQuantityQueryResult){
+    			die("could not run query ($getQuantityQuery) ".mysql_error());
+    		}
+    		while($qRow = mysql_fetch_array($getQuantityQueryResult)){
+    			
+    			$spo_info = array();
+    			$spo_info['spo_id'] = $qRow['subtask_id'];
+    			$spo_info['spo'] = $qRow['subtask'];
+    			$spo_info['count'] = $qRow['count'];
+    			
+    			array_push($questionQuantity, $spo_info);			
+    		}
+    				
+    		$questionQuantity = json_encode($questionQuantity);
+    		
+    		mysql_close($con);
+    		
+    		return $questionQuantity;		
+    	}
+	
 	
 	public static function getSPOForModeling(){
 		$spo = array();

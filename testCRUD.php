@@ -238,35 +238,7 @@
 						
 						return false;
 					});
-
-
-
-					//deprecated
-
-					/*
-					$("#showTestModelsButton").click(function(){
-						var testModel = $("#viewModeledTestByType").val();
-						$.post("PHPScripts/showTestModels.php",{
-							model: testModel							
-						}, 
-						function(data){
-							////console.log(data);
-							$("#modelResults table").remove();
-							$("#modeledTests tr td:first").html("Total "+testModel+" Models: "+data.length+"");
-							$.each(data, function(key, value){		
-								$("#modelResults").append("<table id="+value.testID+" class='modelTable'><tr class='testModel'><tr><td><button id="+value.testID+" value='use'>use</button></td><td><button value='delete' id="+value.testID+">delete</button></td></tr><td>Model ID: "+value.testID+"</td></tr><tr><td>Air Conditioning: "+value.air_condition+"</td><td>Aircraft General: "+value.acft_gen+"</td></tr><tr><td>APU: "+value.apu+"</td><td>Autopilot: "+value.autopilot+"</td></tr><tr><td>Crew Awareness: "+value.crew_awareness+"</td><td>Electrical: "+value.elec+"</td></tr><tr><td>Emergency Equipment: "+value.emerg_equip+"</td><td>Fire Protection: "+value.fire_prot+"</td></tr><tr><td>Flight Controls: "+value.flt_control+"</td><td>Fuel: "+value.fuel+"</td></tr><tr><td>Hydraulics: "+value.hydraulics+"</td><td>Ice/Rain Protection: "+value.ice_rain_prot+"</td></tr><tr><td>Landing/Gear Brakes: "+value.ldg_gear_brk+"</td><td>Lighting: "+value.lighting+"</td></tr><tr><td>Limitations: "+value.limitations+"</td><td>Oxygen: "+value.oxy+"</td></tr><tr><td>Performance: "+value.performance+"</td><td>Pneumatics: "+value.pneum+"</td></tr><tr><td>Powerplant: "+value.powerplant+"</td><td>Pressurization: "+value.pressurization+"</td></tr><tr><td>Profiles: "+value.profiles+"</td><td>Radar: "+value.radar+"</td></tr><tr><td>Stall Protection: "+value.stall_prot+"</td><td>Mandatory: "+value.mandatory+"</td></tr></table>");
-							});
-							
-							if(isAdmin == false){
-								$("#modelResults button:contains('delete')").css("visibility", "hidden");
-							}
-							bindDeletableEvents();
-							bindUseEvents();
-						}, "json");
-					});
-					*/
-					
-					
+										
 					$("#createTestButton").click(function(){
 						<?php /*show progress bar */?>
 						$("#progressBar").css("visibility", "visible");
@@ -321,6 +293,7 @@
 								<select id='fleet_type'>
 									<option value=1>ERJ</option>
 									<option value=2>CRJ</option>
+									<option value=3>DVA</option>
 								</select>
 							</td>
 						</tr>

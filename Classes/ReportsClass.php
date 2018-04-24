@@ -1256,5 +1256,35 @@ class Reports {
 		return $eoList;
 		
 	}
+	
+	public static function questionsEnteredElementsListForSubtask($spo_id) {
+		$con = self::getConnection();
+
+		$eoList = array();		
+		
+        $getEOQuery .= "SELECT DISTINCT ";
+        $getEOQuery .= "e.Id element_id, ";
+        $getEOQuery .= "e.Name element_name ";
+        $getEOQuery .= "FROM Element e ";
+        $getEOQuery .= "JOIN questions q ON e.Id = q.element_id ";
+        $getEOQuery .= "WHERE q.subtask_id = ".$spo_id." ";
+        $getEOQuery .= "ORDER BY e.Id ASC ";
+		
+		$eoResult = mysql_query($getEOQuery, $con);
+		if(!$eoResult){
+			die("could not run query ($getEOQuery) ".mysql_error());
+		}
+		else {
+			while($row = mysql_fetch_array($eoResult)){
+				$eo = array();
+				$eo['eo_id'] = $row['element_id'];
+				$eo['element_name'] = $row['element_name'];
+				array_push($eoList, $eo);
+			}
+		}
+		mysql_close($con);		
+		$eoList = json_encode($eoList);
+		return $eoList;    	
+	}
 } 
 ?>
