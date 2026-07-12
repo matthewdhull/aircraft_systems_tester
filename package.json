@@ -1,0 +1,52 @@
+{
+	"name": "aircraft-systems-tester",
+	"private": true,
+	"version": "0.0.1",
+	"type": "module",
+	"packageManager": "npm@11.16.0",
+	"engines": {
+		"node": ">=24 <27",
+		"npm": ">=11 <12"
+	},
+	"scripts": {
+		"dev": "vite dev",
+		"build": "vite build",
+		"preview": "vite preview",
+		"start": "node build",
+		"prepare": "svelte-kit sync",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"format": "prettier --write .",
+		"format:check": "prettier --check .",
+		"lint": "eslint .",
+		"test:unit": "vitest",
+		"test": "vitest run --passWithNoTests"
+	},
+	"dependencies": {
+		"better-sqlite3": "^12.11.1",
+		"drizzle-orm": "^0.45.2"
+	},
+	"devDependencies": {
+		"@eslint/js": "^10.0.1",
+		"@sveltejs/adapter-node": "^5.5.4",
+		"@sveltejs/kit": "^2.63.0",
+		"@sveltejs/vite-plugin-svelte": "^7.1.2",
+		"@testing-library/svelte": "^5.4.2",
+		"@types/better-sqlite3": "^7.6.13",
+		"@types/node": "^24.13.3",
+		"drizzle-kit": "^0.31.10",
+		"eslint": "^10.4.1",
+		"eslint-config-prettier": "^10.1.8",
+		"eslint-plugin-svelte": "^3.19.0",
+		"globals": "^17.6.0",
+		"jsdom": "^29.1.1",
+		"prettier": "^3.8.3",
+		"prettier-plugin-svelte": "^4.1.0",
+		"svelte": "^5.56.1",
+		"svelte-check": "^4.6.0",
+		"typescript": "^6.0.3",
+		"typescript-eslint": "^8.60.1",
+		"vite": "^8.0.16",
+		"vitest": "^4.1.8"
+	}
+}

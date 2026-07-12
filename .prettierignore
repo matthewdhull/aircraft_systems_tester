@@ -1,0 +1,24 @@
+.svelte-kit
+build
+node_modules
+package-lock.json
+CSS
+Classes
+PHPScripts
+backups
+downloadables
+images
+js
+Task Analysis Planning
+*.php
+*.js
+!eslint.config.js
+!prettier.config.js
+!svelte.config.js
+legacy-source-export
+fixtures
+docs/discovery/phase-0
+docs/discovery/phase-1
+MIGRATION_PLAN.md
+composer.json
+isotope.html

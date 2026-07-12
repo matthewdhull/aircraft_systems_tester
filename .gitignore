@@ -8,9 +8,23 @@
 *.xls
 *.rtf
 *.txt
+!static/robots.txt
 *.sql
+!drizzle/*.sql
 *.DS_Store
 *.csv
 vendor/
 .env
+.env.*
+!.env.example
 
+# SvelteKit and Node build/runtime artifacts
+node_modules/
+.svelte-kit/
+build/
+coverage/
+.runtime/
+*.db
+*.db-*
+*.sqlite
+*.sqlite-*
