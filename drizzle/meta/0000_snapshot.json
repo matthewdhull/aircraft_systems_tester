@@ -1,0 +1,49 @@
+{
+	"version": "6",
+	"dialect": "sqlite",
+	"id": "2cbcaf6c-a575-49e4-ac7f-88d53a22ac2b",
+	"prevId": "00000000-0000-0000-0000-000000000000",
+	"tables": {
+		"_foundation_metadata": {
+			"name": "_foundation_metadata",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "integer",
+					"primaryKey": true,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"foundation_version": {
+					"name": "foundation_version",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"applied_at": {
+					"name": "applied_at",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"checkConstraints": {}
+		}
+	},
+	"views": {},
+	"enums": {},
+	"_meta": {
+		"schemas": {},
+		"tables": {},
+		"columns": {}
+	},
+	"internal": {
+		"indexes": {}
+	}
+}
