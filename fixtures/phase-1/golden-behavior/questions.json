@@ -1,0 +1,117 @@
+{
+  "schema_version": "phase1-golden-v1",
+  "cases": [
+    {
+      "id": "q-legacy-tf-nontrue-falls-through",
+      "behavior_class": "legacy_observed",
+      "negative_regression": true,
+      "input": {"type": "tf", "stored_correct": "true"},
+      "expected": {"choices": {"a": "TRUE", "b": "FALSE"}, "key": "b"},
+      "invariant": "Only the exact stored string TRUE selects A in legacy code."
+    },
+    {
+      "id": "q-target-tf-valid-normalized",
+      "behavior_class": "target_approved",
+      "input": {"type": " TF ", "semantic_answer": true, "primary_prompt": "Synthetic statement alpha."},
+      "expected": {"normalized_type": "tf", "semantic_answer": true, "display_choice_count": 2, "accepted": true}
+    },
+    {
+      "id": "q-target-tf-invalid-blank",
+      "behavior_class": "target_approved",
+      "input": {"type": "tf", "semantic_answer": null},
+      "expected": {"accepted": false, "error_code": "QUESTION_TF_ANSWER_REQUIRED"}
+    },
+    {
+      "id": "q-legacy-mc-layout",
+      "behavior_class": "legacy_observed",
+      "input": {"type": "mc", "correct": "Synthetic correct", "incorrect": ["Synthetic wrong 1", "Synthetic wrong 2", "Synthetic wrong 3"]},
+      "expected": {"permitted_key_positions": ["a", "b", "c", "d"], "choice_count": 4, "exactly_one_correct": true},
+      "invariant": "The normal legacy branch permutes one correct and three incorrect choices."
+    },
+    {
+      "id": "q-legacy-mc-all-none-distractor",
+      "behavior_class": "legacy_observed",
+      "negative_regression": true,
+      "input": {"type": "mc", "digit_count_at_most_seven": true, "random_branch": 2},
+      "expected": {"d_semantic_is_one_of": ["all", "none"], "key_is_one_of": ["a", "b", "c"], "d_is_never_key": true}
+    },
+    {
+      "id": "q-target-mc-valid",
+      "behavior_class": "target_approved",
+      "input": {"type": "MC", "correct": ["Synthetic correct"], "incorrect": ["Synthetic wrong 1", "Synthetic wrong 2", "Synthetic wrong 3"]},
+      "expected": {"accepted": true, "normalized_type": "mc", "display_choice_count": 4, "correct_choice_count": 1, "special_all_none_distractor": false},
+      "invariant": "All four displayed choices are nonblank and distinct."
+    },
+    {
+      "id": "q-target-mc-invalid-duplicate",
+      "behavior_class": "target_approved",
+      "input": {"type": "mc", "correct": ["Repeated synthetic choice"], "incorrect": ["Repeated synthetic choice", "Synthetic wrong 2", "Synthetic wrong 3"]},
+      "expected": {"accepted": false, "error_code": "QUESTION_CHOICES_NOT_DISTINCT"}
+    },
+    {
+      "id": "q-target-c2-valid",
+      "behavior_class": "target_approved",
+      "input": {"type": "c2", "correct": ["Synthetic true alpha", "Synthetic true beta"], "incorrect": ["Synthetic false gamma"]},
+      "expected": {"accepted": true, "abc_correct_count": 2, "abc_incorrect_count": 1, "key": "d", "d_describes_correct_letters": true},
+      "invariant": "A-C may be permuted; D remains the compound key and names exactly the two correct A-C letters."
+    },
+    {
+      "id": "q-target-c2-invalid-third-correct",
+      "behavior_class": "target_approved",
+      "input": {"type": "c2", "correct": ["Synthetic alpha", "Synthetic beta", "Synthetic gamma"], "incorrect": []},
+      "expected": {"accepted": false, "error_code": "QUESTION_C2_SHAPE_INVALID"}
+    },
+    {
+      "id": "q-target-ac-valid",
+      "behavior_class": "target_approved",
+      "input": {"type": "AC", "correct": ["Synthetic true alpha", "Synthetic true beta", "Synthetic true gamma"], "incorrect": []},
+      "expected": {"accepted": true, "normalized_type": "ac", "abc_correct_count": 3, "key": "d", "d_semantic": "all"},
+      "invariant": "A-C may be permuted and are all correct; D is the keyed all-correct compound choice."
+    },
+    {
+      "id": "q-target-nc-valid",
+      "behavior_class": "target_approved",
+      "input": {"type": "nc", "correct": [], "incorrect": ["Synthetic false alpha", "Synthetic false beta", "Synthetic false gamma"]},
+      "expected": {"accepted": true, "abc_incorrect_count": 3, "key": "d", "d_semantic": "none"},
+      "invariant": "A-C may be permuted and are all incorrect; D is the keyed none-correct compound choice."
+    },
+    {
+      "id": "q-target-all-types-blank-choice-rejected",
+      "behavior_class": "target_approved",
+      "input": {"types": ["mc", "c2", "ac", "nc"], "contains_blank_displayed_choice": true},
+      "expected": {"accepted": false, "error_code": "QUESTION_CHOICE_BLANK"}
+    },
+    {
+      "id": "q-legacy-primary-only-prompt",
+      "behavior_class": "legacy_observed",
+      "input": {"primary": "Synthetic primary prompt.", "alternate": ""},
+      "expected": {"permitted_prompt": ["Synthetic primary prompt."]}
+    },
+    {
+      "id": "q-legacy-alternate-prompt",
+      "behavior_class": "legacy_observed",
+      "input": {"primary": "Synthetic primary prompt.", "alternate": "Synthetic alternate prompt."},
+      "expected": {"permitted_prompt": ["Synthetic primary prompt.", "Synthetic alternate prompt."]},
+      "invariant": "One complete stored prompt is chosen; prompts are not combined."
+    },
+    {
+      "id": "q-target-prompt-selection-recorded",
+      "behavior_class": "target_approved",
+      "input": {"question_version": "syn-qv-01", "approved_prompts": ["Synthetic primary prompt.", "Synthetic alternate prompt."], "seed": "synthetic-seed-reference"},
+      "expected": {"selected_prompt_is_member": true, "snapshot_records_selected_text": true},
+      "invariant": "Replay with the same algorithm version and seed selects the same approved prompt."
+    },
+    {
+      "id": "q-target-retired-not-eligible",
+      "behavior_class": "target_approved",
+      "input": {"question_version": "syn-qv-retired", "status": "retired", "effective_at": "2026-01-01T00:00:00Z"},
+      "expected": {"eligible_for_generation": false, "historical_snapshot_remains_readable": true}
+    },
+    {
+      "id": "q-target-self-publish-denied",
+      "behavior_class": "target_approved",
+      "input": {"author_id": "syn-staff-author", "reviewer_id": "syn-staff-author", "action": "publish"},
+      "expected": {"allowed": false, "error_code": "DISTINCT_REVIEWER_REQUIRED"}
+    }
+  ]
+}

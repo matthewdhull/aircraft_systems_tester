@@ -1,0 +1,85 @@
+{
+  "schema_version": "phase1-golden-v1",
+  "synthetic_members": ["syn-person-01", "syn-person-02", "syn-person-03", "syn-person-04", "syn-person-05", "syn-person-06"],
+  "cases": [
+    {
+      "id": "report-legacy-created-test-average",
+      "behavior_class": "legacy_observed",
+      "input": {"scores": [60, 70, 80, 90, 100]},
+      "expected": {"issued_count": 5, "class_average": 80, "average_operation": "truncate_to_two_decimals"}
+    },
+    {
+      "id": "report-target-student",
+      "behavior_class": "target_approved",
+      "input": {"viewer": "syn-person-01", "attempt": {"score": "80.00", "outcome": "satisfactory", "missed_item_ids": ["syn-q-5"]}},
+      "expected": {"contains": ["score", "outcome", "missed_items"], "contains_answer_key_without_explicit_permission": false}
+    },
+    {
+      "id": "report-target-class-totals",
+      "behavior_class": "target_approved",
+      "input": {"class": "syn-class-a", "members": [{"id": "syn-person-01", "score": 60, "outcome": "unsatisfactory"}, {"id": "syn-person-02", "score": 70, "outcome": "unsatisfactory"}, {"id": "syn-person-03", "score": 80, "outcome": "satisfactory"}, {"id": "syn-person-04", "score": 90, "outcome": "satisfactory"}, {"id": "syn-person-05", "score": 100, "outcome": "satisfactory"}]},
+      "expected": {"member_count": 5, "average_score": "80.00", "satisfactory_count": 3, "unsatisfactory_count": 2}
+    },
+    {
+      "id": "report-target-curriculum-performance",
+      "behavior_class": "target_approved",
+      "input": {"group_member_count": 5, "valid_item_results": [{"curriculum_label": "SYN-CURR-A", "correct": 4, "asked": 5}, {"curriculum_label": "SYN-CURR-B", "correct": 3, "asked": 5}]},
+      "expected": {"rows": [{"curriculum_label": "SYN-CURR-A", "percent_correct": "80.00"}, {"curriculum_label": "SYN-CURR-B", "percent_correct": "60.00"}], "historical_label_mapping_inferred": false}
+    },
+    {
+      "id": "report-target-generated-test-history",
+      "behavior_class": "target_approved",
+      "input": {"published_exams": [{"id": "syn-exam-1", "template_version": "syn-template-v1", "published_at": "2026-01-01T12:00:00Z", "attempt_count": 5}]},
+      "expected": {"exam_count": 1, "attempt_count": 5, "contains_access_code": false, "contains_seed_for_unprivileged_viewer": false}
+    },
+    {
+      "id": "report-target-organization-score",
+      "behavior_class": "target_approved",
+      "input": {"members": [{"id": "syn-person-01", "score": 60}, {"id": "syn-person-02", "score": 70}, {"id": "syn-person-03", "score": 80}, {"id": "syn-person-04", "score": 90}, {"id": "syn-person-05", "score": 100}, {"id": "syn-person-06", "score": 100}]},
+      "expected": {"member_count": 6, "score_sum": 500, "average_score": "83.33", "minimum_group_size_satisfied": true}
+    },
+    {
+      "id": "report-target-small-cell-suppression",
+      "behavior_class": "target_approved",
+      "input": {"members": [{"id": "syn-person-01", "dimension": "SYN-A"}, {"id": "syn-person-02", "dimension": "SYN-A"}, {"id": "syn-person-03", "dimension": "SYN-A"}, {"id": "syn-person-04", "dimension": "SYN-A"}, {"id": "syn-person-05", "dimension": "SYN-B"}, {"id": "syn-person-06", "dimension": "SYN-B"}]},
+      "expected": {"published_rows_for_dimensions": [], "rolled_up_row": {"dimension": "ALL", "member_count": 6}, "suppressed_dimensions": ["SYN-A", "SYN-B"]},
+      "invariant": "No output cell exposes a group smaller than five; coarser roll-up is permitted."
+    },
+    {
+      "id": "report-target-correction-updates-totals",
+      "behavior_class": "target_approved",
+      "input": {"members": ["syn-person-01", "syn-person-02", "syn-person-03", "syn-person-04", "syn-person-05"], "original_outcomes": ["unsatisfactory", "satisfactory", "satisfactory", "satisfactory", "satisfactory"], "corrected_outcomes": ["satisfactory", "satisfactory", "satisfactory", "satisfactory", "satisfactory"]},
+      "expected": {"current_satisfactory_count": 5, "current_unsatisfactory_count": 0, "original_satisfactory_count_preserved": 4, "correction_event_count": 1}
+    },
+    {
+      "id": "report-target-assigned-scope",
+      "behavior_class": "target_approved",
+      "input": {"viewer_role": "Instructor", "assigned_classes": ["syn-class-a"], "requested_classes": ["syn-class-a", "syn-class-b"]},
+      "expected": {"visible_classes": ["syn-class-a"], "denied_classes": ["syn-class-b"], "server_side_enforcement": true}
+    },
+    {
+      "id": "report-target-organization-permission",
+      "behavior_class": "target_approved",
+      "input": {"viewer_roles": ["Instructor"], "has_organization_report_permission": false},
+      "expected": {"organization_report_allowed": false, "error_code": "ORGANIZATION_REPORT_PERMISSION_REQUIRED"}
+    },
+    {
+      "id": "report-target-printable-exam",
+      "behavior_class": "target_approved",
+      "input": {"viewer": "syn-staff-instructor", "has_print_permission": true, "has_answer_key_permission": false},
+      "expected": {"printable_exam_allowed": true, "answer_key_included": false, "audit_event_created": true}
+    },
+    {
+      "id": "report-target-audited-csv-export",
+      "behavior_class": "target_approved",
+      "input": {"viewer": "syn-staff-report-viewer", "has_export_permission": true, "row_count": 5},
+      "expected": {"export_allowed": true, "audit_event_created": true, "maximum_retention_hours": 24, "contains_access_codes": false, "contains_answer_keys_without_permission": false}
+    },
+    {
+      "id": "report-target-historical-aggregate-isolation",
+      "behavior_class": "target_approved",
+      "input": {"historical_group_member_count": 5, "aggregate": {"attempt_count": 5, "score_sum": 400}},
+      "expected": {"average_score": "80.00", "individual_attempts_reconstructable": false, "participates_in_current_attempt_workflow": false, "participates_in_current_authorization": false}
+    }
+  ]
+}

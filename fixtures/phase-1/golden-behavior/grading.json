@@ -1,0 +1,129 @@
+{
+  "schema_version": "phase1-golden-v1",
+  "cases": [
+    {
+      "id": "grade-legacy-configured-length-denominator",
+      "behavior_class": "legacy_observed",
+      "negative_regression": true,
+      "input": {"configured_length": 5, "snapshot_item_count": 4, "incorrect_count": 1},
+      "expected": {"percentage": 80, "outcome": "satisfactory", "formula": "100-(100/configured_length*incorrect_count)"}
+    },
+    {
+      "id": "grade-target-below-threshold",
+      "behavior_class": "target_approved",
+      "input": {"correct_count": 3, "valid_snapshot_count": 4},
+      "expected": {"denominator": 4, "exact_percentage": 75, "display_percentage": "75.00", "outcome": "unsatisfactory"}
+    },
+    {
+      "id": "grade-target-at-threshold",
+      "behavior_class": "target_approved",
+      "input": {"correct_count": 4, "valid_snapshot_count": 5},
+      "expected": {"denominator": 5, "exact_percentage": 80, "display_percentage": "80.00", "outcome": "satisfactory", "weighting": "equal_per_valid_item", "individual_item_weight_fraction": "1/5"}
+    },
+    {
+      "id": "grade-target-above-threshold",
+      "behavior_class": "target_approved",
+      "input": {"correct_count": 5, "valid_snapshot_count": 6},
+      "expected": {"denominator": 6, "exact_fraction": "500/6", "display_percentage": "83.33", "outcome": "satisfactory"}
+    },
+    {
+      "id": "grade-target-rounding-does-not-promote",
+      "behavior_class": "target_approved",
+      "input": {"correct_count": 3999, "valid_snapshot_count": 4999},
+      "expected": {"exact_comparison": "3999/4999 < 4/5", "display_percentage": "80.00", "outcome": "unsatisfactory"},
+      "invariant": "Outcome is determined from exact counts before two-decimal display rounding."
+    },
+    {
+      "id": "grade-target-actual-count-not-configured-length",
+      "behavior_class": "target_approved",
+      "input": {"configured_length": 5, "valid_snapshot_count": 4, "correct_count": 3},
+      "expected": {"denominator": 4, "display_percentage": "75.00", "outcome": "unsatisfactory", "configured_length_used_for_score": false}
+    },
+    {
+      "id": "grade-target-unanswered-incorrect",
+      "behavior_class": "target_approved",
+      "input": {"valid_snapshot_count": 5, "answers": {"syn-q-1": "a", "syn-q-2": "b", "syn-q-3": "c", "syn-q-4": "d", "syn-q-5": null}, "correct_answer_count": 4},
+      "expected": {"correct_count": 4, "denominator": 5, "display_percentage": "80.00", "outcome": "satisfactory", "unanswered_count": 1}
+    },
+    {
+      "id": "grade-target-deadline-auto-submit",
+      "behavior_class": "target_approved",
+      "input": {"attempt": "syn-attempt-a", "deadline": "2026-01-01T13:30:00Z", "clock": "2026-01-01T13:30:00Z", "saved_answer_count": 3, "valid_snapshot_count": 5, "saved_correct_count": 3},
+      "expected": {"status": "submitted", "time_expired": true, "correct_count": 3, "denominator": 5, "display_percentage": "60.00", "outcome": "unsatisfactory"}
+    },
+    {
+      "id": "grade-target-duplicate-submit-idempotent",
+      "behavior_class": "target_approved",
+      "input": {"attempt": "syn-attempt-a", "submission_requests": [{"request": "syn-submit-1"}, {"request": "syn-submit-2"}]},
+      "expected": {"persisted_submission_count": 1, "persisted_result_count": 1, "second_submission_allowed": false, "second_error_code": "ATTEMPT_ALREADY_SUBMITTED", "first_result_unchanged": true}
+    },
+    {
+      "id": "grade-legacy-client-only-correction",
+      "behavior_class": "legacy_observed",
+      "negative_regression": true,
+      "input": {"missed_items": ["syn-q-1"], "student_selects_key": true},
+      "expected": {"review_item_removed_in_browser": true, "persisted_remediation_completion": false, "original_score_changed": false}
+    },
+    {
+      "id": "grade-target-remediation-completion",
+      "behavior_class": "target_approved",
+      "input": {"originating_attempt": "syn-attempt-a", "session": "syn-remediation-1", "opened_by": "syn-staff-instructor", "missed_items": ["syn-q-1"], "completed_items": ["syn-q-1"]},
+      "expected": {"completion_persisted": true, "original_score_changed": false, "original_outcome_changed": false, "linked_to_originating_attempt": true}
+    },
+    {
+      "id": "grade-target-remediation-waiver",
+      "behavior_class": "target_approved",
+      "input": {"originating_attempt": "syn-attempt-a", "authorized_staff": "syn-staff-instructor", "reason_code": "SYNTHETIC_APPROVED_REASON"},
+      "expected": {"waiver_persisted": true, "audit_event_created": true, "original_score_changed": false}
+    },
+    {
+      "id": "grade-legacy-ejection-mutation",
+      "behavior_class": "legacy_observed",
+      "negative_regression": true,
+      "input": {"configured_length": 5, "before_score": 60, "missed_ejected_question": true},
+      "expected": {"response_changed_to_correct": true, "after_score": 80, "denominator_changed": false, "append_only_correction": false}
+    },
+    {
+      "id": "grade-target-invalidation-recompute",
+      "behavior_class": "target_approved",
+      "input": {"attempt": "syn-attempt-a", "original": {"correct_count": 3, "denominator": 5, "percentage": 60, "outcome": "unsatisfactory"}, "invalidated_item": {"id": "syn-q-5", "was_correct": false}, "correction": {"actor": "syn-staff-corrector", "reason_code": "SYNTHETIC_DEFECT"}},
+      "expected": {"corrected": {"correct_count": 3, "denominator": 4, "percentage": 75, "display_percentage": "75.00", "outcome": "unsatisfactory"}, "original_preserved": true, "append_only_event_count_delta": 1, "attribution_preserved": true}
+    },
+    {
+      "id": "grade-target-invalidation-before-submission",
+      "behavior_class": "target_approved",
+      "input": {"attempt": "syn-attempt-a", "snapshot_item_count": 5, "invalidated_item": "syn-q-5", "submitted_correct_answers": 4},
+      "expected": {"correct_count": 4, "denominator": 4, "display_percentage": "100.00", "outcome": "satisfactory", "invalidated_item_graded": false, "correction_event_preserved": true}
+    },
+    {
+      "id": "grade-target-invalidation-crosses-threshold",
+      "behavior_class": "target_approved",
+      "input": {"original": {"correct_count": 4, "denominator": 6, "outcome": "unsatisfactory"}, "invalidated_item_was_incorrect": true},
+      "expected": {"corrected": {"correct_count": 4, "denominator": 5, "display_percentage": "80.00", "outcome": "satisfactory"}, "original_preserved": true}
+    },
+    {
+      "id": "grade-target-invalidation-idempotent",
+      "behavior_class": "target_approved",
+      "input": {"question": "syn-q-5", "published_exam": "syn-exam-1", "same_correction_event_deliveries": 2},
+      "expected": {"effective_invalidation_count": 1, "score_recomputations_with_new_state": 1, "duplicate_delivery_changes_score": false}
+    },
+    {
+      "id": "grade-target-retake-linked-separate",
+      "behavior_class": "target_approved",
+      "input": {"prior_attempt": "syn-attempt-a", "retake": "syn-attempt-b", "authorized_by": "syn-staff-instructor"},
+      "expected": {"attempt_count": 2, "retake_links_to_prior": true, "prior_overwritten": false, "authorization_audited": true}
+    },
+    {
+      "id": "grade-target-retraining-linked-separate",
+      "behavior_class": "target_approved",
+      "input": {"originating_attempt": "syn-attempt-a", "retraining_attempt": "syn-attempt-c", "assigned_by": "syn-staff-instructor"},
+      "expected": {"attempt_count": 2, "retraining_links_to_origin": true, "student_self_assignment_allowed": false, "authorization_audited": true}
+    },
+    {
+      "id": "grade-target-student-result-visibility",
+      "behavior_class": "target_approved",
+      "input": {"submitted_attempt": "syn-attempt-a", "correct_count": 4, "denominator": 5, "missed_items": ["syn-q-5"]},
+      "expected": {"student_sees": {"numeric_score": "80.00", "outcome": "satisfactory", "missed_item_ids": ["syn-q-5"]}, "answer_key_permission_implied": false}
+    }
+  ]
+}

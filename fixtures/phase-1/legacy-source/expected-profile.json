@@ -1,0 +1,63 @@
+{
+  "fixture_version": 1,
+  "synthetic_only": true,
+  "source_shape": {
+    "dialect": "mysql",
+    "default_charset": "latin1",
+    "table_count": 15,
+    "declared_foreign_key_count": 0,
+    "tables_without_primary_key": ["stamp", "testModel", "usedQuestions"]
+  },
+  "tables": {
+    "TPO": {"disposition": "migrate_fully", "fixture_rows": 1, "accepted": 1, "quarantined": 0},
+    "SPO": {"disposition": "migrate_fully", "fixture_rows": 3, "accepted": 2, "quarantined": 1},
+    "EO": {"disposition": "migrate_fully", "fixture_rows": 4, "accepted": 3, "quarantined": 1},
+    "variant": {"disposition": "migrate_fully", "fixture_rows": 2, "accepted": 2, "quarantined": 0},
+    "questions": {"disposition": "migrate_fully_validate", "fixture_rows": 8, "accepted": 5, "quarantined": 3},
+    "test_model": {"disposition": "legacy_template_source", "fixture_rows": 1, "staged": 1, "quarantined": 0},
+    "testModel": {"disposition": "legacy_template_source", "fixture_rows": 3, "staged": 3, "logical_models": 1, "quarantined": 0},
+    "createdTests": {"disposition": "aggregate_only", "fixture_rows": 0, "policy": "no_generated_history_in_fixture"},
+    "usedQuestions": {"disposition": "aggregate_or_restricted_content_quarantine_only", "fixture_rows": 0, "policy": "no_generated_history_in_fixture"},
+    "studentTestRecords": {"disposition": "aggregate_only", "fixture_rows": 0, "policy": "no_identifiable_attempts_in_fixture"},
+    "testResults": {"disposition": "aggregate_only", "fixture_rows": 0, "policy": "no_individual_results_in_fixture"},
+    "instructors": {"disposition": "exclude", "fixture_rows": 0},
+    "logins": {"disposition": "exclude", "fixture_rows": 0},
+    "stamp": {"disposition": "exclude", "fixture_rows": 0},
+    "test_info": {"disposition": "exclude", "fixture_rows": 0}
+  },
+  "question_types": {"tf": 1, "mc": 4, "c2": 1, "ac": 1, "nc": 1},
+  "encoding_cases": {
+    "latin1_hex_literal": 1,
+    "description": "Synthetic TPO label contains one non-ASCII latin1 byte."
+  },
+  "expected_relationships": {
+    "valid_spo_to_tpo": 2,
+    "orphan_spo_to_tpo": 1,
+    "valid_eo_to_spo": 3,
+    "orphan_eo_to_spo": 1,
+    "valid_question_curriculum_links": 6,
+    "zero_sentinel_question_links": 1,
+    "question_eo_parent_mismatches": 1,
+    "duplicate_question_candidates": 1,
+    "valid_question_variant_links": 8,
+    "row_template_category_rows": 2,
+    "row_template_mandatory_rows": 1,
+    "row_template_declared_length": 5,
+    "row_template_category_count_sum": 5,
+    "wide_template_declared_length": 5,
+    "wide_template_category_count_sum_excluding_mandatory": 4,
+    "wide_template_mandatory_count": 1
+  },
+  "target_hierarchy_source_rows": {
+    "Phase": 0,
+    "Task": 0,
+    "Subtask": 0,
+    "Element": 0,
+    "Bloom": 0
+  },
+  "aggregate_expectations": {
+    "minimum_group_size": 5,
+    "datasets_from_this_fixture": 0,
+    "reason": "History-bearing source tables intentionally have no fixture rows."
+  }
+}

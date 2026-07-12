@@ -1,0 +1,113 @@
+{
+  "schema_version": "phase1-golden-v1",
+  "cases": [
+    {
+      "id": "gen-legacy-mandatory-first-fill",
+      "behavior_class": "legacy_observed",
+      "input": {"category_quota": 3, "mandatory_elements": ["syn-el-a"], "eligible_by_element": {"syn-el-a": ["syn-q-1", "syn-q-2"]}, "other_eligible": ["syn-q-3", "syn-q-4", "syn-q-5"]},
+      "expected": {"selected_count_if_queries_succeed": 3, "mandatory_selected_count": 1, "remaining_fill_count": 2},
+      "invariant": "One random question is queried per mandatory element before remaining category fill."
+    },
+    {
+      "id": "gen-legacy-shortage-silently-shortens",
+      "behavior_class": "legacy_observed",
+      "negative_regression": true,
+      "input": {"configured_length": 4, "category_quota": 4, "eligible": ["syn-q-1", "syn-q-2", "syn-q-3"]},
+      "expected": {"created_exam_possible": true, "snapshot_item_count": 3, "shortage_error_required": false}
+    },
+    {
+      "id": "gen-target-exact-composition",
+      "behavior_class": "target_approved",
+      "input": {"template": {"length": 5, "rules": [{"category": "syn-cat-a", "count": 3}, {"category": "syn-cat-b", "count": 2}]}, "eligible": {"syn-cat-a": ["syn-q-1", "syn-q-2", "syn-q-3", "syn-q-4"], "syn-cat-b": ["syn-q-5", "syn-q-6", "syn-q-7"]}},
+      "expected": {"created": true, "snapshot_item_count": 5, "counts_by_category": {"syn-cat-a": 3, "syn-cat-b": 2}, "duplicate_question_count": 0}
+    },
+    {
+      "id": "gen-target-every-mandatory-element",
+      "behavior_class": "target_approved",
+      "input": {"category_quota": 3, "mandatory_elements": ["syn-el-a", "syn-el-b"], "eligible": [{"question": "syn-q-1", "element": "syn-el-a"}, {"question": "syn-q-2", "element": "syn-el-b"}, {"question": "syn-q-3", "element": "syn-el-b"}, {"question": "syn-q-4", "element": "syn-el-c"}]},
+      "expected": {"created": true, "selected_count": 3, "covered_mandatory_elements": ["syn-el-a", "syn-el-b"]},
+      "invariant": "At least one selected question covers each configured mandatory element; remaining selection is eligible and nonduplicated."
+    },
+    {
+      "id": "gen-target-mandatory-shortage-rollback",
+      "behavior_class": "target_approved",
+      "input": {"mandatory_elements": ["syn-el-a", "syn-el-missing"], "eligible_by_element": {"syn-el-a": ["syn-q-1"], "syn-el-missing": []}},
+      "expected": {"created": false, "persisted_exam_count_delta": 0, "persisted_snapshot_item_delta": 0, "error_code": "GENERATION_MANDATORY_SHORTAGE", "shortages": [{"element": "syn-el-missing", "needed": 1, "available": 0}]}
+    },
+    {
+      "id": "gen-target-category-shortage-rollback",
+      "behavior_class": "target_approved",
+      "input": {"rule": {"category": "syn-cat-a", "count": 4}, "eligible": ["syn-q-1", "syn-q-2", "syn-q-3"]},
+      "expected": {"created": false, "persisted_exam_count_delta": 0, "persisted_snapshot_item_delta": 0, "error_code": "GENERATION_CATEGORY_SHORTAGE", "shortages": [{"category": "syn-cat-a", "needed": 4, "available": 3}]}
+    },
+    {
+      "id": "gen-target-seeded-replay",
+      "behavior_class": "target_approved",
+      "input": {"eligible": ["syn-q-1", "syn-q-2", "syn-q-3", "syn-q-4"], "count": 2, "seed": "synthetic-seed-reference", "algorithm_version": "synthetic-algorithm-v1"},
+      "expected": {"authorized_replay_same_selection": true, "authorized_replay_same_prompt_and_option_layout": true, "student_payload_exposes_seed": false},
+      "invariant": "Tests assert repeatability and eligibility, not a hard-coded arbitrary order."
+    },
+    {
+      "id": "gen-legacy-snapshot-content",
+      "behavior_class": "legacy_observed",
+      "input": {"bank_question": "syn-q-1", "rendered_prompt": "Synthetic prompt at publication.", "rendered_choices": ["Synthetic A", "Synthetic B", "Synthetic C", "Synthetic D"], "key": "b"},
+      "expected": {"stored_in_generated_question_row": ["rendered_prompt", "rendered_choices", "key"]}
+    },
+    {
+      "id": "gen-target-snapshot-immutable-after-source-change",
+      "behavior_class": "target_approved",
+      "input": {"published_exam": "syn-exam-1", "snapshot_prompt": "Synthetic prompt version one.", "later_source_prompt": "Synthetic prompt version two."},
+      "expected": {"delivered_prompt": "Synthetic prompt version one.", "grading_key_source": "immutable_snapshot", "snapshot_mutated": false}
+    },
+    {
+      "id": "gen-target-shared-content-distinct-attempt-order",
+      "behavior_class": "target_approved",
+      "input": {"published_exam": "syn-exam-1", "snapshot_question_set": ["syn-q-1", "syn-q-2", "syn-q-3"], "attempts": ["syn-attempt-a", "syn-attempt-b"]},
+      "expected": {"same_question_set": true, "same_answer_layout_by_question": true, "distinct_derived_order_persisted_per_attempt": true},
+      "invariant": "Each order is a permutation of the shared snapshot set; a test must not require one specific permutation."
+    },
+    {
+      "id": "access-legacy-first-and-reentry",
+      "behavior_class": "legacy_observed",
+      "negative_regression": true,
+      "input": {"elapsed_seconds": 1200, "same_synthetic_employee_value": true, "first_access": "primary", "later_access": "primary_plus_override"},
+      "expected": {"first_access_records_login": true, "later_access_returns_same_snapshot": true, "override_reusable": true, "answers_restored": false, "marks_restored": false, "position_restored": false, "order_guaranteed_same": false}
+    },
+    {
+      "id": "access-target-start-window-boundaries",
+      "behavior_class": "target_approved",
+      "input": {"publication_time": "2026-01-01T12:00:00Z", "checks": [{"at": "2026-01-01T12:59:59Z", "new_start_allowed": true}, {"at": "2026-01-01T13:00:00Z", "new_start_allowed": false}]},
+      "expected": {"boundary_is_half_open": true, "roster_validation_required": true}
+    },
+    {
+      "id": "access-target-roster-rejection",
+      "behavior_class": "target_approved",
+      "input": {"published_exam": "syn-exam-1", "person_uuid": "syn-person-not-rostered", "code_valid": true, "on_roster": false},
+      "expected": {"allowed": false, "attempt_created": false, "error_code": "EXAM_ROSTER_REQUIRED"}
+    },
+    {
+      "id": "access-target-first-start-and-resume",
+      "behavior_class": "target_approved",
+      "input": {"attempt": "syn-attempt-a", "saved_state": {"answers": {"syn-q-1": "b"}, "marks": ["syn-q-2"], "order": ["syn-q-2", "syn-q-1", "syn-q-3"], "position": 1, "deadline": "2026-01-01T13:30:00Z"}},
+      "expected": {"attempt_count": 1, "same_attempt_restored": true, "restored_fields": ["answers", "marks", "order", "position", "deadline"]}
+    },
+    {
+      "id": "access-target-recovery-single-use",
+      "behavior_class": "target_approved",
+      "input": {"recovery_authorization": "syn-recovery-1", "uses": 2},
+      "expected": {"first_use_allowed": true, "second_use_allowed": false, "audit_event_count": 2, "second_error_code": "RECOVERY_ALREADY_USED"}
+    },
+    {
+      "id": "access-target-extension",
+      "behavior_class": "target_approved",
+      "input": {"original_deadline": "2026-01-01T13:30:00Z", "extension_minutes": 15, "authorized_staff": "syn-staff-instructor"},
+      "expected": {"new_deadline": "2026-01-01T13:45:00Z", "audit_event_created": true, "other_attempt_deadline_changed": false}
+    },
+    {
+      "id": "access-target-preview-no-attempt",
+      "behavior_class": "target_approved",
+      "input": {"actor": "syn-staff-instructor", "has_preview_permission": true, "published_exam": "syn-exam-1"},
+      "expected": {"preview_allowed": true, "attempt_count_delta": 0, "login_event_count_delta": 0, "reportable_result_count_delta": 0, "audit_event_created": true, "client_do_not_grade_trusted": false}
+    }
+  ]
+}

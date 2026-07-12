@@ -1,0 +1,73 @@
+{
+  "schema_version": "phase1-golden-v1",
+  "purpose": "Map every synthetic golden case to its authority/evidence and future test layer.",
+  "evidence_boundary": "legacy_observed means checked-in repository behavior, not live production behavior; target_approved means the July 12, 2026 owner decision.",
+  "entries": [
+    {
+      "case_ids": ["q-legacy-tf-nontrue-falls-through", "q-legacy-mc-layout", "q-legacy-mc-all-none-distractor", "q-legacy-primary-only-prompt", "q-legacy-alternate-prompt"],
+      "evidence": ["Classes/testClass.php:248", "Classes/testClass.php:258", "Classes/testClass.php:272", "Classes/testClass.php:322", "Classes/testClass.php:335", "Classes/testClass.php:346"],
+      "future_test_layer": "legacy characterization unit tests"
+    },
+    {
+      "case_ids": ["q-target-tf-valid-normalized", "q-target-tf-invalid-blank", "q-target-mc-valid", "q-target-mc-invalid-duplicate", "q-target-c2-valid", "q-target-c2-invalid-third-correct", "q-target-ac-valid", "q-target-nc-valid", "q-target-all-types-blank-choice-rejected"],
+      "evidence": ["docs/discovery/phase-0/OWNER_DECISIONS.md:36", "docs/discovery/phase-0/OWNER_DECISIONS.md:40", "docs/discovery/phase-0/DECISION_REGISTER.md:26"],
+      "future_test_layer": "question domain validation unit tests"
+    },
+    {
+      "case_ids": ["q-target-prompt-selection-recorded", "q-target-retired-not-eligible", "q-target-self-publish-denied"],
+      "evidence": ["docs/discovery/phase-0/OWNER_DECISIONS.md:25", "docs/discovery/phase-0/OWNER_DECISIONS.md:27", "docs/discovery/phase-0/OWNER_DECISIONS.md:53"],
+      "future_test_layer": "content lifecycle and generation integration tests"
+    },
+    {
+      "case_ids": ["gen-legacy-mandatory-first-fill", "gen-legacy-shortage-silently-shortens", "gen-legacy-snapshot-content"],
+      "evidence": ["Classes/Exam.php:83", "Classes/Exam.php:99", "Classes/Exam.php:118", "Classes/Exam.php:163", "Classes/Exam.php:203", "Classes/Exam.php:218"],
+      "future_test_layer": "legacy generator characterization tests"
+    },
+    {
+      "case_ids": ["gen-target-exact-composition", "gen-target-every-mandatory-element", "gen-target-mandatory-shortage-rollback", "gen-target-category-shortage-rollback", "gen-target-seeded-replay", "gen-target-snapshot-immutable-after-source-change", "gen-target-shared-content-distinct-attempt-order"],
+      "evidence": ["docs/discovery/phase-0/OWNER_DECISIONS.md:47", "docs/discovery/phase-0/OWNER_DECISIONS.md:50", "docs/discovery/phase-0/OWNER_DECISIONS.md:53", "docs/discovery/phase-0/DECISION_REGISTER.md:39"],
+      "future_test_layer": "generator domain, property, transaction, and integration tests"
+    },
+    {
+      "case_ids": ["access-legacy-first-and-reentry"],
+      "evidence": ["Classes/Exam.php:277", "Classes/Exam.php:288", "Classes/Exam.php:340", "examCMS.php:250"],
+      "future_test_layer": "legacy access characterization tests"
+    },
+    {
+      "case_ids": ["access-target-start-window-boundaries", "access-target-roster-rejection", "access-target-first-start-and-resume", "access-target-recovery-single-use", "access-target-extension", "access-target-preview-no-attempt"],
+      "evidence": ["docs/discovery/phase-0/OWNER_DECISIONS.md:57", "docs/discovery/phase-0/OWNER_DECISIONS.md:63", "docs/discovery/phase-0/OWNER_DECISIONS.md:65", "docs/discovery/phase-0/OWNER_DECISIONS.md:67", "docs/discovery/phase-0/OWNER_DECISIONS.md:70", "docs/discovery/phase-0/DECISION_REGISTER.md:38"],
+      "future_test_layer": "access, attempt-state, authorization, and audit integration tests"
+    },
+    {
+      "case_ids": ["grade-legacy-configured-length-denominator", "grade-legacy-client-only-correction", "grade-legacy-ejection-mutation"],
+      "evidence": ["Classes/Exam.php:419", "Classes/Exam.php:433", "Classes/Exam.php:462", "examCMS.php:180", "Classes/ReportsClass.php:544", "Classes/ReportsClass.php:596", "Classes/ReportsClass.php:612"],
+      "future_test_layer": "legacy grading and correction characterization tests"
+    },
+    {
+      "case_ids": ["grade-target-below-threshold", "grade-target-at-threshold", "grade-target-above-threshold", "grade-target-rounding-does-not-promote", "grade-target-actual-count-not-configured-length", "grade-target-unanswered-incorrect", "grade-target-deadline-auto-submit", "grade-target-duplicate-submit-idempotent"],
+      "evidence": ["docs/discovery/phase-0/OWNER_DECISIONS.md:72", "docs/discovery/phase-0/OWNER_DECISIONS.md:85", "docs/discovery/phase-0/OWNER_DECISIONS.md:87", "MIGRATION_PLAN.md:540"],
+      "future_test_layer": "grading domain and submission transaction tests"
+    },
+    {
+      "case_ids": ["grade-target-remediation-completion", "grade-target-remediation-waiver", "grade-target-invalidation-recompute", "grade-target-invalidation-before-submission", "grade-target-invalidation-crosses-threshold", "grade-target-invalidation-idempotent", "grade-target-retake-linked-separate", "grade-target-retraining-linked-separate", "grade-target-student-result-visibility"],
+      "evidence": ["docs/discovery/phase-0/OWNER_DECISIONS.md:74", "docs/discovery/phase-0/OWNER_DECISIONS.md:77", "docs/discovery/phase-0/OWNER_DECISIONS.md:79", "docs/discovery/phase-0/OWNER_DECISIONS.md:90", "docs/discovery/phase-0/DECISION_REGISTER.md:44"],
+      "future_test_layer": "correction, remediation, attempt-linkage, and result API integration tests"
+    },
+    {
+      "case_ids": ["report-legacy-created-test-average"],
+      "evidence": ["Classes/ReportsClass.php:116", "Classes/ReportsClass.php:152", "Classes/ReportsClass.php:163"],
+      "future_test_layer": "legacy report characterization tests"
+    },
+    {
+      "case_ids": ["report-target-student", "report-target-class-totals", "report-target-curriculum-performance", "report-target-generated-test-history", "report-target-organization-score", "report-target-small-cell-suppression", "report-target-correction-updates-totals", "report-target-assigned-scope", "report-target-organization-permission", "report-target-printable-exam", "report-target-audited-csv-export", "report-target-historical-aggregate-isolation"],
+      "evidence": ["docs/discovery/phase-0/OWNER_DECISIONS.md:100", "docs/discovery/phase-0/OWNER_DECISIONS.md:103", "docs/discovery/phase-0/OWNER_DECISIONS.md:106", "docs/discovery/phase-0/OWNER_DECISIONS.md:126", "docs/discovery/phase-0/SOURCE_EXPORT_DISPOSITION.md:82", "docs/discovery/phase-0/DECISION_REGISTER.md:41"],
+      "future_test_layer": "report query, suppression, authorization, export, and correction integration tests"
+    }
+  ],
+  "coverage_requirements": {
+    "question_types": ["tf", "mc", "c2", "ac", "nc"],
+    "minimum_aggregate_group_size": 5,
+    "randomization_assertion_style": "invariants_and_permitted_outcomes",
+    "data_classification": "synthetic_only"
+  }
+}
