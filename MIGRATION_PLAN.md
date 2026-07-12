@@ -1,7 +1,7 @@
 # Aircraft Systems Tester Modernization Plan
 
 **Status:** Approved for implementation planning  
-**Last updated:** July 11, 2026  
+**Last updated:** July 12, 2026
 **Legacy application:** SJTester / Aircraft Systems Tester  
 **Target stack:** SvelteKit, TypeScript, Node.js, and SQLite
 
@@ -556,9 +556,100 @@ should be explicit and testable.
 
 ## 9. Implementation phases
 
+### 9.1 Parallelization model
+
+The numbered phases describe delivery gates, not a requirement that all work be
+performed serially. Work may proceed in parallel when the upstream contracts it
+uses are stable and each tranche has a clear owner. A phase is complete only
+when all of its tranches have converged and its acceptance gate has passed.
+
+```mermaid
+flowchart LR
+    P0[Phase 0: Discovery] --> P1[Phase 1: Preservation]
+    P0 --> P2[Phase 2: Foundation]
+    P1 --> P3[Phase 3: Schema and Importer]
+    P2 --> P3
+    P3 --> P4[Phase 4: Authentication]
+    P3 --> P5[Phase 5: Curriculum]
+    P5 --> P6[Phase 6: Questions]
+    P6 --> P7[Phase 7: Test Generation]
+    P7 --> P8[Phase 8: Exam Delivery]
+    P3 --> P9[Phase 9: Reports]
+    P6 --> P9
+    P8 --> P9
+    P4 --> P10[Phase 10: Hardening]
+    P5 --> P10
+    P6 --> P10
+    P7 --> P10
+    P8 --> P10
+    P9 --> P10
+    P10 --> P11[Phase 11: Cutover]
+```
+
+The primary critical path is:
+
+`Phase 0 → Phase 1 → Phase 3 → Phase 5 → Phase 6 → Phase 7 → Phase 8 → Phase 10 → Phase 11`
+
+Phase 2 can overlap much of Phase 1. Phase 4 can run beside Phase 5. Phase 9 can
+begin once the historical target schema and golden reports are stable, but it
+cannot finish until question and attempt semantics are final.
+
+Cross-phase overlap rules:
+
+- Repository-only discovery and legacy behavior capture may begin together,
+  but the final Phase 1 fixture and characterization baseline depend on Phase 0
+  decisions.
+- Framework, CI, design-system, and deployment scaffolding may proceed while
+  preservation work is underway.
+- Draft schema and importer prototypes may start during Phase 2, but the initial
+  production schema migration must have one owner and cannot be finalized
+  before Phase 0 and Phase 1 evidence is accepted.
+- Authentication and curriculum implementation may proceed in parallel after
+  the shared user, audit, and curriculum schemas are stable.
+- UI work may use typed fixture repositories while its domain service or
+  importer is being implemented, provided the contract is versioned and owned.
+- Formal security, accessibility, performance, backup, and observability work
+  occurs in Phase 10, but their automated checks and design constraints begin
+  in Phase 2 and continue in every feature phase.
+- Production cutover preparation has parallel activities, but the actual data
+  freeze, final import, reconciliation, opening, and authority switch form one
+  controlled sequential runbook.
+
+### 9.2 Coordination rules for parallel tranches
+
+- Assign one integration owner for the target schema and migration sequence.
+- Assign one owner for each shared domain contract; consumers propose changes
+  through that owner rather than changing it independently.
+- Keep tranches in short-lived branches and integrate continuously behind tests
+  or disabled routes.
+- Avoid dividing work by frontend versus backend for an entire phase. Prefer
+  vertical ownership of a coherent feature, with shared UI and data primitives
+  agreed first.
+- Use sanitized fixtures and contract tests so UI, importer, and domain work can
+  proceed without sharing production data.
+- Treat database migrations as an ordered queue. Parallel feature branches may
+  define draft migrations, but the schema owner rebases and sequences them
+  before integration.
+- Hold a convergence review at each phase gate to resolve contract drift,
+  combine test evidence, and update the next phase's dependencies.
+
 ### Phase 0: Live-system discovery and scope confirmation
 
 **Estimated effort:** 1–2 engineer-weeks
+
+Parallel tranches:
+
+- **0A — Database discovery:** acquire the live schema, profile tables and row
+  counts, inspect encodings, and identify relationship anomalies.
+- **0B — Workflow archaeology:** inventory active URLs, PHP endpoints, reports,
+  duplicate pages, and observable user flows.
+- **0C — Business-rule interviews:** confirm question types, test-generation,
+  grading, access, override, resume, and retention rules.
+- **0D — Operations and security discovery:** document hosting, concurrency,
+  backups, secrets, data classification, and production access controls.
+
+These tranches can run concurrently. They converge on the authoritative feature
+inventory, hierarchy decision, and signed-off migration scope.
 
 Deliverables:
 
@@ -583,6 +674,21 @@ Acceptance gate:
 
 **Estimated effort:** 1–2 engineer-weeks
 
+Parallel tranches:
+
+- **1A — Data fixture:** create and validate the sanitized representative MySQL
+  fixture.
+- **1B — UI and API capture:** record active workflows, screenshots, request and
+  response examples, validation behavior, and failure states.
+- **1C — Business-logic characterization:** build golden cases for question
+  behavior, generation, grading, and report totals.
+- **1D — Data-handling controls:** establish storage, access, sanitization, and
+  destruction procedures for sensitive exports.
+
+Tranches 1B and 1C can begin from repository evidence while Phase 0 is still
+finishing. Tranche 1A requires access and classification decisions from Phase 0.
+All four converge on one approved preservation baseline.
+
 Deliverables:
 
 - Sanitized representative MySQL fixture
@@ -600,6 +706,21 @@ Acceptance gate:
 ### Phase 2: SvelteKit and SQLite foundation
 
 **Estimated effort:** 1–2 engineer-weeks
+
+Parallel tranches:
+
+- **2A — Application scaffold:** SvelteKit, TypeScript strict mode, package
+  management, route shell, and production build.
+- **2B — Data foundation:** SQLite driver evaluation, connection configuration,
+  Drizzle migration harness, transaction helpers, and ephemeral test database.
+- **2C — UI foundation:** navigation, form primitives, error presentation,
+  responsive layout, and accessibility conventions.
+- **2D — Delivery foundation:** CI, configuration validation, structured
+  logging, health/readiness checks, and deployment artifact.
+
+All four can run concurrently after agreeing on repository structure, runtime
+version, coding conventions, and the minimal database interface. This phase can
+overlap most of Phase 1.
 
 Deliverables:
 
@@ -620,6 +741,21 @@ Acceptance gate:
 ### Phase 3: Target schema and data importer
 
 **Estimated effort:** 2–3 engineer-weeks
+
+Parallel tranches:
+
+- **3A — Canonical schema:** finalize entities, constraints, delete behavior,
+  indexes, and ordered Drizzle migrations.
+- **3B — Extraction and transformation:** parse/export MySQL records, normalize
+  encodings and identifiers, transform entities, and maintain legacy ID maps.
+- **3C — Anomaly and reconciliation tooling:** detect rejects and orphans,
+  calculate source/target counts and aggregates, and produce reviewable reports.
+- **3D — Migration test harness:** automate clean imports, repeatability checks,
+  integrity checks, representative query performance, and fixture publication.
+
+Tranches 3B–3D may work against a versioned draft schema, but tranche 3A owns
+schema changes and migration ordering. The phase converges on a stable,
+reconciled SQLite fixture that later domain work treats as authoritative.
 
 Deliverables:
 
@@ -642,6 +778,21 @@ Acceptance gate:
 
 **Estimated effort:** 1–2 engineer-weeks
 
+Parallel tranches:
+
+- **4A — Authentication core:** password hashing, login/logout, session storage,
+  expiry, revocation, and secure cookies.
+- **4B — Authorization:** route guards, instructor/admin policies, and server
+  action enforcement.
+- **4C — Instructor administration:** list, add, edit, activate/deactivate, and
+  role-management services and UI.
+- **4D — Security and audit verification:** rate limits, audit events, password
+  migration/reset flow, and authorization integration tests.
+
+Tranches 4A and 4C can begin together after the user schema is stable; 4B uses
+the session contract from 4A, while 4D starts with test design and converges
+after the other tranches. Phase 4 can run beside Phase 5.
+
 Deliverables:
 
 - Login/logout and revocable sessions
@@ -660,6 +811,21 @@ Acceptance gate:
 
 **Estimated effort:** 2 engineer-weeks
 
+Parallel tranches:
+
+- **5A — Curriculum domain:** repositories, services, validation, ordering,
+  dependency checks, and transactional mutations.
+- **5B — Curriculum UI:** hierarchy view, editors, reorder interaction, and
+  dependency warnings built against typed fixtures or stable service contracts.
+- **5C — Curriculum migration:** TPO/SPO/EO mapping where required, task-model
+  import validation, and curriculum reconciliation.
+- **5D — Verification:** characterization cases, database constraints,
+  accessibility, keyboard operation, and end-to-end CRUD tests.
+
+Tranches 5A–5C can run concurrently after Phase 3 freezes curriculum contracts.
+Tranche 5D begins with fixtures and finishes after integration. Phase 5 can run
+beside Phase 4.
+
 Deliverables:
 
 - Phase, Task, Subtask, and Element views
@@ -676,6 +842,21 @@ Acceptance gate:
 ### Phase 6: Question bank
 
 **Estimated effort:** 2–3 engineer-weeks
+
+Parallel tranches:
+
+- **6A — Question domain:** question-type validation, prompt/option services,
+  archive behavior, filtering, and search queries.
+- **6B — Authoring UI:** list/search, create/edit forms, previews, aircraft and
+  curriculum selectors, and accessible error handling.
+- **6C — Question migration:** transform fixed legacy columns, resolve mappings,
+  classify anomalies, and reconcile by type, aircraft, and curriculum.
+- **6D — Verification:** golden question fixtures, contract tests, integration
+  tests, and browser coverage for every approved question type.
+
+Tranches 6A–6C can run concurrently after Phase 5 stabilizes curriculum IDs and
+delete semantics. Tranche 6B may start earlier against fixtures, but it must not
+invent curriculum or question-type rules.
 
 Deliverables:
 
@@ -696,6 +877,21 @@ Acceptance gate:
 
 **Estimated effort:** 2–3 engineer-weeks
 
+Parallel tranches:
+
+- **7A — Template management:** template rules, mandatory elements, capacity
+  queries, CRUD services, and editor UI.
+- **7B — Selection engine:** pure, deterministic/testable question selection,
+  duplicate prevention, mandatory-first behavior, and inventory errors.
+- **7C — Exam snapshot transaction:** generated exam persistence, prompt/option
+  snapshots, secure access codes, audit metadata, and rollback behavior.
+- **7D — Generated-test experience and verification:** detail/print views,
+  golden generation tests, property tests, and concurrency integration tests.
+
+Tranches 7A and 7B can begin together once the question service contract is
+stable. Tranche 7C can begin from the approved snapshot schema, then integrates
+the selection engine. Tranche 7D proceeds throughout and closes the phase gate.
+
 Deliverables:
 
 - Test-template list and editor
@@ -713,6 +909,22 @@ Acceptance gate:
 ### Phase 8: Exam delivery and grading
 
 **Estimated effort:** 2–3 engineer-weeks
+
+Parallel tranches:
+
+- **8A — Attempt lifecycle:** exam access, student metadata, attempt creation,
+  expiry/resume rules, autosave endpoints, and server-side state transitions.
+- **8B — Exam runner UI:** question navigation, answer selection, marked and
+  unanswered views, review, interruption recovery, and completion UI.
+- **8C — Grading engine:** immutable-snapshot evaluation, rounding, outcome,
+  idempotent submission, and administrative-correction rules.
+- **8D — Security and reliability verification:** payload inspection, rate
+  limits, concurrent students, duplicate submissions, interruption tests, and
+  complete Playwright journeys.
+
+Tranches 8A and 8C can begin together after the exam snapshot and business-rule
+contracts are stable. Tranche 8B works against the attempt API contract. Tranche
+8D begins with threat cases and converges after full integration.
 
 Deliverables:
 
@@ -734,6 +946,21 @@ Acceptance gate:
 
 **Estimated effort:** 2 engineer-weeks
 
+Parallel tranches:
+
+- **9A — Reporting services:** historical test, class, student, missed-question,
+  and curriculum aggregates.
+- **9B — Report experiences:** report selection, tables, drill-down views,
+  printable layouts, and CSV exports.
+- **9C — Parity and performance:** golden-report comparison, intentional-delta
+  documentation, query plans, indexes, and large-range tests.
+
+Report families within 9A may be divided among owners after shared filter,
+authorization, date, and aggregation conventions are fixed. Tranches 9A and 9C
+can begin after Phase 3 provides reconciled historical data; attempt-dependent
+reports converge only after Phase 8 finalizes attempt semantics. Tranche 9B can
+proceed against typed report fixtures.
+
 Deliverables:
 
 - Instructor test history
@@ -752,6 +979,23 @@ Acceptance gate:
 
 **Estimated effort:** 1–2 engineer-weeks
 
+Parallel tranches:
+
+- **10A — Security:** threat review, dependency review, authorization audit,
+  secret handling, headers, cookies, CSRF, and remediation verification.
+- **10B — Accessibility and UX:** automated and manual accessibility review,
+  keyboard testing, responsive checks, and recovery/error usability.
+- **10C — Performance and concurrency:** representative load, SQLite contention,
+  report performance, resource limits, and graceful shutdown.
+- **10D — Operations:** backup automation, restoration drill, monitoring,
+  alerts, runbooks, and release artifact validation.
+- **10E — Acceptance and rehearsal:** user acceptance testing, migration/cutover
+  rehearsal, defect triage, and release checklist ownership.
+
+Audits can run concurrently, but fixes that affect shared contracts must be
+integrated through their domain owners. Tranche 10E is the convergence point and
+cannot approve release until all other tranches provide evidence.
+
 Deliverables:
 
 - Security review and remediation
@@ -769,6 +1013,22 @@ Acceptance gate:
 ### Phase 11: Production cutover and retirement
 
 **Estimated effort:** 3–5 focused days plus stabilization monitoring
+
+Parallel tranches:
+
+- **11A — Data readiness:** verify exports, importer artifact, reconciliation
+  thresholds, backup destinations, and rollback data procedure.
+- **11B — Platform readiness:** deploy the release artifact, configure secrets,
+  routing, TLS/proxy behavior, monitoring, and persistent storage.
+- **11C — People and validation readiness:** maintenance communication, smoke
+  test assignments, owner approvals, support coverage, and issue triage.
+- **11D — Stabilization:** monitoring, incident response, reconciliation of any
+  approved corrections, and legacy retirement evidence.
+
+Preparation tranches 11A–11C run concurrently before the window. During the
+window, their owners execute one sequenced runbook under a single cutover lead.
+Tranche 11D begins after traffic switches and can distribute monitoring and
+triage responsibilities without creating multiple data authorities.
 
 Deliverables:
 
@@ -1021,9 +1281,19 @@ risk than this application warrants.
 ## 16. Effort and sequencing
 
 The current planning estimate is **16–20 engineer-weeks** for one experienced
-developer, including migration, parity testing, hardening, and cutover. Two
-developers could potentially complete the project in **10–14 calendar weeks**
-if live-data access and subject-matter decisions are timely.
+developer, including migration, parity testing, hardening, and cutover. The work
+contains meaningful parallel tranches, but staffing does not reduce the critical
+path linearly:
+
+| Delivery team | Indicative calendar duration | Notes |
+| --- | --- | --- |
+| One engineer | 16–20 weeks | Nearly all tranches are executed serially |
+| Two engineers | 11–14 weeks | Strong overlap in foundation, auth/curriculum, UI/domain, and reporting |
+| Three engineers | 8–11 weeks | Best balance for domain, UI, and migration/test tranches |
+| Four or more engineers | Re-estimate after Phase 0 | Schema, business decisions, integration, and cutover become dominant constraints |
+
+These ranges exclude delays obtaining production access or decisions from the
+application owner. They are planning ranges rather than delivery commitments.
 
 This estimate should be revised after Phase 0. The largest variables are:
 
@@ -1034,9 +1304,19 @@ This estimate should be revised after Phase 0. The largest variables are:
 - Required data-retention controls
 - Availability of a subject-matter expert for parity decisions
 
-Phases may overlap only when their dependencies are stable. UI work may proceed
-against fixtures while the importer is refined, but exam and report domains must
-not build on an unapproved data model.
+For a three-engineer implementation, the default allocation is:
+
+- **Migration/data owner:** live schema, target schema, ordered migrations,
+  importer, reconciliation, and reporting-query support.
+- **Domain/security owner:** server domain services, authentication,
+  authorization, generation, grading, and audit behavior.
+- **Experience/verification owner:** Svelte routes and components,
+  accessibility, Playwright journeys, fixtures, report presentation, and UAT
+  coordination.
+
+Ownership is not a permanent frontend/backend split. Engineers should take
+vertical features when that reduces handoffs, while the named owner remains
+accountable for shared contracts and integration.
 
 ## 17. Definition of done
 
@@ -1077,8 +1357,11 @@ Each phase begins only when:
 - Scope and acceptance criteria are agreed.
 - Required fixtures contain no uncontrolled production-sensitive data.
 - Relevant risks have an owner.
-- The previous phase's acceptance gate has passed or an explicit exception is
+- Every predecessor gate identified in the dependency graph has passed, or a
+  bounded overlap using a versioned draft contract has been explicitly
   documented.
+- Parallel tranches have named owners, integration contracts, and a convergence
+  date.
 
 Each phase ends with:
 
