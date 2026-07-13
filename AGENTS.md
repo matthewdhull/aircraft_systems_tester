@@ -10,4 +10,5 @@ After a phase has passed its acceptance gate and the user authorizes commits:
 4. Stage deliberately and inspect each staged diff before committing.
 5. Run the phase's documented verification commands after the final commit.
 6. Confirm the branch and require a clean working tree before declaring the phase finished.
-7. Do not merge, push, switch branches, or begin the next phase unless the user explicitly asks.
+7. Commit changes in small groups, using concise commits to indicate features, or purpose.
+8. Do not merge, push, switch branches, or begin the next phase unless the user explicitly asks.
