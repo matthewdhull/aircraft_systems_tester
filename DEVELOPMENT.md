@@ -41,6 +41,18 @@ production uses its HTTPS origin. This value lets SvelteKit distinguish same-ori
 CSRF attempts. Environment files contain names and safe placeholders only; deployment secrets
 belong in the operator's secret store.
 
+## Phase 7 templates and generation
+
+Run `npm run templates:test` for template lifecycle, capacity, UI, and legacy-adoption coverage. Run `npm run generation:test` for selection/property, snapshot/security/rollback/concurrency, golden, route, accessibility, authorization, and leakage coverage.
+
+Legacy reconciliation preserves `test_model` and `testModel` as separate sources. Review them through the Phase 7 template reconciliation command and explicitly adopt a source into a new attributable draft. Adoption never infers lineage or publishes content.
+
+Generation requires untracked environment values: `GENERATION_SEED_KEY_BASE64` (exactly 32 random bytes), `GENERATION_SEED_KEY_ID` (the active envelope key identifier), and `GENERATION_CODE_HMAC_KEY_BASE64` (at least 32 random bytes). Production fails closed without valid values. Rotation introduces a new key ID; authorized replay retains old decryption keys only for the required retention window. Never reuse an identifier for different material.
+
+Build and start the staff preview with `APP_ENV=development`, the existing database path, canonical `ORIGIN`, and synthetic local keys. A successful generation returns the raw access code once. Never put it in a URL, log, report, fixture, or tracked file; refreshing cannot recover it.
+
+Phase 8 owns student access, attempts, per-attempt order, autosave/resume, recovery, submission, grading, and remediation. Phase 7 preview creates none of those records.
+
 ## Verification and build
 
 ```sh
