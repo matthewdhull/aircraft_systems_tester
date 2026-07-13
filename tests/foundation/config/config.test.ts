@@ -19,7 +19,10 @@ describe('server configuration', () => {
 			appEnvironment: 'test',
 			databasePath: ':memory:',
 			logLevel: 'debug',
-			publicOrigin: null
+			publicOrigin: null,
+			seedEncryptionKey: null,
+			seedEncryptionKeyId: null,
+			accessCodeHmacKey: null
 		});
 	});
 
@@ -44,9 +47,30 @@ describe('server configuration', () => {
 			loadServerConfig({
 				APP_ENV: 'production',
 				DATABASE_PATH: '/tmp/app.sqlite',
-				ORIGIN: 'https://training.example.invalid'
+				ORIGIN: 'https://training.example.invalid',
+				GENERATION_SEED_KEY_BASE64: Buffer.alloc(32, 1).toString('base64'),
+				GENERATION_SEED_KEY_ID: 'production-v1',
+				GENERATION_CODE_HMAC_KEY_BASE64: Buffer.alloc(32, 2).toString('base64')
 			}).publicOrigin
 		).toBe('https://training.example.invalid');
+	});
+
+	it('validates generation key material without exposing it', () => {
+		expect(() =>
+			loadServerConfig({
+				APP_ENV: 'production',
+				DATABASE_PATH: '/tmp/app.sqlite',
+				ORIGIN: 'https://training.example.invalid'
+			})
+		).toThrowError(new ConfigurationError('GENERATION_SECURITY_KEYS'));
+		expect(() =>
+			loadServerConfig({
+				APP_ENV: 'test',
+				DATABASE_PATH: ':memory:',
+				GENERATION_SEED_KEY_BASE64: 'short',
+				GENERATION_SEED_KEY_ID: 'test-v1'
+			})
+		).toThrow(ConfigurationError);
 	});
 
 	it('strips query strings and restricts logging to approved fields', () => {

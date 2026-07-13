@@ -6,6 +6,29 @@ export interface ServerConfig {
 	databasePath: string;
 	logLevel: LogLevel;
 	publicOrigin: string | null;
+	seedEncryptionKey: Uint8Array | null;
+	seedEncryptionKeyId: string | null;
+	accessCodeHmacKey: Uint8Array | null;
+}
+
+function parseKey(value: string | undefined, field: string, minimumBytes = 32): Uint8Array | null {
+	if (value === undefined || value.trim() === '') return null;
+	if (!/^[A-Za-z0-9+/]+={0,2}$/.test(value.trim())) throw new ConfigurationError(field);
+	const decoded = Buffer.from(value.trim(), 'base64');
+	if (
+		decoded.byteLength < minimumBytes ||
+		(field === 'GENERATION_SEED_KEY_BASE64' && decoded.byteLength !== 32)
+	)
+		throw new ConfigurationError(field);
+	return new Uint8Array(decoded);
+}
+
+function parseKeyId(value: string | undefined): string | null {
+	if (value === undefined || value.trim() === '') return null;
+	if (!/^[A-Za-z0-9._-]{1,64}$/.test(value.trim())) {
+		throw new ConfigurationError('GENERATION_SEED_KEY_ID');
+	}
+	return value.trim();
 }
 
 export class ConfigurationError extends Error {
@@ -72,10 +95,36 @@ export function loadServerConfig(
 	const databasePath = requireNonEmpty(environment.DATABASE_PATH, 'DATABASE_PATH');
 	const logLevel = parseEnum(environment.LOG_LEVEL ?? 'info', 'LOG_LEVEL', LOG_LEVELS);
 	const publicOrigin = parsePublicOrigin(environment.ORIGIN, appEnvironment);
+	const seedEncryptionKey = parseKey(
+		environment.GENERATION_SEED_KEY_BASE64,
+		'GENERATION_SEED_KEY_BASE64'
+	);
+	const seedEncryptionKeyId = parseKeyId(environment.GENERATION_SEED_KEY_ID);
+	const accessCodeHmacKey = parseKey(
+		environment.GENERATION_CODE_HMAC_KEY_BASE64,
+		'GENERATION_CODE_HMAC_KEY_BASE64'
+	);
 
 	if (appEnvironment === 'production' && databasePath === ':memory:') {
 		throw new ConfigurationError('DATABASE_PATH');
 	}
+	if (
+		appEnvironment === 'production' &&
+		(seedEncryptionKey === null || seedEncryptionKeyId === null || accessCodeHmacKey === null)
+	) {
+		throw new ConfigurationError('GENERATION_SECURITY_KEYS');
+	}
+	if ((seedEncryptionKey === null) !== (seedEncryptionKeyId === null)) {
+		throw new ConfigurationError('GENERATION_SEED_KEY_ID');
+	}
 
-	return Object.freeze({ appEnvironment, databasePath, logLevel, publicOrigin });
+	return Object.freeze({
+		appEnvironment,
+		databasePath,
+		logLevel,
+		publicOrigin,
+		seedEncryptionKey,
+		seedEncryptionKeyId,
+		accessCodeHmacKey
+	});
 }

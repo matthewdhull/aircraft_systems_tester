@@ -168,5 +168,63 @@ export const ROUTE_POLICIES: readonly RoutePolicy[] = Object.freeze([
 				permission: 'questions.review'
 			}
 		]
+	},
+	{
+		pattern: '/test-models',
+		methods: ['GET', 'POST'],
+		audience: 'curriculum-manager',
+		permission: 'templates.manage',
+		mutations: ['create', 'adopt'].map((name) => ({
+			name,
+			audience: 'curriculum-manager' as const,
+			permission: 'templates.manage' as const
+		}))
+	},
+	{
+		pattern: '/test-models/[id]',
+		methods: ['GET', 'POST'],
+		audience: 'curriculum-manager',
+		permission: 'templates.manage',
+		mutations: [
+			'update',
+			'submit',
+			'returnToDraft',
+			'publish',
+			'retire',
+			'newVersion',
+			'delete'
+		].map((name) => ({
+			name,
+			audience: 'curriculum-manager' as const,
+			permission: 'templates.manage' as const
+		}))
+	},
+	{
+		pattern: '/generated-tests',
+		methods: ['GET', 'POST'],
+		audience: 'instructor-capable',
+		permission: 'exams.publish',
+		mutations: [{ name: 'generate', audience: 'instructor-capable', permission: 'exams.publish' }]
+	},
+	{
+		pattern: '/generated-tests/[id]',
+		methods: ['GET'],
+		audience: 'instructor-capable',
+		permission: 'exams.preview',
+		mutations: []
+	},
+	{
+		pattern: '/generated-tests/[id]/preview',
+		methods: ['GET'],
+		audience: 'instructor-capable',
+		permission: 'exams.preview',
+		mutations: []
+	},
+	{
+		pattern: '/generated-tests/[id]/print',
+		methods: ['GET'],
+		audience: 'instructor-capable',
+		permission: 'exams.preview',
+		mutations: []
 	}
 ]);
