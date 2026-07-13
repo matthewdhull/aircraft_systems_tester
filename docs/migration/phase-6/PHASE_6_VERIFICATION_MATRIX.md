@@ -25,31 +25,31 @@
 These are the required results for the clean committed tree. The coordinator
 reruns them after the final commit; a mismatch blocks completion.
 
-| Command/check                        | Required recorded result                                               |
-| ------------------------------------ | ---------------------------------------------------------------------- |
-| `npm ci`                             | 310 packages installed; prepare succeeds                               |
-| `npm run format:check`               | all matched files formatted                                            |
-| `npm run lint`                       | exit 0                                                                 |
-| `npm run check`                      | 0 errors, 0 warnings                                                   |
-| `npm test`                           | 57 files, 364 tests passed                                             |
-| `npx --no-install drizzle-kit check` | schema valid                                                           |
-| `npm run build`                      | client and server production build pass                                |
-| clean migration                      | 65 application tables, 11 migrations                                   |
-| SQLite verification                  | 0 FK violations; integrity `ok`                                        |
-| `npm run questions:test`             | 12 files, 128 tests passed                                             |
-| Phase 3 focused regressions          | 5 files, 28 tests passed                                               |
-| Phase 4 focused regressions          | 21 files, 102 tests passed                                             |
-| Phase 5 focused regressions          | 11 files, 74 tests passed                                              |
-| golden suite                         | 17/17 cases executed; manifest references exact                        |
-| question route inventory             | 2 routes, 11 mutations                                                 |
-| fixture reconciliation               | 8 = 5 accepted + 3 quarantined; pass                                   |
-| authoritative reconciliation         | 657 = 612 accepted + 45 quarantined; pass                              |
-| imported future links / eligible     | 0 / 0                                                                  |
-| Markdown relative links              | 82 files, 0 broken links                                             |
-| changed-file trailing whitespace     | 0 findings                                                             |
-| answer/restricted-material tests     | pass; safe reports remain count-only                                   |
-| `git diff --check`                   | exit 0                                                                 |
-| `git status --short`                 | empty after commits                                                    |
+| Command/check                        | Required recorded result                        |
+| ------------------------------------ | ----------------------------------------------- |
+| `npm ci`                             | 310 packages installed; prepare succeeds        |
+| `npm run format:check`               | all matched files formatted                     |
+| `npm run lint`                       | exit 0                                          |
+| `npm run check`                      | 0 errors, 0 warnings                            |
+| `npm test`                           | 57 files, 364 tests passed                      |
+| `npx --no-install drizzle-kit check` | schema valid                                    |
+| `npm run build`                      | client and server production build pass         |
+| clean migration                      | 65 application tables, 11 migrations            |
+| SQLite verification                  | 0 FK violations; integrity `ok`                 |
+| `npm run questions:test`             | 12 files, 128 tests passed                      |
+| Phase 3 focused regressions          | 5 files, 28 tests passed                        |
+| Phase 4 focused regressions          | 21 files, 102 tests passed                      |
+| Phase 5 focused regressions          | 11 files, 74 tests passed                       |
+| golden suite                         | 17/17 cases executed; manifest references exact |
+| question route inventory             | 2 routes, 11 mutations                          |
+| fixture reconciliation               | 8 = 5 accepted + 3 quarantined; pass            |
+| authoritative reconciliation         | 657 = 612 accepted + 45 quarantined; pass       |
+| imported future links / eligible     | 0 / 0                                           |
+| Markdown relative links              | 82 files, 0 broken links                        |
+| changed-file trailing whitespace     | 0 findings                                      |
+| answer/restricted-material tests     | pass; safe reports remain count-only            |
+| `git diff --check`                   | exit 0                                          |
+| `git status --short`                 | empty after commits                             |
 
 ## Reconciliation detail
 
