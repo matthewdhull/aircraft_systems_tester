@@ -43,6 +43,13 @@
       "when": 1783901875960,
       "tag": "0005_join_indexes",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1783915058239,
+      "tag": "0006_phase4_authentication",
+      "breakpoints": true
     }
   ]
 }

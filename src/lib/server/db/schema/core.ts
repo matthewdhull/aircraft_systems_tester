@@ -159,7 +159,9 @@ export const sessions = sqliteTable(
 		createdAt: text('created_at').notNull(),
 		lastSeenAt: text('last_seen_at').notNull(),
 		expiresAt: text('expires_at').notNull(),
-		revokedAt: text('revoked_at')
+		revokedAt: text('revoked_at'),
+		revocationReason: text('revocation_reason'),
+		rotatedFromHash: text('rotated_from_hash')
 	},
 	(table) => [
 		index('sessions_user_idx').on(table.userId),
@@ -167,7 +169,35 @@ export const sessions = sqliteTable(
 		check(
 			'sessions_window_ck',
 			sql`${table.createdAt} <= ${table.lastSeenAt} and ${table.lastSeenAt} <= ${table.expiresAt}`
+		),
+		check(
+			'sessions_revocation_ck',
+			sql`(${table.revokedAt} is null and ${table.revocationReason} is null) or (${table.revokedAt} is not null and ${table.revocationReason} is not null)`
 		)
+	]
+);
+
+export const passwordActionTokens = sqliteTable(
+	'password_action_tokens',
+	{
+		idHash: text('id_hash').primaryKey(),
+		userId: text('user_id')
+			.notNull()
+			.references(() => users.id, { onDelete: 'cascade' }),
+		purpose: text('purpose').notNull(),
+		createdAt: text('created_at').notNull(),
+		expiresAt: text('expires_at').notNull(),
+		usedAt: text('used_at'),
+		revokedAt: text('revoked_at'),
+		createdByUserId: text('created_by_user_id').references(() => users.id, {
+			onDelete: 'set null'
+		})
+	},
+	(table) => [
+		index('password_action_tokens_user_idx').on(table.userId, table.purpose),
+		index('password_action_tokens_expiry_idx').on(table.expiresAt),
+		check('password_action_tokens_purpose_ck', sql`${table.purpose} in ('initialize', 'reset')`),
+		check('password_action_tokens_window_ck', sql`${table.createdAt} < ${table.expiresAt}`)
 	]
 );
 
