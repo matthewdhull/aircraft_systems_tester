@@ -15,7 +15,9 @@ export default defineConfig({
 						'tests/foundation/ui/**',
 						'tests/ui/**',
 						'tests/curriculum/ui/**',
-						'tests/curriculum/accessibility/**'
+						'tests/curriculum/accessibility/**',
+						'tests/questions/ui/**',
+						'tests/questions/accessibility/**'
 					]
 				}
 			},
@@ -32,7 +34,9 @@ export default defineConfig({
 						'tests/foundation/ui/**/*.{test,spec}.{js,ts}',
 						'tests/ui/**/*.{test,spec}.{js,ts}',
 						'tests/curriculum/ui/**/*.{test,spec}.{js,ts}',
-						'tests/curriculum/accessibility/**/*.{test,spec}.{js,ts}'
+						'tests/curriculum/accessibility/**/*.{test,spec}.{js,ts}',
+						'tests/questions/ui/**/*.{test,spec}.{js,ts}',
+						'tests/questions/accessibility/**/*.{test,spec}.{js,ts}'
 					],
 					exclude: ['src/lib/server/**']
 				}
