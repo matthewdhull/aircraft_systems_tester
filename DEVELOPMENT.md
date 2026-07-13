@@ -208,6 +208,68 @@ All curriculum loads and mutations require the real Phase 4 session, origin/CSRF
 only safe lifecycle/type/count metadata and never curriculum text, mapping rationale, source IDs,
 question content, credentials, tokens, or cookies.
 
+## Phase 6 question bank
+
+An active user with `questions.view` can open `/questions` and search or filter safe summaries;
+`questions.create` separately authorizes creation of an immutable UUID identity with version 1 in
+draft. Every draft is validated
+server-side against one of five canonical types: `true_false`, `single_choice`,
+`two_correct_compound`, `all_correct`, or `none_correct`. The accepted legacy/UI aliases are `tf`,
+`mc`, `c2`, `ac`, and `nc`. Ordinary single-choice questions always contain one correct and three
+incorrect choices; the service never adds a random all/none distractor.
+
+Drafts may be edited and submitted for review. A distinct actor with `questions.review` approves or
+returns the version. Publication then requires `questions.publish`, a recorded distinct approval,
+valid effective aircraft applicability, and an actor other than the author. Administrator does not
+bypass the distinct-reviewer rule. Published or referenced versions are immutable; correction
+creates the next draft version. Retirement requires both `questions.publish` and `records.retire`.
+Only a safely unreferenced draft may be hard-deleted after a fresh server dependency check.
+
+Future curriculum applicability is separate from Phase 5 legacy mapping. A question link is
+explicitly proposed, then separately and attributably reviewed against a published/effective Phase
+→ Task → Subtask → optional Element chain. A Phase 5 mapping approval never creates a question link
+or changes generation status. Eligibility is server-derived and requires a published/effective
+question, valid effective aircraft, and an approved link whose complete target ancestry remains
+published/effective. Eligibility, link/lifecycle mutation, and safe audit event commit or roll back
+together. Retire active question links before retiring their target curriculum or any ancestor;
+the curriculum service blocks that retirement until the audited link-retirement transaction has
+removed eligibility.
+
+Phase 3 imported question versions remain provenance-preserving `review`/`blocked` rows. Never edit
+or publish an imported row in place. To correct or adopt it, use the protected new-version action;
+the service copies it into a new draft attributed to the current author while retaining faithful
+legacy TPO/SPO/EO links. The new draft then follows the ordinary distinct-review and explicit
+future-link process.
+
+Question list/search payloads never contain option text, correctness, semantic answer values, or
+keys. Key-bearing detail requires a server-authorized authoring/review context or
+`answer_keys.view`. Correct-answer material must not enter URLs, logs, audit metadata, errors, or
+safe reconciliation output. Client visibility and enhanced form state are never authorization or
+validation boundaries.
+
+Run the complete or focused question suites with:
+
+```sh
+npm run questions:test
+npx --no-install vitest run tests/questions/domain tests/questions/database
+npx --no-install vitest run tests/questions/ui tests/questions/accessibility
+npx --no-install vitest run tests/questions/migration tests/questions/golden
+npx --no-install vitest run tests/questions/integration tests/questions/security
+```
+
+Run safe, read-only imported-question reconciliation against an ignored migrated database with:
+
+```sh
+npm run questions:reconcile -- --database .runtime/fixture.sqlite
+npm run questions:reconcile -- --database .runtime/fixture.sqlite --format markdown
+```
+
+The command emits count-only JSON or Markdown. It never emits prompts, choices, keys, source IDs,
+internal UUIDs, database paths, or restricted payloads. Keep databases and reconciliation output
+under ignored `.runtime/`; do not commit them. Ordered Phase 6 migration `0010` extends but never
+rewrites migrations `0000`–`0009` and upgrades the existing preview database through ordinary
+application startup.
+
 ## SQLite deployment contract
 
 Run exactly one writable Node application instance against the database file. Store it on durable

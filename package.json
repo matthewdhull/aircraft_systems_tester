@@ -30,6 +30,8 @@
 		"migration:verify": "node --import tsx scripts/migration/verify-migration.ts --database",
 		"curriculum:test": "vitest run tests/curriculum",
 		"curriculum:reconcile": "node --import tsx scripts/curriculum/reconcile-mappings.ts",
+		"questions:test": "vitest run tests/questions",
+		"questions:reconcile": "node --import tsx scripts/questions/reconcile-imported.ts",
 		"test:unit": "vitest",
 		"test": "vitest run --passWithNoTests"
 	},
