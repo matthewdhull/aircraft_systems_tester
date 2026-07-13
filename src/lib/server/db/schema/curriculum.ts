@@ -59,12 +59,13 @@ const versionColumns = {
 	status: text('status').notNull().default('draft'),
 	effectiveFrom: text('effective_from'),
 	effectiveTo: text('effective_to'),
-	authoredByUserId: text('authored_by_user_id').references(() => users.id, {
-		onDelete: 'set null'
-	}),
+	authoredByUserId: text('authored_by_user_id')
+		.notNull()
+		.references(() => users.id, { onDelete: 'restrict' }),
 	reviewedByUserId: text('reviewed_by_user_id').references(() => users.id, {
 		onDelete: 'set null'
 	}),
+	reviewedAt: text('reviewed_at'),
 	createdAt: text('created_at').notNull(),
 	publishedAt: text('published_at'),
 	retiredAt: text('retired_at')
@@ -83,6 +84,9 @@ export const phaseVersions = sqliteTable(
 	(table) => [
 		uniqueIndex('phase_versions_identity_version_uq').on(table.phaseId, table.version),
 		uniqueIndex('phase_versions_position_from_uq').on(table.position, table.effectiveFrom),
+		uniqueIndex('phase_versions_unpublished_position_uq')
+			.on(table.position)
+			.where(sql`${table.status} in ('draft', 'review')`),
 		index('phase_versions_lifecycle_idx').on(table.status, table.effectiveFrom, table.effectiveTo),
 		check('phase_versions_values_ck', sql`${table.version} > 0 and ${table.position} >= 0`),
 		check(
@@ -95,7 +99,11 @@ export const phaseVersions = sqliteTable(
 		),
 		check(
 			'phase_versions_reviewer_ck',
-			sql`${table.reviewedByUserId} is null or ${table.reviewedByUserId} <> ${table.authoredByUserId}`
+			sql`(${table.reviewedByUserId} is null and ${table.reviewedAt} is null) or (${table.reviewedByUserId} is not null and ${table.reviewedAt} is not null and ${table.reviewedByUserId} <> ${table.authoredByUserId})`
+		),
+		check(
+			'phase_versions_publication_ck',
+			sql`${table.status} not in ('published', 'retired') or (${table.reviewedByUserId} is not null and ${table.reviewedAt} is not null and ${table.publishedAt} is not null and ${table.effectiveFrom} is not null)`
 		)
 	]
 );
@@ -120,6 +128,9 @@ export const taskVersions = sqliteTable(
 			table.position,
 			table.effectiveFrom
 		),
+		uniqueIndex('task_versions_unpublished_parent_position_uq')
+			.on(table.phaseVersionId, table.position)
+			.where(sql`${table.status} in ('draft', 'review')`),
 		index('task_versions_parent_idx').on(table.phaseVersionId, table.status),
 		check('task_versions_values_ck', sql`${table.version} > 0 and ${table.position} >= 0`),
 		check(
@@ -132,7 +143,11 @@ export const taskVersions = sqliteTable(
 		),
 		check(
 			'task_versions_reviewer_ck',
-			sql`${table.reviewedByUserId} is null or ${table.reviewedByUserId} <> ${table.authoredByUserId}`
+			sql`(${table.reviewedByUserId} is null and ${table.reviewedAt} is null) or (${table.reviewedByUserId} is not null and ${table.reviewedAt} is not null and ${table.reviewedByUserId} <> ${table.authoredByUserId})`
+		),
+		check(
+			'task_versions_publication_ck',
+			sql`${table.status} not in ('published', 'retired') or (${table.reviewedByUserId} is not null and ${table.reviewedAt} is not null and ${table.publishedAt} is not null and ${table.effectiveFrom} is not null)`
 		)
 	]
 );
@@ -157,6 +172,9 @@ export const subtaskVersions = sqliteTable(
 			table.position,
 			table.effectiveFrom
 		),
+		uniqueIndex('subtask_versions_unpublished_parent_position_uq')
+			.on(table.taskVersionId, table.position)
+			.where(sql`${table.status} in ('draft', 'review')`),
 		index('subtask_versions_parent_idx').on(table.taskVersionId, table.status),
 		check('subtask_versions_values_ck', sql`${table.version} > 0 and ${table.position} >= 0`),
 		check(
@@ -169,7 +187,11 @@ export const subtaskVersions = sqliteTable(
 		),
 		check(
 			'subtask_versions_reviewer_ck',
-			sql`${table.reviewedByUserId} is null or ${table.reviewedByUserId} <> ${table.authoredByUserId}`
+			sql`(${table.reviewedByUserId} is null and ${table.reviewedAt} is null) or (${table.reviewedByUserId} is not null and ${table.reviewedAt} is not null and ${table.reviewedByUserId} <> ${table.authoredByUserId})`
+		),
+		check(
+			'subtask_versions_publication_ck',
+			sql`${table.status} not in ('published', 'retired') or (${table.reviewedByUserId} is not null and ${table.reviewedAt} is not null and ${table.publishedAt} is not null and ${table.effectiveFrom} is not null)`
 		)
 	]
 );
@@ -193,6 +215,9 @@ export const elementVersions = sqliteTable(
 			table.position,
 			table.effectiveFrom
 		),
+		uniqueIndex('element_versions_unpublished_parent_position_uq')
+			.on(table.subtaskVersionId, table.position)
+			.where(sql`${table.status} in ('draft', 'review')`),
 		index('element_versions_parent_idx').on(table.subtaskVersionId, table.status),
 		check('element_versions_values_ck', sql`${table.version} > 0 and ${table.position} >= 0`),
 		check(
@@ -205,7 +230,11 @@ export const elementVersions = sqliteTable(
 		),
 		check(
 			'element_versions_reviewer_ck',
-			sql`${table.reviewedByUserId} is null or ${table.reviewedByUserId} <> ${table.authoredByUserId}`
+			sql`(${table.reviewedByUserId} is null and ${table.reviewedAt} is null) or (${table.reviewedByUserId} is not null and ${table.reviewedAt} is not null and ${table.reviewedByUserId} <> ${table.authoredByUserId})`
+		),
+		check(
+			'element_versions_publication_ck',
+			sql`${table.status} not in ('published', 'retired') or (${table.reviewedByUserId} is not null and ${table.reviewedAt} is not null and ${table.publishedAt} is not null and ${table.effectiveFrom} is not null)`
 		)
 	]
 );
@@ -273,6 +302,10 @@ export const legacyCurriculumMappings = sqliteTable(
 		targetEntityType: text('target_entity_type').notNull(),
 		targetEntityId: text('target_entity_id').notNull(),
 		status: text('status').notNull().default('proposed'),
+		proposedByUserId: text('proposed_by_user_id')
+			.notNull()
+			.references(() => users.id, { onDelete: 'restrict' }),
+		proposedAt: text('proposed_at').notNull(),
 		reviewedByUserId: text('reviewed_by_user_id').references(() => users.id, {
 			onDelete: 'restrict'
 		}),
@@ -305,7 +338,7 @@ export const legacyCurriculumMappings = sqliteTable(
 		),
 		check(
 			'legacy_curriculum_mappings_review_ck',
-			sql`(${table.status} = 'proposed' and ${table.reviewedAt} is null) or (${table.status} <> 'proposed' and ${table.reviewedAt} is not null and ${table.reviewedByUserId} is not null)`
+			sql`(${table.status} = 'proposed' and ${table.reviewedAt} is null and ${table.reviewedByUserId} is null) or (${table.status} <> 'proposed' and ${table.reviewedAt} is not null and ${table.reviewedByUserId} is not null)`
 		)
 	]
 );
