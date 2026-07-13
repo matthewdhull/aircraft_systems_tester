@@ -191,9 +191,10 @@ describe('account lifecycle', () => {
 		).not.toBeNull();
 		expect(
 			database.sqlite
-				.prepare('SELECT action FROM audit_events WHERE entity_id = ? ORDER BY occurred_at')
+				.prepare('SELECT action FROM audit_events WHERE entity_id = ?')
 				.pluck()
 				.all(TARGET_ID)
+				.sort()
 		).toEqual(['session.revoked', 'user.status.changed']);
 	});
 

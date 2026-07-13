@@ -11,7 +11,7 @@ export const load: LayoutServerLoad = ({ locals }) => {
 	} else {
 		visible.add('dashboard');
 		if (principal.permissions.has(PERMISSIONS.CURRICULUM_MANAGE)) visible.add('curriculum');
-		if (principal.permissions.has(PERMISSIONS.QUESTIONS_CREATE)) visible.add('questions');
+		if (principal.permissions.has(PERMISSIONS.QUESTIONS_VIEW)) visible.add('questions');
 		if (principal.permissions.has(PERMISSIONS.TEMPLATES_MANAGE)) visible.add('test-models');
 		if (principal.permissions.has(PERMISSIONS.EXAMS_PUBLISH)) visible.add('generated-tests');
 		if (

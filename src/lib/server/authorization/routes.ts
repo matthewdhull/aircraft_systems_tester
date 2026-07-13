@@ -1,7 +1,12 @@
 import type { PermissionCode } from './policy.js';
 
 export type RouteAudience =
-	'public' | 'authenticated' | 'instructor-capable' | 'curriculum-manager' | 'administrator';
+	| 'public'
+	| 'authenticated'
+	| 'instructor-capable'
+	| 'question-author'
+	| 'curriculum-manager'
+	| 'administrator';
 
 export interface RouteMutationPolicy {
 	name: string;
@@ -114,5 +119,54 @@ export const ROUTE_POLICIES: readonly RoutePolicy[] = Object.freeze([
 				permission: 'curriculum.manage' as const
 			})
 		)
+	},
+	{
+		pattern: '/questions',
+		methods: ['GET', 'POST'],
+		audience: 'question-author',
+		permission: 'questions.view',
+		mutations: [
+			{ name: 'createQuestion', audience: 'question-author', permission: 'questions.create' }
+		]
+	},
+	{
+		pattern: '/questions/[id]',
+		methods: ['GET', 'POST'],
+		audience: 'question-author',
+		permission: 'questions.view',
+		mutations: [
+			...['updateDraft', 'createVersion', 'submitReview', 'deleteDraft', 'proposeFutureLink'].map(
+				(name) => ({
+					name,
+					audience: 'question-author' as const,
+					permission: 'questions.create' as const
+				})
+			),
+			{
+				name: 'reviewVersion',
+				audience: 'question-author',
+				permission: 'questions.review'
+			},
+			{
+				name: 'publishVersion',
+				audience: 'question-author',
+				permission: 'questions.publish'
+			},
+			{
+				name: 'retireVersion',
+				audience: 'question-author',
+				permission: 'questions.publish'
+			},
+			{
+				name: 'approveFutureLink',
+				audience: 'question-author',
+				permission: 'questions.review'
+			},
+			{
+				name: 'retireFutureLink',
+				audience: 'question-author',
+				permission: 'questions.review'
+			}
+		]
 	}
 ]);

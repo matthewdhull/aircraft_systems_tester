@@ -510,6 +510,8 @@ export class CurriculumService {
 				const preview = this.preview(tx, found.type, found.node.id, 'retire');
 				if (preview.revision !== command.expectedDependencyRevision)
 					return failure('dependency_changed');
+				if (preview.items.some((item) => item.kind === 'question_future_link' && item.count > 0))
+					return failure('dependency_exists');
 				const occurredAt = this.dependencies.clock.now();
 				const at = occurredAt.toISOString();
 				tx.$client
@@ -958,6 +960,29 @@ export class CurriculumService {
 				.all(entityId) as string[];
 			const placeholders = versionIds.map(() => '?').join(', ');
 			if (versionIds.length) {
+				const activeQuestionLinks =
+					entityType === 'phase'
+						? `SELECT count(*) FROM question_future_curriculum_links qf
+						   JOIN subtask_versions sv ON sv.id = qf.subtask_version_id
+						   JOIN task_versions tv ON tv.id = sv.task_version_id
+						   JOIN phase_versions pv ON pv.id = tv.phase_version_id
+						   WHERE pv.phase_id = ? AND qf.mapping_status IN ('review', 'approved')`
+						: entityType === 'task'
+							? `SELECT count(*) FROM question_future_curriculum_links qf
+							   JOIN subtask_versions sv ON sv.id = qf.subtask_version_id
+							   JOIN task_versions tv ON tv.id = sv.task_version_id
+							   WHERE tv.task_id = ? AND qf.mapping_status IN ('review', 'approved')`
+							: entityType === 'subtask'
+								? `SELECT count(*) FROM question_future_curriculum_links qf
+								   JOIN subtask_versions sv ON sv.id = qf.subtask_version_id
+								   WHERE sv.subtask_id = ? AND qf.mapping_status IN ('review', 'approved')`
+								: `SELECT count(*) FROM question_future_curriculum_links qf
+								   JOIN element_versions ev ON ev.id = qf.element_version_id
+								   WHERE ev.element_id = ? AND qf.mapping_status IN ('review', 'approved')`;
+				counts.set(
+					'question_future_link',
+					Number(tx.$client.prepare(activeQuestionLinks).pluck().get(entityId))
+				);
 				const childType =
 					entityType === 'phase'
 						? 'task'
@@ -980,17 +1005,6 @@ export class CurriculumService {
 					);
 				if (entityType === 'subtask') {
 					counts.set(
-						'question_future_link',
-						Number(
-							tx.$client
-								.prepare(
-									`SELECT count(*) FROM question_future_curriculum_links WHERE subtask_version_id IN (${placeholders})`
-								)
-								.pluck()
-								.get(...versionIds)
-						)
-					);
-					counts.set(
 						'template_rule',
 						Number(
 							tx.$client
@@ -1003,17 +1017,6 @@ export class CurriculumService {
 					);
 				}
 				if (entityType === 'element') {
-					counts.set(
-						'question_future_link',
-						Number(
-							tx.$client
-								.prepare(
-									`SELECT count(*) FROM question_future_curriculum_links WHERE element_version_id IN (${placeholders})`
-								)
-								.pluck()
-								.get(...versionIds)
-						)
-					);
 					counts.set(
 						'template_required_element',
 						Number(

@@ -26,7 +26,8 @@ export const PERMISSIONS = Object.freeze({
 	REPORTS_ORGANIZATION_EXPORT: 'reports.organization.export',
 	ANSWER_KEYS_VIEW: 'answer_keys.view',
 	QUESTIONS_INVALIDATE: 'questions.invalidate',
-	RECORDS_RETIRE: 'records.retire'
+	RECORDS_RETIRE: 'records.retire',
+	QUESTIONS_VIEW: 'questions.view'
 } as const);
 
 export type PermissionCode = (typeof PERMISSIONS)[keyof typeof PERMISSIONS];
@@ -58,6 +59,7 @@ export const ROLE_PERMISSION_POLICY: Readonly<Record<BaselineRoleCode, readonly 
 			PERMISSIONS.REPORTS_ASSIGNED_VIEW
 		],
 		[BASELINE_ROLES.QUESTION_AUTHOR]: [
+			PERMISSIONS.QUESTIONS_VIEW,
 			PERMISSIONS.QUESTIONS_CREATE,
 			PERMISSIONS.QUESTIONS_REVIEW,
 			PERMISSIONS.QUESTIONS_PUBLISH

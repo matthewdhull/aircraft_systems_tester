@@ -18,6 +18,7 @@ export interface AuditEventInput {
 
 const SAFE_METADATA_KEYS = new Set([
 	'active',
+	'aircraftCount',
 	'changedFields',
 	'count',
 	'decision',
@@ -26,10 +27,13 @@ const SAFE_METADATA_KEYS = new Set([
 	'expiresAt',
 	'firstName',
 	'fromPosition',
+	'futureLinkCount',
+	'generationStatus',
 	'lastName',
 	'nodeType',
 	'position',
 	'previousValue',
+	'questionType',
 	'reason',
 	'replacementValue',
 	'role',

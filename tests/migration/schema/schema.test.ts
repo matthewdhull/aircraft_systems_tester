@@ -112,19 +112,50 @@ describe('canonical schema', () => {
 
 	it('requires published status before a question version is generation eligible', () => {
 		const handle = open();
+		for (const [id, employee] of [
+			['author-a', '1001'],
+			['reviewer-a', '1002']
+		]) {
+			handle.sqlite
+				.prepare(
+					`INSERT INTO users
+					 (id, employee_number, first_name, last_name, status, created_at, updated_at)
+					 VALUES (?, ?, 'Synthetic', 'Schema', 'active', ?, ?)`
+				)
+				.run(id, employee, '2026-07-12T00:00:00.000Z', '2026-07-12T00:00:00.000Z');
+		}
 		handle.sqlite
 			.prepare('INSERT INTO questions (id, created_at) VALUES (?, ?)')
 			.run('question-a', '2026-07-12T00:00:00.000Z');
 		const insert = handle.sqlite.prepare(
 			`INSERT INTO question_versions
-			(id, question_id, version, question_type, lifecycle, generation_status, created_at)
-			VALUES (?, ?, 1, 'single_choice', ?, ?, ?)`
+			(id, question_id, version, question_type, lifecycle, generation_status,
+			 authored_by_user_id, reviewed_by_user_id, reviewed_at, created_at, published_at, effective_from)
+			VALUES (?, ?, 1, 'single_choice', ?, ?, 'author-a', 'reviewer-a', ?, ?, ?, ?)`
 		);
 
 		expect(() =>
-			insert.run('version-a', 'question-a', 'draft', 'eligible', '2026-07-12T00:00:00.000Z')
+			insert.run(
+				'version-a',
+				'question-a',
+				'draft',
+				'eligible',
+				'2026-07-12T00:00:00.000Z',
+				'2026-07-12T00:00:00.000Z',
+				'2026-07-12T00:00:00.000Z',
+				'2026-07-12T00:00:00.000Z'
+			)
 		).toThrow();
-		insert.run('version-a', 'question-a', 'published', 'eligible', '2026-07-12T00:00:00.000Z');
+		insert.run(
+			'version-a',
+			'question-a',
+			'published',
+			'eligible',
+			'2026-07-12T00:00:00.000Z',
+			'2026-07-12T00:00:00.000Z',
+			'2026-07-12T00:00:00.000Z',
+			'2026-07-12T00:00:00.000Z'
+		);
 		expect(() =>
 			handle.sqlite.prepare('DELETE FROM questions WHERE id = ?').run('question-a')
 		).toThrow();

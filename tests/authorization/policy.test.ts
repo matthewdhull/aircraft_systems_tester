@@ -41,9 +41,9 @@ describe('authorization policy', () => {
 	});
 
 	it('inventories every current route pattern and mutation permission', () => {
-		expect(ROUTE_POLICIES).toHaveLength(11);
+		expect(ROUTE_POLICIES).toHaveLength(13);
 		const mutations = ROUTE_POLICIES.flatMap((route) => route.mutations);
-		expect(mutations).toHaveLength(32);
+		expect(mutations).toHaveLength(43);
 		expect(
 			mutations.filter((mutation) => mutation.permission).map((mutation) => mutation.permission)
 		).toEqual([
@@ -53,7 +53,14 @@ describe('authorization policy', () => {
 			PERMISSIONS.USERS_LIFECYCLE,
 			PERMISSIONS.USERS_ROLES_MANAGE,
 			PERMISSIONS.USERS_ROLES_MANAGE,
-			...Array.from({ length: 23 }, () => PERMISSIONS.CURRICULUM_MANAGE)
+			...Array.from({ length: 23 }, () => PERMISSIONS.CURRICULUM_MANAGE),
+			PERMISSIONS.QUESTIONS_CREATE,
+			...Array.from({ length: 5 }, () => PERMISSIONS.QUESTIONS_CREATE),
+			PERMISSIONS.QUESTIONS_REVIEW,
+			PERMISSIONS.QUESTIONS_PUBLISH,
+			PERMISSIONS.QUESTIONS_PUBLISH,
+			PERMISSIONS.QUESTIONS_REVIEW,
+			PERMISSIONS.QUESTIONS_REVIEW
 		]);
 	});
 });
