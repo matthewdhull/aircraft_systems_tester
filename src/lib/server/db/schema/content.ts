@@ -41,6 +41,7 @@ export const questionVersions = sqliteTable(
 		reviewedByUserId: text('reviewed_by_user_id').references(() => users.id, {
 			onDelete: 'set null'
 		}),
+		reviewedAt: text('reviewed_at'),
 		createdAt: text('created_at').notNull(),
 		submittedAt: text('submitted_at'),
 		publishedAt: text('published_at'),
@@ -55,6 +56,13 @@ export const questionVersions = sqliteTable(
 			table.effectiveFrom,
 			table.effectiveTo
 		),
+		index('question_versions_filter_idx').on(
+			table.questionType,
+			table.lifecycle,
+			table.generationStatus,
+			table.createdAt
+		),
+		index('question_versions_activity_idx').on(table.createdAt, table.id),
 		check('question_versions_version_ck', sql`${table.version} > 0`),
 		check(
 			'question_versions_type_ck',
@@ -74,7 +82,11 @@ export const questionVersions = sqliteTable(
 		),
 		check(
 			'question_versions_reviewer_ck',
-			sql`${table.reviewedByUserId} is null or ${table.reviewedByUserId} <> ${table.authoredByUserId}`
+			sql`(${table.reviewedByUserId} is null and ${table.reviewedAt} is null) or (${table.reviewedByUserId} is not null and ${table.reviewedAt} is not null and (${table.authoredByUserId} is null or ${table.reviewedByUserId} <> ${table.authoredByUserId}))`
+		),
+		check(
+			'question_versions_publication_ck',
+			sql`${table.lifecycle} not in ('published', 'retired') or (${table.authoredByUserId} is not null and ${table.reviewedByUserId} is not null and ${table.reviewedAt} is not null and ${table.publishedAt} is not null and ${table.effectiveFrom} is not null)`
 		)
 	]
 );
@@ -91,8 +103,9 @@ export const questionPrompts = sqliteTable(
 	},
 	(table) => [
 		uniqueIndex('question_prompts_version_position_uq').on(table.questionVersionId, table.position),
+		index('question_prompts_search_idx').on(table.promptText, table.questionVersionId),
 		check('question_prompts_position_ck', sql`${table.position} >= 0`),
-		check('question_prompts_text_ck', sql`length(trim(${table.promptText})) > 0`)
+		check('question_prompts_text_ck', sql`length(trim(${table.promptText})) between 1 and 4000`)
 	]
 );
 
@@ -172,7 +185,15 @@ export const questionFutureCurriculumLinks = sqliteTable(
 		elementVersionId: text('element_version_id').references(() => elementVersions.id, {
 			onDelete: 'restrict'
 		}),
-		mappingStatus: text('mapping_status').notNull().default('review')
+		mappingStatus: text('mapping_status').notNull().default('review'),
+		proposedByUserId: text('proposed_by_user_id')
+			.notNull()
+			.references(() => users.id, { onDelete: 'restrict' }),
+		proposedAt: text('proposed_at').notNull(),
+		reviewedByUserId: text('reviewed_by_user_id').references(() => users.id, {
+			onDelete: 'restrict'
+		}),
+		reviewedAt: text('reviewed_at')
 	},
 	(table) => [
 		primaryKey({ columns: [table.questionVersionId, table.subtaskVersionId] }),
@@ -181,6 +202,10 @@ export const questionFutureCurriculumLinks = sqliteTable(
 		check(
 			'question_future_curriculum_status_ck',
 			sql`${table.mappingStatus} in ('review', 'approved', 'retired')`
+		),
+		check(
+			'question_future_curriculum_review_ck',
+			sql`(${table.mappingStatus} = 'review' and ${table.reviewedAt} is null and ${table.reviewedByUserId} is null) or (${table.mappingStatus} <> 'review' and ${table.reviewedAt} is not null and ${table.reviewedByUserId} is not null and ${table.reviewedByUserId} <> ${table.proposedByUserId})`
 		)
 	]
 );
