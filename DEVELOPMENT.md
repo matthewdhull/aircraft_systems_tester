@@ -35,9 +35,11 @@ data. They are removed or closed by the test harness.
 | Production  | `npm start` runs the adapter-node artifact. `DATABASE_PATH` must identify persistent local/block storage and may not be `:memory:`. |
 
 `APP_ENV` accepts `development`, `test`, or `production`; `LOG_LEVEL` accepts `debug`, `info`,
-`warn`, or `error`. Adapter-node also consumes `HOST`, `PORT`, and `SHUTDOWN_TIMEOUT`. Environment
-files contain names and safe placeholders only; deployment secrets belong in the operator's
-secret store.
+`warn`, or `error`. Adapter-node also consumes `HOST`, `PORT`, `ORIGIN`, and `SHUTDOWN_TIMEOUT`.
+`ORIGIN` must be the canonical externally visible origin, including scheme and non-default port;
+production uses its HTTPS origin. This value lets SvelteKit distinguish same-origin mutations from
+CSRF attempts. Environment files contain names and safe placeholders only; deployment secrets
+belong in the operator's secret store.
 
 ## Verification and build
 
@@ -88,6 +90,43 @@ After `npm run build`, `npm start` runs `node build`. With the example environme
 Both endpoints return generic status only. They never return environment values or filesystem
 paths. Adapter-node handles `SIGTERM`/`SIGINT` and dispatches its shutdown event; the readiness
 database handle closes during that event.
+
+## Phase 4 authentication and account operations
+
+Phase 4 adds no default account, password, token, or authentication secret to environment files.
+The application seeds only the fixed role/permission vocabulary. Create the first administrator
+from an interactive terminal using the exact procedure in
+[`docs/migration/phase-4/BOOTSTRAP_AND_PASSWORD_RESET.md`](docs/migration/phase-4/BOOTSTRAP_AND_PASSWORD_RESET.md):
+
+```sh
+npm run auth:bootstrap -- --database /absolute/path/to/application.sqlite \
+  --employee-number 00000 --first-name Synthetic --last-name Operator
+```
+
+The command prompts with terminal echo disabled and refuses non-interactive secret input. It has
+no password argument and refuses any non-empty identity/bootstrap state. An effective active
+administrator issues a one-hour initialization or reset token with `npm run auth:password-action`;
+the raw token is shown once, only its digest is stored, and the recipient consumes it at
+`/login/password`. No email or other delivery infrastructure is implied.
+
+Passwords use Argon2id with reviewed explicit parameters. Sessions store only SHA-256 token
+digests, allow concurrent devices, expire after 30 minutes idle or 12 hours absolute, rotate at
+login when an existing cookie is presented, and support explicit/all-account revocation. The
+`ast_session` cookie is `HttpOnly`, `SameSite=Lax`, path `/`, and becomes `Secure` when
+`APP_ENV=production`. Deactivation/suspension, retirement, and password changes revoke active
+sessions transactionally.
+
+Login attempts are limited per normalized account and network over a 15-minute window (five per
+account, twenty per network). The bounded 10,000-digest limiter is process-local and matches this
+project's required single writable Node process. Any future multi-process ingress must provide
+equivalent shared enforcement. Monitor saturation without recording network keys, employee
+numbers, credentials, or request bodies.
+
+Never place passwords, raw session/reset/initialization tokens, cookies, password hashes, or
+sensitive request bodies in source, fixtures, command arguments, environment variables, logs,
+audit metadata, snapshots, tickets, or reports. Tests generate ephemeral credential values at
+runtime. Account lifecycle/role/identifier changes and security-sensitive session actions are
+audited with allow-listed metadata only.
 
 ## SQLite deployment contract
 

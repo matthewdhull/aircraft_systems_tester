@@ -15,13 +15,38 @@ describe('server configuration', () => {
 				DATABASE_PATH: ':memory:',
 				LOG_LEVEL: 'debug'
 			})
-		).toEqual({ appEnvironment: 'test', databasePath: ':memory:', logLevel: 'debug' });
+		).toEqual({
+			appEnvironment: 'test',
+			databasePath: ':memory:',
+			logLevel: 'debug',
+			publicOrigin: null
+		});
 	});
 
 	it('rejects an in-memory production database', () => {
 		expect(() => loadServerConfig({ APP_ENV: 'production', DATABASE_PATH: ':memory:' })).toThrow(
 			ConfigurationError
 		);
+	});
+
+	it('requires a canonical HTTPS origin in production', () => {
+		expect(() =>
+			loadServerConfig({ APP_ENV: 'production', DATABASE_PATH: '/tmp/app.sqlite' })
+		).toThrow(ConfigurationError);
+		expect(() =>
+			loadServerConfig({
+				APP_ENV: 'production',
+				DATABASE_PATH: '/tmp/app.sqlite',
+				ORIGIN: 'http://example.invalid'
+			})
+		).toThrow(ConfigurationError);
+		expect(
+			loadServerConfig({
+				APP_ENV: 'production',
+				DATABASE_PATH: '/tmp/app.sqlite',
+				ORIGIN: 'https://training.example.invalid'
+			}).publicOrigin
+		).toBe('https://training.example.invalid');
 	});
 
 	it('strips query strings and restricts logging to approved fields', () => {

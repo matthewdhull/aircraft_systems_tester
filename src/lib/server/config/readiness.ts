@@ -1,29 +1,11 @@
-import { openDatabase, type DatabaseHandle } from '$lib/server/db';
 import { writeLog } from '$lib/server/logging';
 
-import { ConfigurationError, loadServerConfig } from './index';
-
-let databaseHandle: DatabaseHandle | undefined;
-let shutdownRegistered = false;
-
-function registerShutdown(): void {
-	if (shutdownRegistered) return;
-
-	process.once('sveltekit:shutdown', () => {
-		closeReadinessDatabase();
-		writeLog('info', 'application_shutdown', { signal: 'sveltekit:shutdown' });
-	});
-	shutdownRegistered = true;
-}
+import { closeApplicationDatabase, getApplicationDatabase } from './application.js';
+import { ConfigurationError } from './index';
 
 export function verifyReadiness(environment: NodeJS.ProcessEnv = process.env): boolean {
 	try {
-		const config = loadServerConfig(environment);
-		if (databaseHandle === undefined) {
-			databaseHandle = openDatabase({ path: config.databasePath });
-			registerShutdown();
-		}
-		databaseHandle.verify();
+		getApplicationDatabase(environment).verify();
 		return true;
 	} catch (error) {
 		const errorCode = error instanceof ConfigurationError ? error.code : 'database_unavailable';
@@ -33,6 +15,5 @@ export function verifyReadiness(environment: NodeJS.ProcessEnv = process.env): b
 }
 
 export function closeReadinessDatabase(): void {
-	databaseHandle?.close();
-	databaseHandle = undefined;
+	closeApplicationDatabase();
 }

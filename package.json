@@ -19,6 +19,8 @@
 		"format": "prettier --write .",
 		"format:check": "prettier --check .",
 		"lint": "eslint .",
+		"auth:bootstrap": "node --import tsx scripts/auth/bootstrap-administrator.ts",
+		"auth:password-action": "node --import tsx scripts/auth/issue-password-action.ts",
 		"migration:migrate": "node --import tsx scripts/migration/verify-migration.ts --empty-target",
 		"migration:profile:fixture": "node --import tsx scripts/migration/import-legacy.ts --source fixture --profile",
 		"migration:import:fixture": "node --import tsx scripts/migration/import-legacy.ts --source fixture",

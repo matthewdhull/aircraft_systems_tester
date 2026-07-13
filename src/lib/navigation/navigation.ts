@@ -92,7 +92,7 @@ export const navigationGroups: readonly NavigationGroup[] = [
 			{
 				id: 'instructors',
 				label: 'Instructor administration',
-				href: '/instructors',
+				href: '/admin/instructors',
 				audience: 'staff',
 				description: 'Administer instructors when server authorization permits it.'
 			}

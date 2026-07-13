@@ -5,6 +5,7 @@ export interface ServerConfig {
 	appEnvironment: AppEnvironment;
 	databasePath: string;
 	logLevel: LogLevel;
+	publicOrigin: string | null;
 }
 
 export class ConfigurationError extends Error {
@@ -35,6 +36,31 @@ function requireNonEmpty(value: string | undefined, field: string): string {
 	return value.trim();
 }
 
+function parsePublicOrigin(value: string | undefined, environment: AppEnvironment): string | null {
+	if (value === undefined || value.trim() === '') {
+		if (environment === 'production') throw new ConfigurationError('ORIGIN');
+		return null;
+	}
+	try {
+		const parsed = new URL(value);
+		if (
+			!['http:', 'https:'].includes(parsed.protocol) ||
+			parsed.username ||
+			parsed.password ||
+			parsed.pathname !== '/' ||
+			parsed.search ||
+			parsed.hash ||
+			(environment === 'production' && parsed.protocol !== 'https:')
+		) {
+			throw new ConfigurationError('ORIGIN');
+		}
+		return parsed.origin;
+	} catch (error) {
+		if (error instanceof ConfigurationError) throw error;
+		throw new ConfigurationError('ORIGIN');
+	}
+}
+
 export function loadServerConfig(
 	environment: NodeJS.ProcessEnv = process.env
 ): Readonly<ServerConfig> {
@@ -45,10 +71,11 @@ export function loadServerConfig(
 	);
 	const databasePath = requireNonEmpty(environment.DATABASE_PATH, 'DATABASE_PATH');
 	const logLevel = parseEnum(environment.LOG_LEVEL ?? 'info', 'LOG_LEVEL', LOG_LEVELS);
+	const publicOrigin = parsePublicOrigin(environment.ORIGIN, appEnvironment);
 
 	if (appEnvironment === 'production' && databasePath === ':memory:') {
 		throw new ConfigurationError('DATABASE_PATH');
 	}
 
-	return Object.freeze({ appEnvironment, databasePath, logLevel });
+	return Object.freeze({ appEnvironment, databasePath, logLevel, publicOrigin });
 }
