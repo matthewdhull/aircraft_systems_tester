@@ -50,12 +50,15 @@ describe('database foundation', () => {
 	it('does not reapply an already recorded migration', () => {
 		const target = temporaryDatabase();
 		const first = open(target.path);
-		expect(first.sqlite.prepare('SELECT count(*) FROM __drizzle_migrations').pluck().get()).toBe(1);
+		const appliedMigrationCount = Number(
+			first.sqlite.prepare('SELECT count(*) FROM __drizzle_migrations').pluck().get()
+		);
+		expect(appliedMigrationCount).toBeGreaterThan(0);
 		first.close();
 
 		const reopened = open(target.path);
 		expect(reopened.sqlite.prepare('SELECT count(*) FROM __drizzle_migrations').pluck().get()).toBe(
-			1
+			appliedMigrationCount
 		);
 	});
 

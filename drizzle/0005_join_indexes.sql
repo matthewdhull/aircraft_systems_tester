@@ -1,0 +1,21 @@
+CREATE INDEX `approved_course_offerings_qualification_idx` ON `approved_course_offerings` (`qualification_id`);--> statement-breakpoint
+CREATE INDEX `approved_course_offerings_syllabus_idx` ON `approved_course_offerings` (`syllabus_id`);--> statement-breakpoint
+CREATE INDEX `approved_course_offerings_course_type_idx` ON `approved_course_offerings` (`course_type_id`);--> statement-breakpoint
+CREATE INDEX `employee_identifier_history_actor_idx` ON `employee_identifier_history` (`changed_by_user_id`);--> statement-breakpoint
+CREATE INDEX `role_permissions_permission_idx` ON `role_permissions` (`permission_id`);--> statement-breakpoint
+CREATE INDEX `user_roles_role_idx` ON `user_roles` (`role_id`,`revoked_at`);--> statement-breakpoint
+CREATE INDEX `legacy_template_sources_mapped_idx` ON `legacy_template_sources` (`mapped_template_version_id`);--> statement-breakpoint
+CREATE INDEX `question_aircraft_applicability_variant_idx` ON `question_aircraft_applicability` (`aircraft_variant_id`);--> statement-breakpoint
+CREATE INDEX `question_future_curriculum_subtask_idx` ON `question_future_curriculum_links` (`subtask_version_id`);--> statement-breakpoint
+CREATE INDEX `question_legacy_curriculum_eo_idx` ON `question_legacy_curriculum_links` (`legacy_eo_id`);--> statement-breakpoint
+CREATE INDEX `test_template_required_elements_element_idx` ON `test_template_required_elements` (`element_version_id`);--> statement-breakpoint
+CREATE INDEX `test_template_rules_subtask_idx` ON `test_template_rules` (`subtask_version_id`);--> statement-breakpoint
+CREATE INDEX `test_template_versions_aircraft_idx` ON `test_template_versions` (`aircraft_variant_id`,`lifecycle`);--> statement-breakpoint
+CREATE INDEX `attempt_answers_option_idx` ON `attempt_answers` (`exam_question_option_id`);--> statement-breakpoint
+CREATE INDEX `attempt_correction_events_invalidation_idx` ON `attempt_correction_events` (`question_invalidation_id`);--> statement-breakpoint
+CREATE INDEX `attempt_question_order_question_idx` ON `attempt_question_order` (`exam_question_id`);--> statement-breakpoint
+CREATE INDEX `class_rosters_offering_idx` ON `class_rosters` (`course_offering_id`,`starts_on`);--> statement-breakpoint
+CREATE INDEX `exam_attempts_roster_member_idx` ON `exam_attempts` (`roster_member_id`,`status`);--> statement-breakpoint
+CREATE INDEX `exam_instances_template_idx` ON `exam_instances` (`test_template_version_id`,`status`);--> statement-breakpoint
+CREATE INDEX `exam_question_options_source_idx` ON `exam_question_options` (`source_question_option_id`);--> statement-breakpoint
+CREATE INDEX `roster_members_student_idx` ON `roster_members` (`student_user_id`,`status`);

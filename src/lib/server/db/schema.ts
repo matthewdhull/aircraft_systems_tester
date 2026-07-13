@@ -1,13 +1,6 @@
-import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+export * from './schema/index.js';
 
-/**
- * Infrastructure-only marker proving that versioned migrations can initialize an
- * empty database. Phase 3 owns every application/domain table.
- */
-export const foundationMetadata = sqliteTable('_foundation_metadata', {
-	id: integer('id').primaryKey(),
-	foundationVersion: text('foundation_version').notNull(),
-	appliedAt: text('applied_at').notNull()
-});
+import * as canonicalSchema from './schema/index.js';
 
-export const foundationSchema = { foundationMetadata };
+/** Complete server-only schema consumed by the Drizzle runtime. */
+export const foundationSchema = canonicalSchema;

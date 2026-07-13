@@ -1,13 +1,48 @@
 {
-	"version": "7",
-	"dialect": "sqlite",
-	"entries": [
-		{
-			"idx": 0,
-			"version": "6",
-			"when": 1783892095633,
-			"tag": "0000_foundation_probe",
-			"breakpoints": true
-		}
-	]
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1783892095633,
+      "tag": "0000_foundation_probe",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1783901357516,
+      "tag": "0001_canonical_schema",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1783901415240,
+      "tag": "0002_generation_eligibility",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1783901534881,
+      "tag": "0003_retention_links",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1783901780749,
+      "tag": "0004_quarantine_privacy_boundary",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1783901875960,
+      "tag": "0005_join_indexes",
+      "breakpoints": true
+    }
+  ]
 }
