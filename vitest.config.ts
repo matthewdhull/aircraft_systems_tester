@@ -10,7 +10,13 @@ export default defineConfig({
 					name: 'server',
 					environment: 'node',
 					include: ['src/**/*.{test,spec}.{js,ts}', 'tests/**/*.{test,spec}.{js,ts}'],
-					exclude: ['src/**/*.svelte.{test,spec}.{js,ts}', 'tests/foundation/ui/**', 'tests/ui/**']
+					exclude: [
+						'src/**/*.svelte.{test,spec}.{js,ts}',
+						'tests/foundation/ui/**',
+						'tests/ui/**',
+						'tests/curriculum/ui/**',
+						'tests/curriculum/accessibility/**'
+					]
 				}
 			},
 			{
@@ -24,7 +30,9 @@ export default defineConfig({
 					include: [
 						'src/**/*.svelte.{test,spec}.{js,ts}',
 						'tests/foundation/ui/**/*.{test,spec}.{js,ts}',
-						'tests/ui/**/*.{test,spec}.{js,ts}'
+						'tests/ui/**/*.{test,spec}.{js,ts}',
+						'tests/curriculum/ui/**/*.{test,spec}.{js,ts}',
+						'tests/curriculum/accessibility/**/*.{test,spec}.{js,ts}'
 					],
 					exclude: ['src/lib/server/**']
 				}
