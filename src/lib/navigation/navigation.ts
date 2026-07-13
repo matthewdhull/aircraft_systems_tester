@@ -57,7 +57,7 @@ export const navigationGroups: readonly NavigationGroup[] = [
 			{
 				id: 'curriculum',
 				label: 'Curriculum',
-				href: '/curriculum',
+				href: '/admin/curriculum',
 				audience: 'staff',
 				description: 'Manage the future Phase, Task, Subtask, and Element hierarchy.'
 			},

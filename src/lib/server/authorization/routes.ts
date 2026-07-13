@@ -1,6 +1,7 @@
 import type { PermissionCode } from './policy.js';
 
-export type RouteAudience = 'public' | 'authenticated' | 'instructor-capable' | 'administrator';
+export type RouteAudience =
+	'public' | 'authenticated' | 'instructor-capable' | 'curriculum-manager' | 'administrator';
 
 export interface RouteMutationPolicy {
 	name: string;
@@ -57,5 +58,61 @@ export const ROUTE_POLICIES: readonly RoutePolicy[] = Object.freeze([
 			{ name: 'grantRole', audience: 'administrator', permission: 'users.roles.manage' },
 			{ name: 'revokeRole', audience: 'administrator', permission: 'users.roles.manage' }
 		]
+	},
+	{
+		pattern: '/admin/curriculum',
+		methods: ['GET', 'POST'],
+		audience: 'curriculum-manager',
+		permission: 'curriculum.manage',
+		mutations: [
+			'createNode',
+			'createVersion',
+			'updateDraft',
+			'submitReview',
+			'reviewVersion',
+			'publishVersion',
+			'retireVersion',
+			'deleteDraft',
+			'reorderSiblings'
+		].map((name) => ({
+			name,
+			audience: 'curriculum-manager' as const,
+			permission: 'curriculum.manage' as const
+		}))
+	},
+	{
+		pattern: '/admin/curriculum/bloom',
+		methods: ['GET', 'POST'],
+		audience: 'curriculum-manager',
+		permission: 'curriculum.manage',
+		mutations: [
+			'createLevel',
+			'updateLevel',
+			'publishLevel',
+			'retireLevel',
+			'deleteLevel',
+			'createVerb',
+			'updateVerb',
+			'publishVerb',
+			'retireVerb',
+			'deleteVerb'
+		].map((name) => ({
+			name,
+			audience: 'curriculum-manager' as const,
+			permission: 'curriculum.manage' as const
+		}))
+	},
+	{
+		pattern: '/admin/curriculum/mappings',
+		methods: ['GET', 'POST'],
+		audience: 'curriculum-manager',
+		permission: 'curriculum.manage',
+		mutations: ['proposeMapping', 'approveMapping', 'rejectMapping', 'retireMapping'].map(
+			(name) => ({
+				name,
+				audience: 'curriculum-manager' as const,
+				permission: 'curriculum.manage' as const
+			})
+		)
 	}
 ]);

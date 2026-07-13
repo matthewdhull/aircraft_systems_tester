@@ -20,11 +20,15 @@ const SAFE_METADATA_KEYS = new Set([
 	'active',
 	'changedFields',
 	'count',
+	'decision',
 	'displayName',
 	'employeeNumber',
 	'expiresAt',
 	'firstName',
+	'fromPosition',
 	'lastName',
+	'nodeType',
+	'position',
 	'previousValue',
 	'reason',
 	'replacementValue',
@@ -34,7 +38,11 @@ const SAFE_METADATA_KEYS = new Set([
 	'roles',
 	'grantedRoleCode',
 	'revokedRoleCode',
-	'status'
+	'sourceType',
+	'status',
+	'targetType',
+	'toPosition',
+	'version'
 ]);
 
 const SENSITIVE_KEY_PARTS = [

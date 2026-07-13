@@ -111,4 +111,47 @@ describe('audit event writer', () => {
 		);
 		expect(sqlite.prepare('SELECT count(*) FROM audit_events').pluck().get()).toBe(0);
 	});
+
+	it('allows only the safe Phase 5 curriculum metadata vocabulary', () => {
+		const { db, sqlite } = auditDatabase();
+		recordAuditEvent(db, {
+			actorUserId: null,
+			action: 'curriculum.siblings.reordered',
+			entityType: 'curriculum',
+			entityId: '10000000-0000-4000-8000-000000000001',
+			occurredAt: new Date('2030-01-02T03:04:05.000Z'),
+			after: {
+				nodeType: 'task',
+				version: 2,
+				status: 'draft',
+				position: 1,
+				fromPosition: 0,
+				toPosition: 1,
+				count: 2,
+				decision: 'approve',
+				sourceType: 'spo',
+				targetType: 'task',
+				reason: 'reviewed change'
+			}
+		});
+
+		const persisted = sqlite.prepare('SELECT after_json FROM audit_events').pluck().get();
+		expect(JSON.parse(String(persisted))).toMatchObject({
+			nodeType: 'task',
+			decision: 'approve',
+			sourceType: 'spo',
+			targetType: 'task'
+		});
+		expect(() =>
+			recordAuditEvent(db, {
+				actorUserId: null,
+				action: 'curriculum.mapping.proposed',
+				entityType: 'curriculum_mapping',
+				entityId: '10000000-0000-4000-8000-000000000002',
+				occurredAt: new Date('2030-01-02T03:04:05.000Z'),
+				after: { rationale: 'must not persist', sourceId: 'must not persist' }
+			})
+		).toThrow(UnsafeAuditMetadataError);
+		expect(sqlite.prepare('SELECT count(*) FROM audit_events').pluck().get()).toBe(1);
+	});
 });
