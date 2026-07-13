@@ -4,6 +4,8 @@ import { describe, expect, it } from 'vitest';
 
 import {
 	ARGON2ID_PARAMETERS,
+	MAXIMUM_PASSWORD_LENGTH,
+	MINIMUM_PASSWORD_LENGTH,
 	hashPassword,
 	passwordNeedsRehash,
 	validatePassword,
@@ -42,9 +44,22 @@ describe('Argon2id password policy', () => {
 		expect(passwordNeedsRehash(encoded)).toBe(true);
 	});
 
-	it('rejects malformed hashes and out-of-policy password lengths safely', () => {
+	it('accepts 8 through 256 characters and rejects values outside those boundaries', () => {
+		expect(validatePassword('x'.repeat(MINIMUM_PASSWORD_LENGTH - 1))).toMatchObject({
+			ok: false,
+			error: 'invalid_input',
+			message: 'Use at least 8 characters.'
+		});
+		expect(validatePassword('x'.repeat(MINIMUM_PASSWORD_LENGTH))).toEqual({ ok: true });
+		expect(validatePassword('x'.repeat(MAXIMUM_PASSWORD_LENGTH))).toEqual({ ok: true });
+		expect(validatePassword('x'.repeat(MAXIMUM_PASSWORD_LENGTH + 1))).toMatchObject({
+			ok: false,
+			error: 'invalid_input'
+		});
+	});
+
+	it('rejects malformed hashes safely', () => {
 		expect(verifyPassword(syntheticPassword(), 'not-a-password-hash')).toBe(false);
 		expect(passwordNeedsRehash('not-a-password-hash')).toBe(true);
-		expect(validatePassword('short')).toMatchObject({ ok: false, error: 'invalid_input' });
 	});
 });

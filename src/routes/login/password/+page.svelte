@@ -1,6 +1,11 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import { Button, ErrorSummary, Panel, TextField } from '$lib/components';
+	import {
+		MAXIMUM_PASSWORD_LENGTH,
+		MINIMUM_PASSWORD_LENGTH,
+		PASSWORD_REQUIREMENT_MESSAGE
+	} from '$lib/password-policy';
 
 	import type { ActionData } from './$types';
 
@@ -22,7 +27,9 @@
 				name="password"
 				type="password"
 				label="New password"
-				description="Use at least 14 characters."
+				description={PASSWORD_REQUIREMENT_MESSAGE}
+				minlength={MINIMUM_PASSWORD_LENGTH}
+				maxlength={MAXIMUM_PASSWORD_LENGTH}
 				autocomplete="new-password"
 				required
 			/>
@@ -31,6 +38,8 @@
 				name="confirmation"
 				type="password"
 				label="Confirm new password"
+				minlength={MINIMUM_PASSWORD_LENGTH}
+				maxlength={MAXIMUM_PASSWORD_LENGTH}
 				autocomplete="new-password"
 				required
 			/>

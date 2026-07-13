@@ -1,0 +1,3 @@
+export const MINIMUM_PASSWORD_LENGTH = 8;
+export const MAXIMUM_PASSWORD_LENGTH = 256;
+export const PASSWORD_REQUIREMENT_MESSAGE = `Use at least ${MINIMUM_PASSWORD_LENGTH} characters.`;

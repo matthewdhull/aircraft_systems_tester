@@ -1,6 +1,9 @@
 #!/usr/bin/env node
 import { recordAuditEvent } from '../../src/lib/server/audit/index.js';
-import { bootstrapFirstAdministrator } from '../../src/lib/server/auth/index.js';
+import {
+	bootstrapFirstAdministrator,
+	MINIMUM_PASSWORD_LENGTH
+} from '../../src/lib/server/auth/index.js';
 import { seedBaselineAuthorization } from '../../src/lib/server/authorization/index.js';
 import { openDatabase } from '../../src/lib/server/db/index.js';
 import { readHidden } from './read-hidden.js';
@@ -37,7 +40,9 @@ function parseOptions(arguments_: string[]): Options {
 
 async function main(): Promise<void> {
 	const options = parseOptions(process.argv.slice(2));
-	const password = await readHidden('New administrator password: ');
+	const password = await readHidden(
+		`New administrator password (minimum ${MINIMUM_PASSWORD_LENGTH} characters): `
+	);
 	const database = openDatabase({ path: options.database });
 	try {
 		database.transaction((tx) => seedBaselineAuthorization(tx, new Date().toISOString()));

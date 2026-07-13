@@ -17,6 +17,11 @@ export {
 	verifyPassword
 } from './password.js';
 export {
+	MAXIMUM_PASSWORD_LENGTH,
+	MINIMUM_PASSWORD_LENGTH,
+	PASSWORD_REQUIREMENT_MESSAGE
+} from '../../password-policy.js';
+export {
 	PASSWORD_ACTION_LIFETIME_MS,
 	PASSWORD_ACTION_TOKEN_BYTES,
 	PasswordActionService,

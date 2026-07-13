@@ -4,7 +4,7 @@
 
 Application identities are new UUID-based `users` records. Employee numbers are unique strings and are never authorization keys. Authentication never reads or imports legacy instructor, login, password, access-code, or session data.
 
-Passwords are encoded as Argon2id PHC strings using Node 24's native implementation with version 19, 19,456 KiB memory, two passes, parallelism two, a 16-byte random salt, and a 32-byte tag. These reviewed parameters are constants in `src/lib/server/auth/password.ts`. A successful login replaces a valid hash whose parameters differ. Passwords must contain 14–256 characters. No password is returned, audited, or logged.
+Passwords are encoded as Argon2id PHC strings using Node 24's native implementation with version 19, 19,456 KiB memory, two passes, parallelism two, a 16-byte random salt, and a 32-byte tag. These reviewed parameters are constants in `src/lib/server/auth/password.ts`. A successful login replaces a valid hash whose parameters differ. Passwords must contain 8–256 characters. No password is returned, audited, or logged.
 
 All credential/account failures return `authentication_failed`; unknown employee number, wrong password, missing hash, and pending, suspended, or retired status are indistinguishable. A precomputed synthetic dummy hash ensures unknown accounts still execute Argon2id verification. The shared bounded login limiter consumes both a network key and normalized account key before every lookup.
 

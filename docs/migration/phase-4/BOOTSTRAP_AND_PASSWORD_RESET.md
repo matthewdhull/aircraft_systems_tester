@@ -4,15 +4,22 @@ No default administrator, default password, hidden account, or legacy credential
 
 ## First administrator
 
-1. Initialize the database through migration `0006`.
+1. From the repository root, initialize a new local database through migration `0006`:
+
+   ```sh
+   npm run migration:migrate -- "$PWD/.runtime/application.sqlite"
+   ```
+
+   For another environment, replace that path with the actual writable database path used by the application. Do not copy an illustrative root path literally.
+
 2. Stop application processes that could create identities concurrently.
 3. Run:
 
    ```sh
-   npm run auth:bootstrap -- --database /absolute/path/to/application.sqlite --employee-number 00000 --first-name Synthetic --last-name Operator
+   npm run auth:bootstrap -- --database "$PWD/.runtime/application.sqlite" --employee-number 00000 --first-name Synthetic --last-name Operator
    ```
 
-   Replace every illustrative identity value. The command prompts for the new password with terminal echo disabled. It refuses piped/non-interactive secret input and has no password argument.
+   Replace every illustrative identity value. The command displays the 8-character minimum before prompting for the new password with terminal echo disabled. It refuses piped/non-interactive secret input and has no password argument.
 
 4. Start the application and sign in normally. Verify the `bootstrap.administrator.created` audit event through the protected audit process.
 

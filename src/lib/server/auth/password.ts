@@ -1,5 +1,11 @@
 import { argon2Sync, randomBytes, timingSafeEqual } from 'node:crypto';
 
+import {
+	MAXIMUM_PASSWORD_LENGTH,
+	MINIMUM_PASSWORD_LENGTH,
+	PASSWORD_REQUIREMENT_MESSAGE
+} from '$lib/password-policy';
+
 export interface Argon2idParameters {
 	version: number;
 	memoryKiB: number;
@@ -25,11 +31,15 @@ export type PasswordValidation =
 	{ ok: true } | { ok: false; error: 'invalid_input'; message: string };
 
 export function validatePassword(password: string): PasswordValidation {
-	if (password.length < 14) {
-		return { ok: false, error: 'invalid_input', message: 'Use at least 14 characters.' };
+	if (password.length < MINIMUM_PASSWORD_LENGTH) {
+		return { ok: false, error: 'invalid_input', message: PASSWORD_REQUIREMENT_MESSAGE };
 	}
-	if (password.length > 256) {
-		return { ok: false, error: 'invalid_input', message: 'Use no more than 256 characters.' };
+	if (password.length > MAXIMUM_PASSWORD_LENGTH) {
+		return {
+			ok: false,
+			error: 'invalid_input',
+			message: `Use no more than ${MAXIMUM_PASSWORD_LENGTH} characters.`
+		};
 	}
 	return { ok: true };
 }
