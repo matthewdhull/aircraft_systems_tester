@@ -238,7 +238,9 @@ export const testTemplateVersions = sqliteTable(
 		reviewedByUserId: text('reviewed_by_user_id').references(() => users.id, {
 			onDelete: 'set null'
 		}),
+		reviewedAt: text('reviewed_at'),
 		createdAt: text('created_at').notNull(),
+		submittedAt: text('submitted_at'),
 		publishedAt: text('published_at'),
 		effectiveFrom: text('effective_from'),
 		effectiveTo: text('effective_to'),
@@ -270,7 +272,11 @@ export const testTemplateVersions = sqliteTable(
 		),
 		check(
 			'test_template_versions_reviewer_ck',
-			sql`${table.reviewedByUserId} is null or ${table.reviewedByUserId} <> ${table.authoredByUserId}`
+			sql`(${table.reviewedByUserId} is null and ${table.reviewedAt} is null) or (${table.reviewedByUserId} is not null and ${table.reviewedAt} is not null and ${table.authoredByUserId} is not null and ${table.reviewedByUserId} <> ${table.authoredByUserId})`
+		),
+		check(
+			'test_template_versions_lifecycle_dates_ck',
+			sql`(${table.lifecycle} = 'draft' and ${table.publishedAt} is null and ${table.retiredAt} is null) or (${table.lifecycle} = 'review' and ${table.submittedAt} is not null and ${table.publishedAt} is null and ${table.retiredAt} is null) or (${table.lifecycle} = 'published' and ${table.submittedAt} is not null and ${table.reviewedByUserId} is not null and ${table.reviewedAt} is not null and ${table.publishedAt} is not null and ${table.effectiveFrom} is not null and ${table.retiredAt} is null) or (${table.lifecycle} = 'retired' and ${table.submittedAt} is not null and ${table.reviewedByUserId} is not null and ${table.reviewedAt} is not null and ${table.publishedAt} is not null and ${table.effectiveFrom} is not null and ${table.retiredAt} is not null)`
 		)
 	]
 );
@@ -305,21 +311,29 @@ export const testTemplateRules = sqliteTable(
 export const testTemplateRequiredElements = sqliteTable(
 	'test_template_required_elements',
 	{
+		id: text('id').primaryKey(),
 		testTemplateVersionId: text('test_template_version_id')
 			.notNull()
 			.references(() => testTemplateVersions.id, { onDelete: 'cascade' }),
 		elementVersionId: text('element_version_id')
 			.notNull()
 			.references(() => elementVersions.id, { onDelete: 'restrict' }),
+		subtaskVersionId: text('subtask_version_id')
+			.notNull()
+			.references(() => subtaskVersions.id, { onDelete: 'restrict' }),
 		position: integer('position').notNull()
 	},
 	(table) => [
-		primaryKey({ columns: [table.testTemplateVersionId, table.elementVersionId] }),
+		uniqueIndex('test_template_required_elements_element_uq').on(
+			table.testTemplateVersionId,
+			table.elementVersionId
+		),
 		uniqueIndex('test_template_required_elements_position_uq').on(
 			table.testTemplateVersionId,
 			table.position
 		),
 		index('test_template_required_elements_element_idx').on(table.elementVersionId),
+		index('test_template_required_elements_subtask_idx').on(table.subtaskVersionId),
 		check('test_template_required_elements_position_ck', sql`${table.position} >= 0`)
 	]
 );
@@ -343,7 +357,11 @@ export const legacyTemplateSources = sqliteTable(
 			{
 				onDelete: 'restrict'
 			}
-		)
+		),
+		adoptedByUserId: text('adopted_by_user_id').references(() => users.id, {
+			onDelete: 'restrict'
+		}),
+		adoptedAt: text('adopted_at')
 	},
 	(table) => [
 		uniqueIndex('legacy_template_sources_source_uq').on(
@@ -367,6 +385,10 @@ export const legacyTemplateSources = sqliteTable(
 		check(
 			'legacy_template_sources_length_ck',
 			sql`${table.configuredLength} is null or ${table.configuredLength} > 0`
+		),
+		check(
+			'legacy_template_sources_adoption_ck',
+			sql`(${table.reconciliationState} = 'mapped' and ${table.mappedTemplateVersionId} is not null and ${table.adoptedByUserId} is not null and ${table.adoptedAt} is not null) or (${table.reconciliationState} <> 'mapped' and ${table.mappedTemplateVersionId} is null and ${table.adoptedByUserId} is null and ${table.adoptedAt} is null)`
 		)
 	]
 );

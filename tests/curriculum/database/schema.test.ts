@@ -18,12 +18,12 @@ function database(): DatabaseHandle {
 }
 
 describe('Phase 5 ordered curriculum migrations', () => {
-	it('remains intact after the ordered Phase 6 migration', () => {
+	it('remains intact after the ordered Phase 7 migration', () => {
 		const handle = database();
 		expect(handle.sqlite.pragma('foreign_key_check')).toEqual([]);
 		expect(handle.sqlite.pragma('integrity_check', { simple: true })).toBe('ok');
 		expect(handle.sqlite.prepare('SELECT count(*) FROM __drizzle_migrations').pluck().get()).toBe(
-			11
+			12
 		);
 		for (const table of [
 			'phases',

@@ -15,10 +15,10 @@ afterEach(() => {
 });
 
 describe('Phase 6 ordered question-bank migration', () => {
-	it('initializes 65 application tables through 0010 with integrity intact', () => {
+	it('initializes 65 application tables through 0011 with integrity intact', () => {
 		const handle = database();
 		expect(handle.sqlite.prepare('SELECT count(*) FROM __drizzle_migrations').pluck().get()).toBe(
-			11
+			12
 		);
 		expect(
 			handle.sqlite

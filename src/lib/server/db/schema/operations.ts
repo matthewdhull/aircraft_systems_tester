@@ -12,7 +12,13 @@ import {
 } from 'drizzle-orm/sqlite-core';
 
 import { approvedCourseOfferings, users } from './core.js';
-import { questionOptions, questionVersions, testTemplateVersions } from './content.js';
+import {
+	questionOptions,
+	questionVersions,
+	testTemplateRules,
+	testTemplateVersions
+} from './content.js';
+import { elementVersions } from './curriculum.js';
 
 export const classRosters = sqliteTable(
 	'class_rosters',
@@ -77,7 +83,10 @@ export const examInstances = sqliteTable(
 		status: text('status').notNull().default('draft'),
 		accessCodeHash: text('access_code_hash'),
 		randomSeedCiphertext: text('random_seed_ciphertext').notNull(),
+		randomSeedEnvelopeVersion: text('random_seed_envelope_version').notNull(),
+		randomSeedKeyId: text('random_seed_key_id').notNull(),
 		randomAlgorithmVersion: text('random_algorithm_version').notNull(),
+		accessCodeProtectionVersion: text('access_code_protection_version'),
 		publishedAt: text('published_at'),
 		startClosesAt: text('start_closes_at'),
 		createdAt: text('created_at').notNull(),
@@ -97,7 +106,7 @@ export const examInstances = sqliteTable(
 		),
 		check(
 			'exam_instances_publication_ck',
-			sql`(${table.status} = 'draft') or (${table.publishedAt} is not null and ${table.startClosesAt} is not null and ${table.accessCodeHash} is not null)`
+			sql`(${table.status} = 'draft') or (${table.publishedAt} is not null and ${table.startClosesAt} is not null and ${table.startClosesAt} > ${table.publishedAt} and ${table.accessCodeHash} is not null and ${table.accessCodeProtectionVersion} is not null)`
 		)
 	]
 );
@@ -114,6 +123,13 @@ export const examQuestions = sqliteTable(
 			{
 				onDelete: 'restrict'
 			}
+		),
+		testTemplateRuleId: text('test_template_rule_id')
+			.notNull()
+			.references(() => testTemplateRules.id, { onDelete: 'restrict' }),
+		mandatoryElementVersionId: text('mandatory_element_version_id').references(
+			() => elementVersions.id,
+			{ onDelete: 'restrict' }
 		),
 		position: integer('position').notNull(),
 		questionType: text('question_type').notNull(),
