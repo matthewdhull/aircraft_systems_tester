@@ -26,4 +26,8 @@ jobs:
       - run: npm run lint
       - run: npm run check
       - run: npm test
+      - run: npm run migration:migrate -- .runtime/ci-schema.sqlite
+      - run: npm run migration:import:fixture -- --target .runtime/ci-import.sqlite
+      - run: npm run migration:reconcile -- --database .runtime/ci-import.sqlite --json .runtime/ci-reconciliation.json
+      - run: npm run migration:verify -- .runtime/ci-import.sqlite
       - run: npm run build

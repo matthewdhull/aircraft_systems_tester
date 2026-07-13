@@ -50,6 +50,36 @@ npm run build
 npm start
 ```
 
+## Phase 3 migration commands
+
+Migration commands write only to ignored local storage. Use `.runtime/` for targets and reports.
+The authoritative command verifies the fixed approved checksum before parsing and must run only in
+the authorized offline environment. Its output is safe counts only.
+
+```sh
+# Create and verify an empty migrated target.
+npm run migration:migrate -- .runtime/empty.sqlite
+
+# Inspect or import the synthetic Phase 1 fixture.
+npm run migration:profile:fixture
+npm run migration:import:fixture -- --target .runtime/fixture.sqlite
+
+# Import the protected authoritative source without printing content.
+npm run migration:import:authoritative -- --target .runtime/authoritative.sqlite
+
+# Produce safe reconciliation output and verify the migrated database.
+npm run migration:reconcile -- --database .runtime/fixture.sqlite \
+  --json .runtime/reconciliation.json --markdown .runtime/reconciliation.md
+npm run migration:verify -- .runtime/fixture.sqlite
+
+# Compare two independently imported targets.
+npm run migration:reconcile -- --database .runtime/first.sqlite \
+  --compare .runtime/second.sqlite --json .runtime/comparison.json
+```
+
+Do not commit SQLite databases, reconciliation output from the authoritative source, restricted
+quarantine artifacts, or temporary MySQL data. CI uses the synthetic fixture only.
+
 After `npm run build`, `npm start` runs `node build`. With the example environment loaded:
 
 - `GET /health` proves the Node process responds.

@@ -1,5 +1,6 @@
 .svelte-kit
 build
+drizzle/meta
 node_modules
 package-lock.json
 CSS
