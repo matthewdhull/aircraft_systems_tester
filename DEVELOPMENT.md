@@ -31,7 +31,7 @@ data. They are removed or closed by the test harness.
 | ----------- | ----------------------------------------------------------------------------------------------------------------------------------- |
 | Development | Loads local `.env`; use `.runtime/` and synthetic data.                                                                             |
 | Test/CI     | Tests inject temporary or in-memory database paths; CI uses an ignored local path.                                                  |
-| Preview     | `npm run preview` serves a Vite preview for inspection, not the production artifact.                                                |
+| Preview     | Build with `APP_ENV=development`, then `npm run preview` serves a Vite preview for inspection, not the production artifact.         |
 | Production  | `npm start` runs the adapter-node artifact. `DATABASE_PATH` must identify persistent local/block storage and may not be `:memory:`. |
 
 `APP_ENV` accepts `development`, `test`, or `production`; `LOG_LEVEL` accepts `debug`, `info`,
@@ -91,6 +91,23 @@ Both endpoints return generic status only. They never return environment values 
 paths. Adapter-node handles `SIGTERM`/`SIGINT` and dispatches its shutdown event; the readiness
 database handle closes during that event.
 
+For the standard local acceptance preview, preserve the existing ignored preview database and use
+port 5173. The development-only build trusts the two equivalent loopback browser origins while
+production and test builds keep the SvelteKit trusted-origin list empty:
+
+```sh
+APP_ENV=development npm run build
+APP_ENV=development DATABASE_PATH=.runtime/phase4-preview.sqlite \
+  ORIGIN=http://127.0.0.1:5173 npm run preview -- --host 127.0.0.1 --port 5173
+npm run preview:smoke -- --url http://127.0.0.1:5173
+```
+
+The smoke check proves `127.0.0.1`, `localhost`, and the captured opaque (`Origin: null`) local
+preview transport can reach the login action while an unrelated cross-site origin remains
+forbidden. The opaque origin is trusted only in an explicit development build, which must remain
+bound to loopback and should run only during local acceptance testing. Production and test builds
+keep an empty trusted-origin list. Do not disable SvelteKit's origin check to make a preview work.
+
 ## Phase 4 authentication and account operations
 
 Phase 4 adds no default account, password, token, or authentication secret to environment files.
@@ -127,6 +144,69 @@ sensitive request bodies in source, fixtures, command arguments, environment var
 audit metadata, snapshots, tickets, or reports. Tests generate ephemeral credential values at
 runtime. Account lifecycle/role/identifier changes and security-sensitive session actions are
 audited with allow-listed metadata only.
+
+## Phase 5 curriculum modeling
+
+Applying all ordered migrations creates the Phase → Task → Subtask → Element tables and Bloom
+vocabulary with zero rows. This empty state is intentional: the authoritative export contains no
+future hierarchy or Bloom records. Do not seed a remembered taxonomy, reuse TPO/SPO/EO identifiers,
+or generate legacy-to-future mappings. An active user with the `curriculum.manage` permission can
+open `/admin/curriculum` and create the first Phase draft; child drafts are created beneath an
+explicit parent version.
+
+Curriculum content uses immutable UUID identities and numbered versions. Creation produces version
+1 in draft. Draft content may be edited, reordered, or copied into a later draft without changing a
+published version. Submit moves a draft to review. A distinct authorized reviewer records approval
+before publication; an author cannot review or publish their own version, including when the author
+is an Administrator. Published children require a published/effective parent chain. Published or
+referenced content is retired rather than hard-deleted; only an unreferenced draft can be deleted
+after a fresh server-derived dependency check.
+
+Sibling positions are zero-based and contiguous. Reorder forms submit the complete sibling order
+and a revision; stale orders fail without partial writes. Do not edit position columns manually in
+a local database. Use `/admin/curriculum/bloom` to create, publish, and retire controlled Bloom
+levels and verbs. The selector contains stored vocabulary only and remains empty until a Curriculum
+Manager explicitly authors it.
+
+Legacy TPO/SPO/EO remains read-only under `/admin/curriculum/mappings`. A mapping starts proposed
+and becomes approved, rejected, or retired only through an attributable review with rationale.
+Approval does not create a question-to-future-curriculum link and does not make a legacy question
+generation-eligible; that work belongs to Phase 6.
+
+Run the complete or focused curriculum suites with:
+
+```sh
+npm run curriculum:test
+npm test
+```
+
+Run safe, read-only legacy mapping reconciliation against an ignored local database with:
+
+```sh
+npm run curriculum:reconcile -- --database .runtime/fixture.sqlite \
+  --json .runtime/curriculum-mapping.json \
+  --markdown .runtime/curriculum-mapping.md
+```
+
+The report contains counts and check names only. Do not commit SQLite databases or reconciliation
+outputs, and do not expose source IDs, internal UUIDs, question/answer content, quarantine payloads,
+people, or filesystem paths.
+
+Only the curriculum schema owner may change `src/lib/server/db/schema/curriculum.ts` or generate
+Phase 5 Drizzle migrations. Ordered migrations `0007`–`0009` extend the immutable `0000`–`0006`
+chain. After a schema change, review the SQL and Drizzle snapshot/journal, then verify a clean
+target:
+
+```sh
+npx --no-install drizzle-kit check
+npm run migration:migrate -- .runtime/phase5-empty.sqlite
+npm run curriculum:test
+```
+
+All curriculum loads and mutations require the real Phase 4 session, origin/CSRF behavior, and
+`curriculum.manage` server guard. Navigation visibility is not authorization. Audit events persist
+only safe lifecycle/type/count metadata and never curriculum text, mapping rationale, source IDs,
+question content, credentials, tokens, or cookies.
 
 ## SQLite deployment contract
 

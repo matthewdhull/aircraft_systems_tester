@@ -12,6 +12,7 @@
 		"dev": "vite dev",
 		"build": "vite build",
 		"preview": "vite preview",
+		"preview:smoke": "node --import tsx scripts/preview/smoke-origin.ts",
 		"start": "node build",
 		"prepare": "svelte-kit sync",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
@@ -27,6 +28,8 @@
 		"migration:import:authoritative": "node --import tsx scripts/migration/import-legacy.ts --source authoritative",
 		"migration:reconcile": "node --import tsx scripts/migration/reconcile.ts",
 		"migration:verify": "node --import tsx scripts/migration/verify-migration.ts --database",
+		"curriculum:test": "vitest run tests/curriculum",
+		"curriculum:reconcile": "node --import tsx scripts/curriculum/reconcile-mappings.ts",
 		"test:unit": "vitest",
 		"test": "vitest run --passWithNoTests"
 	},
