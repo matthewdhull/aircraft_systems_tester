@@ -23,6 +23,8 @@ node_modules/
 .svelte-kit/
 build/
 coverage/
+playwright-report/
+test-results/
 .runtime/
 *.db
 *.db-*

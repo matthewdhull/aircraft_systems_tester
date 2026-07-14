@@ -17,7 +17,9 @@ export default defineConfig({
 						'tests/curriculum/ui/**',
 						'tests/curriculum/accessibility/**',
 						'tests/questions/ui/**',
-						'tests/questions/accessibility/**'
+						'tests/questions/accessibility/**',
+						'tests/generation/accessibility/**',
+						'tests/generation/e2e/**'
 					]
 				}
 			},
@@ -36,7 +38,8 @@ export default defineConfig({
 						'tests/curriculum/ui/**/*.{test,spec}.{js,ts}',
 						'tests/curriculum/accessibility/**/*.{test,spec}.{js,ts}',
 						'tests/questions/ui/**/*.{test,spec}.{js,ts}',
-						'tests/questions/accessibility/**/*.{test,spec}.{js,ts}'
+						'tests/questions/accessibility/**/*.{test,spec}.{js,ts}',
+						'tests/generation/accessibility/**/*.{test,spec}.{js,ts}'
 					],
 					exclude: ['src/lib/server/**']
 				}
