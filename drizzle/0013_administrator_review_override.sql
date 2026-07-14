@@ -1,4 +1,6 @@
 PRAGMA foreign_keys=OFF;--> statement-breakpoint
+PRAGMA defer_foreign_keys=ON;--> statement-breakpoint
+PRAGMA legacy_alter_table=ON;--> statement-breakpoint
 CREATE TABLE `__new_question_future_curriculum_links` (
 	`question_version_id` text NOT NULL,
 	`subtask_version_id` text NOT NULL,
@@ -14,8 +16,8 @@ CREATE TABLE `__new_question_future_curriculum_links` (
 	FOREIGN KEY (`element_version_id`) REFERENCES `element_versions`(`id`) ON UPDATE no action ON DELETE restrict,
 	FOREIGN KEY (`proposed_by_user_id`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE restrict,
 	FOREIGN KEY (`reviewed_by_user_id`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE restrict,
-	CONSTRAINT "question_future_curriculum_status_ck" CHECK("__new_question_future_curriculum_links"."mapping_status" in ('review', 'approved', 'retired')),
-	CONSTRAINT "question_future_curriculum_review_ck" CHECK(("__new_question_future_curriculum_links"."mapping_status" = 'review' and "__new_question_future_curriculum_links"."reviewed_at" is null and "__new_question_future_curriculum_links"."reviewed_by_user_id" is null) or ("__new_question_future_curriculum_links"."mapping_status" <> 'review' and "__new_question_future_curriculum_links"."reviewed_at" is not null and "__new_question_future_curriculum_links"."reviewed_by_user_id" is not null))
+	CONSTRAINT "question_future_curriculum_status_ck" CHECK("mapping_status" in ('review', 'approved', 'retired')),
+	CONSTRAINT "question_future_curriculum_review_ck" CHECK(("mapping_status" = 'review' and "reviewed_at" is null and "reviewed_by_user_id" is null) or ("mapping_status" <> 'review' and "reviewed_at" is not null and "reviewed_by_user_id" is not null))
 );
 --> statement-breakpoint
 INSERT INTO `__new_question_future_curriculum_links`("question_version_id", "subtask_version_id", "element_version_id", "mapping_status", "proposed_by_user_id", "proposed_at", "reviewed_by_user_id", "reviewed_at") SELECT "question_version_id", "subtask_version_id", "element_version_id", "mapping_status", "proposed_by_user_id", "proposed_at", "reviewed_by_user_id", "reviewed_at" FROM `question_future_curriculum_links`;--> statement-breakpoint

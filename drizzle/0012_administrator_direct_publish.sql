@@ -1,4 +1,6 @@
 PRAGMA foreign_keys=OFF;--> statement-breakpoint
+PRAGMA defer_foreign_keys=ON;--> statement-breakpoint
+PRAGMA legacy_alter_table=ON;--> statement-breakpoint
 DROP TRIGGER `published_template_content_immutable`;--> statement-breakpoint
 DROP TRIGGER `published_template_rules_no_insert`;--> statement-breakpoint
 DROP TRIGGER `published_template_rules_no_update`;--> statement-breakpoint
@@ -27,11 +29,11 @@ CREATE TABLE `__new_element_versions` (
 	FOREIGN KEY (`subtask_version_id`) REFERENCES `subtask_versions`(`id`) ON UPDATE no action ON DELETE restrict,
 	FOREIGN KEY (`authored_by_user_id`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE restrict,
 	FOREIGN KEY (`reviewed_by_user_id`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE set null,
-	CONSTRAINT "element_versions_values_ck" CHECK("__new_element_versions"."version" > 0 and "__new_element_versions"."position" >= 0),
-	CONSTRAINT "element_versions_status_ck" CHECK("__new_element_versions"."status" in ('draft', 'review', 'published', 'retired')),
-	CONSTRAINT "element_versions_dates_ck" CHECK("__new_element_versions"."effective_to" is null or "__new_element_versions"."effective_from" is null or "__new_element_versions"."effective_to" > "__new_element_versions"."effective_from"),
-	CONSTRAINT "element_versions_reviewer_ck" CHECK(("__new_element_versions"."reviewed_by_user_id" is null and "__new_element_versions"."reviewed_at" is null) or ("__new_element_versions"."reviewed_by_user_id" is not null and "__new_element_versions"."reviewed_at" is not null)),
-	CONSTRAINT "element_versions_publication_ck" CHECK("__new_element_versions"."status" not in ('published', 'retired') or ("__new_element_versions"."reviewed_by_user_id" is not null and "__new_element_versions"."reviewed_at" is not null and "__new_element_versions"."published_at" is not null and "__new_element_versions"."effective_from" is not null))
+	CONSTRAINT "element_versions_values_ck" CHECK("version" > 0 and "position" >= 0),
+	CONSTRAINT "element_versions_status_ck" CHECK("status" in ('draft', 'review', 'published', 'retired')),
+	CONSTRAINT "element_versions_dates_ck" CHECK("effective_to" is null or "effective_from" is null or "effective_to" > "effective_from"),
+	CONSTRAINT "element_versions_reviewer_ck" CHECK(("reviewed_by_user_id" is null and "reviewed_at" is null) or ("reviewed_by_user_id" is not null and "reviewed_at" is not null)),
+	CONSTRAINT "element_versions_publication_ck" CHECK("status" not in ('published', 'retired') or ("reviewed_by_user_id" is not null and "reviewed_at" is not null and "published_at" is not null and "effective_from" is not null))
 );
 --> statement-breakpoint
 INSERT INTO `__new_element_versions`("id", "element_id", "subtask_version_id", "version", "name", "description", "position", "status", "effective_from", "effective_to", "authored_by_user_id", "reviewed_by_user_id", "reviewed_at", "created_at", "published_at", "retired_at") SELECT "id", "element_id", "subtask_version_id", "version", "name", "description", "position", "status", "effective_from", "effective_to", "authored_by_user_id", "reviewed_by_user_id", "reviewed_at", "created_at", "published_at", "retired_at" FROM `element_versions`;--> statement-breakpoint
@@ -63,11 +65,11 @@ CREATE TABLE `__new_phase_versions` (
 	FOREIGN KEY (`authored_by_user_id`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE restrict,
 	FOREIGN KEY (`reviewed_by_user_id`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE set null,
 	FOREIGN KEY (`bloom_verb_id`) REFERENCES `bloom_verbs`(`id`) ON UPDATE no action ON DELETE restrict,
-	CONSTRAINT "phase_versions_values_ck" CHECK("__new_phase_versions"."version" > 0 and "__new_phase_versions"."position" >= 0),
-	CONSTRAINT "phase_versions_status_ck" CHECK("__new_phase_versions"."status" in ('draft', 'review', 'published', 'retired')),
-	CONSTRAINT "phase_versions_dates_ck" CHECK("__new_phase_versions"."effective_to" is null or "__new_phase_versions"."effective_from" is null or "__new_phase_versions"."effective_to" > "__new_phase_versions"."effective_from"),
-	CONSTRAINT "phase_versions_reviewer_ck" CHECK(("__new_phase_versions"."reviewed_by_user_id" is null and "__new_phase_versions"."reviewed_at" is null) or ("__new_phase_versions"."reviewed_by_user_id" is not null and "__new_phase_versions"."reviewed_at" is not null)),
-	CONSTRAINT "phase_versions_publication_ck" CHECK("__new_phase_versions"."status" not in ('published', 'retired') or ("__new_phase_versions"."reviewed_by_user_id" is not null and "__new_phase_versions"."reviewed_at" is not null and "__new_phase_versions"."published_at" is not null and "__new_phase_versions"."effective_from" is not null))
+	CONSTRAINT "phase_versions_values_ck" CHECK("version" > 0 and "position" >= 0),
+	CONSTRAINT "phase_versions_status_ck" CHECK("status" in ('draft', 'review', 'published', 'retired')),
+	CONSTRAINT "phase_versions_dates_ck" CHECK("effective_to" is null or "effective_from" is null or "effective_to" > "effective_from"),
+	CONSTRAINT "phase_versions_reviewer_ck" CHECK(("reviewed_by_user_id" is null and "reviewed_at" is null) or ("reviewed_by_user_id" is not null and "reviewed_at" is not null)),
+	CONSTRAINT "phase_versions_publication_ck" CHECK("status" not in ('published', 'retired') or ("reviewed_by_user_id" is not null and "reviewed_at" is not null and "published_at" is not null and "effective_from" is not null))
 );
 --> statement-breakpoint
 INSERT INTO `__new_phase_versions`("id", "phase_id", "version", "name", "description", "position", "status", "effective_from", "effective_to", "authored_by_user_id", "reviewed_by_user_id", "reviewed_at", "created_at", "published_at", "retired_at", "bloom_verb_id") SELECT "id", "phase_id", "version", "name", "description", "position", "status", "effective_from", "effective_to", "authored_by_user_id", "reviewed_by_user_id", "reviewed_at", "created_at", "published_at", "retired_at", "bloom_verb_id" FROM `phase_versions`;--> statement-breakpoint
@@ -100,11 +102,11 @@ CREATE TABLE `__new_subtask_versions` (
 	FOREIGN KEY (`authored_by_user_id`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE restrict,
 	FOREIGN KEY (`reviewed_by_user_id`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE set null,
 	FOREIGN KEY (`bloom_verb_id`) REFERENCES `bloom_verbs`(`id`) ON UPDATE no action ON DELETE restrict,
-	CONSTRAINT "subtask_versions_values_ck" CHECK("__new_subtask_versions"."version" > 0 and "__new_subtask_versions"."position" >= 0),
-	CONSTRAINT "subtask_versions_status_ck" CHECK("__new_subtask_versions"."status" in ('draft', 'review', 'published', 'retired')),
-	CONSTRAINT "subtask_versions_dates_ck" CHECK("__new_subtask_versions"."effective_to" is null or "__new_subtask_versions"."effective_from" is null or "__new_subtask_versions"."effective_to" > "__new_subtask_versions"."effective_from"),
-	CONSTRAINT "subtask_versions_reviewer_ck" CHECK(("__new_subtask_versions"."reviewed_by_user_id" is null and "__new_subtask_versions"."reviewed_at" is null) or ("__new_subtask_versions"."reviewed_by_user_id" is not null and "__new_subtask_versions"."reviewed_at" is not null)),
-	CONSTRAINT "subtask_versions_publication_ck" CHECK("__new_subtask_versions"."status" not in ('published', 'retired') or ("__new_subtask_versions"."reviewed_by_user_id" is not null and "__new_subtask_versions"."reviewed_at" is not null and "__new_subtask_versions"."published_at" is not null and "__new_subtask_versions"."effective_from" is not null))
+	CONSTRAINT "subtask_versions_values_ck" CHECK("version" > 0 and "position" >= 0),
+	CONSTRAINT "subtask_versions_status_ck" CHECK("status" in ('draft', 'review', 'published', 'retired')),
+	CONSTRAINT "subtask_versions_dates_ck" CHECK("effective_to" is null or "effective_from" is null or "effective_to" > "effective_from"),
+	CONSTRAINT "subtask_versions_reviewer_ck" CHECK(("reviewed_by_user_id" is null and "reviewed_at" is null) or ("reviewed_by_user_id" is not null and "reviewed_at" is not null)),
+	CONSTRAINT "subtask_versions_publication_ck" CHECK("status" not in ('published', 'retired') or ("reviewed_by_user_id" is not null and "reviewed_at" is not null and "published_at" is not null and "effective_from" is not null))
 );
 --> statement-breakpoint
 INSERT INTO `__new_subtask_versions`("id", "subtask_id", "task_version_id", "version", "name", "description", "position", "status", "effective_from", "effective_to", "authored_by_user_id", "reviewed_by_user_id", "reviewed_at", "created_at", "published_at", "retired_at", "bloom_verb_id") SELECT "id", "subtask_id", "task_version_id", "version", "name", "description", "position", "status", "effective_from", "effective_to", "authored_by_user_id", "reviewed_by_user_id", "reviewed_at", "created_at", "published_at", "retired_at", "bloom_verb_id" FROM `subtask_versions`;--> statement-breakpoint
@@ -137,11 +139,11 @@ CREATE TABLE `__new_task_versions` (
 	FOREIGN KEY (`authored_by_user_id`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE restrict,
 	FOREIGN KEY (`reviewed_by_user_id`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE set null,
 	FOREIGN KEY (`bloom_verb_id`) REFERENCES `bloom_verbs`(`id`) ON UPDATE no action ON DELETE restrict,
-	CONSTRAINT "task_versions_values_ck" CHECK("__new_task_versions"."version" > 0 and "__new_task_versions"."position" >= 0),
-	CONSTRAINT "task_versions_status_ck" CHECK("__new_task_versions"."status" in ('draft', 'review', 'published', 'retired')),
-	CONSTRAINT "task_versions_dates_ck" CHECK("__new_task_versions"."effective_to" is null or "__new_task_versions"."effective_from" is null or "__new_task_versions"."effective_to" > "__new_task_versions"."effective_from"),
-	CONSTRAINT "task_versions_reviewer_ck" CHECK(("__new_task_versions"."reviewed_by_user_id" is null and "__new_task_versions"."reviewed_at" is null) or ("__new_task_versions"."reviewed_by_user_id" is not null and "__new_task_versions"."reviewed_at" is not null)),
-	CONSTRAINT "task_versions_publication_ck" CHECK("__new_task_versions"."status" not in ('published', 'retired') or ("__new_task_versions"."reviewed_by_user_id" is not null and "__new_task_versions"."reviewed_at" is not null and "__new_task_versions"."published_at" is not null and "__new_task_versions"."effective_from" is not null))
+	CONSTRAINT "task_versions_values_ck" CHECK("version" > 0 and "position" >= 0),
+	CONSTRAINT "task_versions_status_ck" CHECK("status" in ('draft', 'review', 'published', 'retired')),
+	CONSTRAINT "task_versions_dates_ck" CHECK("effective_to" is null or "effective_from" is null or "effective_to" > "effective_from"),
+	CONSTRAINT "task_versions_reviewer_ck" CHECK(("reviewed_by_user_id" is null and "reviewed_at" is null) or ("reviewed_by_user_id" is not null and "reviewed_at" is not null)),
+	CONSTRAINT "task_versions_publication_ck" CHECK("status" not in ('published', 'retired') or ("reviewed_by_user_id" is not null and "reviewed_at" is not null and "published_at" is not null and "effective_from" is not null))
 );
 --> statement-breakpoint
 INSERT INTO `__new_task_versions`("id", "task_id", "phase_version_id", "version", "name", "description", "position", "status", "effective_from", "effective_to", "authored_by_user_id", "reviewed_by_user_id", "reviewed_at", "created_at", "published_at", "retired_at", "bloom_verb_id") SELECT "id", "task_id", "phase_version_id", "version", "name", "description", "position", "status", "effective_from", "effective_to", "authored_by_user_id", "reviewed_by_user_id", "reviewed_at", "created_at", "published_at", "retired_at", "bloom_verb_id" FROM `task_versions`;--> statement-breakpoint
@@ -170,13 +172,13 @@ CREATE TABLE `__new_question_versions` (
 	FOREIGN KEY (`question_id`) REFERENCES `questions`(`id`) ON UPDATE no action ON DELETE restrict,
 	FOREIGN KEY (`authored_by_user_id`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE set null,
 	FOREIGN KEY (`reviewed_by_user_id`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE set null,
-	CONSTRAINT "question_versions_version_ck" CHECK("__new_question_versions"."version" > 0),
-	CONSTRAINT "question_versions_type_ck" CHECK("__new_question_versions"."question_type" in ('true_false', 'single_choice', 'two_correct_compound', 'all_correct', 'none_correct')),
-	CONSTRAINT "question_versions_lifecycle_ck" CHECK("__new_question_versions"."lifecycle" in ('draft', 'review', 'published', 'retired')),
-	CONSTRAINT "question_versions_generation_ck" CHECK("__new_question_versions"."generation_status" in ('blocked', 'eligible') and ("__new_question_versions"."generation_status" = 'blocked' or "__new_question_versions"."lifecycle" = 'published')),
-	CONSTRAINT "question_versions_dates_ck" CHECK("__new_question_versions"."effective_to" is null or "__new_question_versions"."effective_from" is null or "__new_question_versions"."effective_to" > "__new_question_versions"."effective_from"),
-	CONSTRAINT "question_versions_reviewer_ck" CHECK(("__new_question_versions"."reviewed_by_user_id" is null and "__new_question_versions"."reviewed_at" is null) or ("__new_question_versions"."reviewed_by_user_id" is not null and "__new_question_versions"."reviewed_at" is not null)),
-	CONSTRAINT "question_versions_publication_ck" CHECK("__new_question_versions"."lifecycle" not in ('published', 'retired') or ("__new_question_versions"."authored_by_user_id" is not null and "__new_question_versions"."reviewed_by_user_id" is not null and "__new_question_versions"."reviewed_at" is not null and "__new_question_versions"."published_at" is not null and "__new_question_versions"."effective_from" is not null))
+	CONSTRAINT "question_versions_version_ck" CHECK("version" > 0),
+	CONSTRAINT "question_versions_type_ck" CHECK("question_type" in ('true_false', 'single_choice', 'two_correct_compound', 'all_correct', 'none_correct')),
+	CONSTRAINT "question_versions_lifecycle_ck" CHECK("lifecycle" in ('draft', 'review', 'published', 'retired')),
+	CONSTRAINT "question_versions_generation_ck" CHECK("generation_status" in ('blocked', 'eligible') and ("generation_status" = 'blocked' or "lifecycle" = 'published')),
+	CONSTRAINT "question_versions_dates_ck" CHECK("effective_to" is null or "effective_from" is null or "effective_to" > "effective_from"),
+	CONSTRAINT "question_versions_reviewer_ck" CHECK(("reviewed_by_user_id" is null and "reviewed_at" is null) or ("reviewed_by_user_id" is not null and "reviewed_at" is not null)),
+	CONSTRAINT "question_versions_publication_ck" CHECK("lifecycle" not in ('published', 'retired') or ("authored_by_user_id" is not null and "reviewed_by_user_id" is not null and "reviewed_at" is not null and "published_at" is not null and "effective_from" is not null))
 );
 --> statement-breakpoint
 INSERT INTO `__new_question_versions`("id", "question_id", "version", "question_type", "lifecycle", "generation_status", "authored_by_user_id", "reviewed_by_user_id", "reviewed_at", "created_at", "submitted_at", "published_at", "effective_from", "effective_to", "retired_at") SELECT "id", "question_id", "version", "question_type", "lifecycle", "generation_status", "authored_by_user_id", "reviewed_by_user_id", "reviewed_at", "created_at", "submitted_at", "published_at", "effective_from", "effective_to", "retired_at" FROM `question_versions`;--> statement-breakpoint
@@ -210,11 +212,11 @@ CREATE TABLE `__new_test_template_versions` (
 	FOREIGN KEY (`course_type_id`) REFERENCES `course_types`(`id`) ON UPDATE no action ON DELETE restrict,
 	FOREIGN KEY (`authored_by_user_id`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE set null,
 	FOREIGN KEY (`reviewed_by_user_id`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE set null,
-	CONSTRAINT "test_template_versions_values_ck" CHECK("__new_test_template_versions"."version" > 0 and "__new_test_template_versions"."configured_length" > 0 and "__new_test_template_versions"."allotted_minutes" > 0),
-	CONSTRAINT "test_template_versions_lifecycle_ck" CHECK("__new_test_template_versions"."lifecycle" in ('draft', 'review', 'published', 'retired')),
-	CONSTRAINT "test_template_versions_dates_ck" CHECK("__new_test_template_versions"."effective_to" is null or "__new_test_template_versions"."effective_from" is null or "__new_test_template_versions"."effective_to" > "__new_test_template_versions"."effective_from"),
-	CONSTRAINT "test_template_versions_reviewer_ck" CHECK(("__new_test_template_versions"."reviewed_by_user_id" is null and "__new_test_template_versions"."reviewed_at" is null) or ("__new_test_template_versions"."reviewed_by_user_id" is not null and "__new_test_template_versions"."reviewed_at" is not null and "__new_test_template_versions"."authored_by_user_id" is not null)),
-	CONSTRAINT "test_template_versions_lifecycle_dates_ck" CHECK(("__new_test_template_versions"."lifecycle" = 'draft' and "__new_test_template_versions"."published_at" is null and "__new_test_template_versions"."retired_at" is null) or ("__new_test_template_versions"."lifecycle" = 'review' and "__new_test_template_versions"."submitted_at" is not null and "__new_test_template_versions"."published_at" is null and "__new_test_template_versions"."retired_at" is null) or ("__new_test_template_versions"."lifecycle" = 'published' and "__new_test_template_versions"."submitted_at" is not null and "__new_test_template_versions"."reviewed_by_user_id" is not null and "__new_test_template_versions"."reviewed_at" is not null and "__new_test_template_versions"."published_at" is not null and "__new_test_template_versions"."effective_from" is not null and "__new_test_template_versions"."retired_at" is null) or ("__new_test_template_versions"."lifecycle" = 'retired' and "__new_test_template_versions"."submitted_at" is not null and "__new_test_template_versions"."reviewed_by_user_id" is not null and "__new_test_template_versions"."reviewed_at" is not null and "__new_test_template_versions"."published_at" is not null and "__new_test_template_versions"."effective_from" is not null and "__new_test_template_versions"."retired_at" is not null))
+	CONSTRAINT "test_template_versions_values_ck" CHECK("version" > 0 and "configured_length" > 0 and "allotted_minutes" > 0),
+	CONSTRAINT "test_template_versions_lifecycle_ck" CHECK("lifecycle" in ('draft', 'review', 'published', 'retired')),
+	CONSTRAINT "test_template_versions_dates_ck" CHECK("effective_to" is null or "effective_from" is null or "effective_to" > "effective_from"),
+	CONSTRAINT "test_template_versions_reviewer_ck" CHECK(("reviewed_by_user_id" is null and "reviewed_at" is null) or ("reviewed_by_user_id" is not null and "reviewed_at" is not null and "authored_by_user_id" is not null)),
+	CONSTRAINT "test_template_versions_lifecycle_dates_ck" CHECK(("lifecycle" = 'draft' and "published_at" is null and "retired_at" is null) or ("lifecycle" = 'review' and "submitted_at" is not null and "published_at" is null and "retired_at" is null) or ("lifecycle" = 'published' and "submitted_at" is not null and "reviewed_by_user_id" is not null and "reviewed_at" is not null and "published_at" is not null and "effective_from" is not null and "retired_at" is null) or ("lifecycle" = 'retired' and "submitted_at" is not null and "reviewed_by_user_id" is not null and "reviewed_at" is not null and "published_at" is not null and "effective_from" is not null and "retired_at" is not null))
 );
 --> statement-breakpoint
 INSERT INTO `__new_test_template_versions`("id", "test_template_id", "version", "name", "aircraft_variant_id", "course_type_id", "configured_length", "allotted_minutes", "lifecycle", "authored_by_user_id", "reviewed_by_user_id", "reviewed_at", "created_at", "submitted_at", "published_at", "effective_from", "effective_to", "retired_at") SELECT "id", "test_template_id", "version", "name", "aircraft_variant_id", "course_type_id", "configured_length", "allotted_minutes", "lifecycle", "authored_by_user_id", "reviewed_by_user_id", "reviewed_at", "created_at", "submitted_at", "published_at", "effective_from", "effective_to", "retired_at" FROM `test_template_versions`;--> statement-breakpoint

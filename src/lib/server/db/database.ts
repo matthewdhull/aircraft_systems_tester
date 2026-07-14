@@ -125,12 +125,19 @@ export function openDatabase(rawOptions: OpenDatabaseOptions): DatabaseHandle {
 		}
 
 		sqlite = new Database(options.path, { timeout: options.busyTimeoutMs });
-		sqlite.pragma('foreign_keys = ON');
 		sqlite.pragma(`busy_timeout = ${options.busyTimeoutMs}`);
 		if (pathKind === 'persistent') sqlite.pragma('journal_mode = WAL');
 
 		const db = drizzle(sqlite, { schema: foundationSchema });
-		migrate(db, { migrationsFolder: options.migrationsFolder });
+		// SQLite cannot disable foreign keys from inside the transaction owned by
+		// Drizzle's table-rebuild migrations. Disable them before migration, then
+		// fail verification if the committed schema contains any broken reference.
+		sqlite.pragma('foreign_keys = OFF');
+		try {
+			migrate(db, { migrationsFolder: options.migrationsFolder });
+		} finally {
+			sqlite.pragma('foreign_keys = ON');
+		}
 
 		let closed = false;
 		const handle: DatabaseHandle = {
