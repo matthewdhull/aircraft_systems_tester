@@ -15,7 +15,7 @@
 | Authorization inventory                                               | 19 routes, 53 mutations                                   | PASS   |
 | Secret/content leakage boundary                                       | safe projections, audit allowlist, fixture/content scan   | PASS   |
 | Chrome journey and WCAG automated scan                                | Playwright with installed Chrome and axe-core             | PASS   |
-| Synthetic acceptance data                                             | idempotent temp/preview seeder, FK and integrity checks    | PASS   |
+| Synthetic acceptance data                                             | idempotent temp/preview seeder, FK and integrity checks   | PASS   |
 | Phase 3–6 regressions                                                 | included in full suite                                    | PASS   |
 | Phase 8 boundary                                                      | no attempt/delivery/grading implementation                | PASS   |
 
