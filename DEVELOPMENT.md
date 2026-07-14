@@ -43,7 +43,9 @@ belong in the operator's secret store.
 
 ## Phase 7 templates and generation
 
-Run `npm run templates:test` for template lifecycle, capacity, UI, and legacy-adoption coverage. Run `npm run generation:test` for selection/property, snapshot/security/rollback/concurrency, golden, route, accessibility, authorization, and leakage coverage.
+Run `npm run templates:test` for template lifecycle, capacity, UI, and legacy-adoption coverage. Run `npm run generation:test` for selection/property, snapshot/security/rollback/concurrency, golden, route, accessibility, authorization, and leakage coverage. Run `npm run generation:e2e` for the isolated temporary-database Chrome and axe-core journey; it never uses the preserved preview database.
+
+Create clearly labeled local acceptance data with `PHASE7_ACCEPTANCE_PASSWORD` and `node --import tsx scripts/phase7/seed-acceptance.ts --database PATH`. The command is idempotent, verifies foreign keys and integrity, and must be used only with ignored development databases and a synthetic password.
 
 Legacy reconciliation preserves `test_model` and `testModel` as separate sources. Review them through the Phase 7 template reconciliation command and explicitly adopt a source into a new attributable draft. Adoption never infers lineage or publishes content.
 

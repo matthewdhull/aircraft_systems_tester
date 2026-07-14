@@ -6,10 +6,10 @@ Phase 7 adds attributable versioned test templates, deterministic exact selectio
 
 ## Tranches
 
-- 7A: template draft/review/publish/retire lifecycle, distinct reviewer, exact rule and mandatory validation, advisory capacity, dependency handling, explicit legacy adoption, and accessible list/editor UI.
+- 7A: template draft/review/publish/retire lifecycle, distinct reviewer for non-administrators with attributable administrator override, exact rule and mandatory validation, advisory capacity, dependency handling, explicit legacy adoption, and accessible list/editor UI.
 - 7B: `ast-selection-v1`, a SHA-256 counter random source with rejection-sampled bounded integers and complete mandatory-first constraint solving across overlapping inventory.
-- 7C: migration `0011_phase7_test_modeling`, AES-256-GCM seed envelopes, keyed HMAC code protection, transactional inventory revalidation/snapshot persistence, safe rollback, direct UUID association, and immutability triggers.
-- 7D: shared configuration/authorization/audit composition; generated-test list/generation/detail/preview/print UI; golden trace; operator documentation and verification.
+- 7C: migrations `0011_phase7_test_modeling` through `0013_administrator_review_override`, AES-256-GCM seed envelopes, keyed HMAC code protection, transactional inventory revalidation/snapshot persistence, safe rollback, direct UUID association, and immutability triggers.
+- 7D: shared configuration/authorization/audit composition; generated-test list/generation/detail/preview/print UI; bounded SQLite busy retries at 50/150/450 ms; golden, rollback, concurrency, authorization, leakage, accessibility, and Chrome/axe verification.
 
 ## Security and immutability
 
@@ -19,7 +19,7 @@ Snapshot prompt, type, position, displayed option text, and response-key fields 
 
 ## Data and routes
 
-Migration count is 12 (`0000`–`0011`) and the application table count remains 65. The authorization inventory contains 19 route patterns and 53 mutations. Template management requires `templates.manage`; generation requires `exams.publish`; detail/preview/ordinary print require `exams.preview`; answer-key print additionally requires `answer_keys.view`. Assigned-roster scope is checked in the transaction, with only explicit organization-wide administrative policy bypass.
+Migration count is 14 (`0000`–`0013`) and the application table count remains 65. Migrations 0012–0013 permit attributable administrator publication/review while services retain distinct-reviewer enforcement for every non-administrator. A true administrator may publish a valid draft directly; audits record `administrator_direct_publish`. The authorization inventory contains 19 route patterns and 53 mutations. Template management requires `templates.manage`; generation requires `exams.publish`; detail/preview/ordinary print require `exams.preview`; answer-key print additionally requires `answer_keys.view`. Assigned-roster scope is checked in the transaction, with only explicit organization-wide administrative policy bypass.
 
 ## Phase 8 boundary
 
