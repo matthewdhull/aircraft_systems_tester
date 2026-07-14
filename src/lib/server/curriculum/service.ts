@@ -2,6 +2,7 @@ import { createHash, randomUUID } from 'node:crypto';
 
 import type { DatabaseHandle, FoundationDatabase } from '$lib/server/db/database.js';
 import { recordAuditEvent } from '$lib/server/audit/index.js';
+import { hasEffectiveAdministratorCapability } from '$lib/server/authorization/index.js';
 import {
 	NODE_TABLES,
 	editableSiblings,
@@ -406,7 +407,9 @@ export class CurriculumService {
 				if (!found) return failure('not_found');
 				const version = found.node.latestVersion;
 				if (version.status !== 'review') return failure('invalid_transition');
-				if (version.authoredByUserId === actorUserId) return failure('distinct_reviewer_required');
+				const administratorOverride = hasEffectiveAdministratorCapability(tx, actorUserId);
+				if (version.authoredByUserId === actorUserId && !administratorOverride)
+					return failure('distinct_reviewer_required');
 				const occurredAt = this.dependencies.clock.now();
 				const nextStatus = command.decision === 'return' ? 'draft' : 'review';
 				const reviewedBy = command.decision === 'approve' ? actorUserId : null;
@@ -427,7 +430,8 @@ export class CurriculumService {
 						nodeType: found.type,
 						version: version.version,
 						status: nextStatus,
-						decision: command.decision
+						decision: command.decision,
+						...(administratorOverride ? { reason: 'administrator_review_override' } : {})
 					}
 				);
 				return { ok: true, value: findVersion(tx, command.versionId)!.node };
@@ -451,10 +455,16 @@ export class CurriculumService {
 				const found = findVersion(tx, command.versionId);
 				if (!found) return failure('not_found');
 				const version = found.node.latestVersion;
-				if (version.status !== 'review') return failure('invalid_transition');
-				if (!version.reviewedByUserId || !version.reviewedAt)
+				const administratorOverride = hasEffectiveAdministratorCapability(tx, actorUserId);
+				if (
+					!['draft', 'review'].includes(version.status) ||
+					(version.status === 'draft' && !administratorOverride)
+				)
+					return failure('invalid_transition');
+				if ((!version.reviewedByUserId || !version.reviewedAt) && !administratorOverride)
 					return failure('distinct_reviewer_required');
-				if (version.authoredByUserId === actorUserId) return failure('distinct_reviewer_required');
+				if (version.authoredByUserId === actorUserId && !administratorOverride)
+					return failure('distinct_reviewer_required');
 				if (
 					!this.publishedParentChain(
 						tx,
@@ -478,13 +488,21 @@ export class CurriculumService {
 				const occurredAt = this.dependencies.clock.now();
 				tx.$client
 					.prepare(
-						`UPDATE ${NODE_TABLES[found.type].version} SET status = 'published', effective_from = ?, effective_to = ?, published_at = ? WHERE id = ?`
+						`UPDATE ${NODE_TABLES[found.type].version} SET status = 'published', reviewed_by_user_id = ?, reviewed_at = ?, effective_from = ?, effective_to = ?, published_at = ? WHERE id = ?`
 					)
-					.run(start.value, end.value, occurredAt.toISOString(), command.versionId);
+					.run(
+						administratorOverride ? actorUserId : version.reviewedByUserId,
+						administratorOverride ? occurredAt.toISOString() : version.reviewedAt,
+						start.value,
+						end.value,
+						occurredAt.toISOString(),
+						command.versionId
+					);
 				this.audit(tx, actorUserId, AUDIT.published, found.type, found.node.id, occurredAt, {
 					nodeType: found.type,
 					version: version.version,
-					status: 'published'
+					status: 'published',
+					reason: administratorOverride ? 'administrator_direct_publish' : 'review_approved'
 				});
 				return { ok: true, value: findVersion(tx, command.versionId)!.node };
 			});

@@ -82,7 +82,7 @@ export const questionVersions = sqliteTable(
 		),
 		check(
 			'question_versions_reviewer_ck',
-			sql`(${table.reviewedByUserId} is null and ${table.reviewedAt} is null) or (${table.reviewedByUserId} is not null and ${table.reviewedAt} is not null and (${table.authoredByUserId} is null or ${table.reviewedByUserId} <> ${table.authoredByUserId}))`
+			sql`(${table.reviewedByUserId} is null and ${table.reviewedAt} is null) or (${table.reviewedByUserId} is not null and ${table.reviewedAt} is not null)`
 		),
 		check(
 			'question_versions_publication_ck',
@@ -205,7 +205,7 @@ export const questionFutureCurriculumLinks = sqliteTable(
 		),
 		check(
 			'question_future_curriculum_review_ck',
-			sql`(${table.mappingStatus} = 'review' and ${table.reviewedAt} is null and ${table.reviewedByUserId} is null) or (${table.mappingStatus} <> 'review' and ${table.reviewedAt} is not null and ${table.reviewedByUserId} is not null and ${table.reviewedByUserId} <> ${table.proposedByUserId})`
+			sql`(${table.mappingStatus} = 'review' and ${table.reviewedAt} is null and ${table.reviewedByUserId} is null) or (${table.mappingStatus} <> 'review' and ${table.reviewedAt} is not null and ${table.reviewedByUserId} is not null)`
 		)
 	]
 );
@@ -272,7 +272,7 @@ export const testTemplateVersions = sqliteTable(
 		),
 		check(
 			'test_template_versions_reviewer_ck',
-			sql`(${table.reviewedByUserId} is null and ${table.reviewedAt} is null) or (${table.reviewedByUserId} is not null and ${table.reviewedAt} is not null and ${table.authoredByUserId} is not null and ${table.reviewedByUserId} <> ${table.authoredByUserId})`
+			sql`(${table.reviewedByUserId} is null and ${table.reviewedAt} is null) or (${table.reviewedByUserId} is not null and ${table.reviewedAt} is not null and ${table.authoredByUserId} is not null)`
 		),
 		check(
 			'test_template_versions_lifecycle_dates_ck',

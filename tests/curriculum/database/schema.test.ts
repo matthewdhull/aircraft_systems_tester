@@ -23,7 +23,7 @@ describe('Phase 5 ordered curriculum migrations', () => {
 		expect(handle.sqlite.pragma('foreign_key_check')).toEqual([]);
 		expect(handle.sqlite.pragma('integrity_check', { simple: true })).toBe('ok');
 		expect(handle.sqlite.prepare('SELECT count(*) FROM __drizzle_migrations').pluck().get()).toBe(
-			12
+			14
 		);
 		for (const table of [
 			'phases',

@@ -99,7 +99,7 @@ export const phaseVersions = sqliteTable(
 		),
 		check(
 			'phase_versions_reviewer_ck',
-			sql`(${table.reviewedByUserId} is null and ${table.reviewedAt} is null) or (${table.reviewedByUserId} is not null and ${table.reviewedAt} is not null and ${table.reviewedByUserId} <> ${table.authoredByUserId})`
+			sql`(${table.reviewedByUserId} is null and ${table.reviewedAt} is null) or (${table.reviewedByUserId} is not null and ${table.reviewedAt} is not null)`
 		),
 		check(
 			'phase_versions_publication_ck',
@@ -143,7 +143,7 @@ export const taskVersions = sqliteTable(
 		),
 		check(
 			'task_versions_reviewer_ck',
-			sql`(${table.reviewedByUserId} is null and ${table.reviewedAt} is null) or (${table.reviewedByUserId} is not null and ${table.reviewedAt} is not null and ${table.reviewedByUserId} <> ${table.authoredByUserId})`
+			sql`(${table.reviewedByUserId} is null and ${table.reviewedAt} is null) or (${table.reviewedByUserId} is not null and ${table.reviewedAt} is not null)`
 		),
 		check(
 			'task_versions_publication_ck',
@@ -187,7 +187,7 @@ export const subtaskVersions = sqliteTable(
 		),
 		check(
 			'subtask_versions_reviewer_ck',
-			sql`(${table.reviewedByUserId} is null and ${table.reviewedAt} is null) or (${table.reviewedByUserId} is not null and ${table.reviewedAt} is not null and ${table.reviewedByUserId} <> ${table.authoredByUserId})`
+			sql`(${table.reviewedByUserId} is null and ${table.reviewedAt} is null) or (${table.reviewedByUserId} is not null and ${table.reviewedAt} is not null)`
 		),
 		check(
 			'subtask_versions_publication_ck',
@@ -230,7 +230,7 @@ export const elementVersions = sqliteTable(
 		),
 		check(
 			'element_versions_reviewer_ck',
-			sql`(${table.reviewedByUserId} is null and ${table.reviewedAt} is null) or (${table.reviewedByUserId} is not null and ${table.reviewedAt} is not null and ${table.reviewedByUserId} <> ${table.authoredByUserId})`
+			sql`(${table.reviewedByUserId} is null and ${table.reviewedAt} is null) or (${table.reviewedByUserId} is not null and ${table.reviewedAt} is not null)`
 		),
 		check(
 			'element_versions_publication_ck',

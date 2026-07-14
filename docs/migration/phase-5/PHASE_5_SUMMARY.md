@@ -94,9 +94,10 @@ vocabulary, and mapping set empty and passes `foreign_key_check` and
 ## Lifecycle and ordering design
 
 The allowed node lifecycle is draft → review → published → retired, with review
-→ draft for returned work. Approval and publication require fresh approval by a
-reviewer distinct from the author, and the publisher must also differ from the
-author. Publishing a child requires the exact parent version and complete
+→ draft for returned work. For non-administrators, approval requires a reviewer
+distinct from the author and the publisher must also differ from the author. A
+true Administrator may self-review or directly publish valid content with an
+attributable fixed audit reason. Publishing a child requires the exact parent version and complete
 published/effective ancestor chain to cover the child's effective interval.
 
 Positions are zero-based and contiguous inside a sibling group. Creation appends

@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto';
 
 import { recordAuditEvent } from '$lib/server/audit/index.js';
+import { hasEffectiveAdministratorCapability } from '$lib/server/authorization/index.js';
 import type { DatabaseHandle, FoundationDatabase } from '$lib/server/db/database.js';
 import {
 	capacity,
@@ -32,7 +33,8 @@ function audit(
 	actorUserId: string,
 	action: string,
 	version: TemplateVersionDto,
-	status?: string
+	status?: string,
+	reason?: string
 ): void {
 	dependencies.recordAudit(tx, {
 		actorUserId,
@@ -40,7 +42,8 @@ function audit(
 		entityId: version.versionId,
 		occurredAt: dependencies.clock.now(),
 		version: version.version,
-		...(status ? { status } : {})
+		...(status ? { status } : {}),
+		...(reason ? { reason } : {})
 	});
 }
 
@@ -232,18 +235,32 @@ export class TemplateService {
 			return this.database.transaction((tx) => {
 				const current = findTemplateVersion(tx, versionId);
 				if (!current) return fail('not_found');
-				if (current.lifecycle !== 'review') return fail('conflict');
-				if (current.authoredByUserId === actorUserId) return fail('distinct_reviewer_required');
+				const administratorOverride = hasEffectiveAdministratorCapability(tx, actorUserId);
+				if (
+					!['draft', 'review'].includes(current.lifecycle) ||
+					(current.lifecycle === 'draft' && !administratorOverride)
+				)
+					return fail('conflict');
+				if (current.authoredByUserId === actorUserId && !administratorOverride)
+					return fail('distinct_reviewer_required');
 				const available = capacity(tx, current, this.now());
 				if (available.status === 'insufficient') return fail('capacity_insufficient');
 				const at = this.now();
 				tx.$client
 					.prepare(
-						`UPDATE test_template_versions SET lifecycle='published',reviewed_by_user_id=?,reviewed_at=?,published_at=?,effective_from=?,effective_to=? WHERE id=? AND lifecycle='review'`
+						`UPDATE test_template_versions SET lifecycle='published',reviewed_by_user_id=?,reviewed_at=?,published_at=?,effective_from=?,effective_to=? WHERE id=? AND lifecycle IN ('draft','review')`
 					)
 					.run(actorUserId, at, at, from, to, versionId);
 				const value = findTemplateVersion(tx, versionId)!;
-				audit(this.dependencies, tx, actorUserId, 'template.published', value, 'published');
+				audit(
+					this.dependencies,
+					tx,
+					actorUserId,
+					'template.published',
+					value,
+					'published',
+					administratorOverride ? 'administrator_direct_publish' : 'review_approved'
+				);
 				return { ok: true, value };
 			});
 		} catch {
@@ -431,6 +448,7 @@ export function defaultTemplateDependencies(): TemplateDependencies {
 				occurredAt: event.occurredAt,
 				after: {
 					...(event.status ? { status: event.status } : {}),
+					...(event.reason ? { reason: event.reason } : {}),
 					...(event.version ? { version: event.version } : {})
 				}
 			})

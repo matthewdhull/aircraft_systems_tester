@@ -1,6 +1,7 @@
 import { createHash, randomUUID } from 'node:crypto';
 
 import { recordAuditEvent } from '$lib/server/audit/index.js';
+import { hasEffectiveAdministratorCapability } from '$lib/server/authorization/index.js';
 import type { DatabaseHandle, FoundationDatabase } from '$lib/server/db/database.js';
 import {
 	aircraft,
@@ -527,7 +528,9 @@ export class QuestionService {
 				if (!row) return failure('not_found');
 				if (row.lifecycle !== 'review' || row.authoredByUserId === null)
 					return failure('invalid_transition');
-				if (row.authoredByUserId === actorUserId) return failure('distinct_reviewer_required');
+				const administratorOverride = hasEffectiveAdministratorCapability(tx, actorUserId);
+				if (row.authoredByUserId === actorUserId && !administratorOverride)
+					return failure('distinct_reviewer_required');
 				const at = this.dependencies.clock.now();
 				const approved = command.decision === 'approve';
 				tx.$client
@@ -553,7 +556,8 @@ export class QuestionService {
 						questionType: row.questionType,
 						version: row.version,
 						status: approved ? 'review' : 'draft',
-						decision: command.decision
+						decision: command.decision,
+						...(administratorOverride ? { reason: 'administrator_review_override' } : {})
 					}
 				);
 				return { ok: true, value: this.identity(tx, findVersion(tx, row.id)!) };
@@ -579,24 +583,39 @@ export class QuestionService {
 			return this.database.transaction((tx) => {
 				const row = findVersion(tx, command.versionId);
 				if (!row) return failure('not_found');
-				if (row.lifecycle !== 'review') return failure('invalid_transition');
-				if (!row.reviewedByUserId || !row.reviewedAt) return failure('distinct_reviewer_required');
+				const administratorOverride = hasEffectiveAdministratorCapability(tx, actorUserId);
+				if (
+					!['draft', 'review'].includes(row.lifecycle) ||
+					(row.lifecycle === 'draft' && !administratorOverride)
+				)
+					return failure('invalid_transition');
+				if ((!row.reviewedByUserId || !row.reviewedAt) && !administratorOverride)
+					return failure('distinct_reviewer_required');
 				if (row.authoredByUserId === null) return failure('invalid_transition');
-				if (row.authoredByUserId === actorUserId) return failure('distinct_reviewer_required');
+				if (row.authoredByUserId === actorUserId && !administratorOverride)
+					return failure('distinct_reviewer_required');
 				if (!this.aircraftValidForRange(tx, row.id, start, typeof end === 'string' ? end : null))
 					return failure('aircraft_not_effective');
 				const at = this.dependencies.clock.now();
 				tx.$client
 					.prepare(
-						`UPDATE question_versions SET lifecycle = 'published', effective_from = ?,
+						`UPDATE question_versions SET lifecycle = 'published', reviewed_by_user_id = ?, reviewed_at = ?, effective_from = ?,
 						 effective_to = ?, published_at = ? WHERE id = ?`
 					)
-					.run(start, end, at.toISOString(), row.id);
+					.run(
+						administratorOverride ? actorUserId : row.reviewedByUserId,
+						administratorOverride ? at.toISOString() : row.reviewedAt,
+						start,
+						end,
+						at.toISOString(),
+						row.id
+					);
 				this.recomputeEligibility(tx, row.id, actorUserId, at);
 				this.audit(tx, actorUserId, AUDIT.published, row.questionId, at, {
 					questionType: row.questionType,
 					version: row.version,
-					status: 'published'
+					status: 'published',
+					reason: administratorOverride ? 'administrator_direct_publish' : 'review_approved'
 				});
 				return { ok: true, value: this.identity(tx, findVersion(tx, row.id)!) };
 			});
@@ -766,7 +785,11 @@ export class QuestionService {
 					(command.decision === 'retire' && !['review', 'approved'].includes(link.status))
 				)
 					return failure('future_link_conflict');
-				if (link.proposedByUserId === actorUserId || row.authoredByUserId === actorUserId)
+				const administratorOverride = hasEffectiveAdministratorCapability(tx, actorUserId);
+				if (
+					(link.proposedByUserId === actorUserId || row.authoredByUserId === actorUserId) &&
+					!administratorOverride
+				)
 					return failure('distinct_reviewer_required');
 				if (
 					command.decision === 'approve' &&
@@ -798,6 +821,7 @@ export class QuestionService {
 						version: row.version,
 						status,
 						decision: command.decision,
+						...(administratorOverride ? { reason: 'administrator_review_override' } : {}),
 						futureLinkCount: futureLinks(tx, row.id).length
 					}
 				);

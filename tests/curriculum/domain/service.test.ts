@@ -12,6 +12,7 @@ const AT = new Date('2026-07-13T16:00:00.000Z');
 const AUTHOR = '10000000-0000-4000-8000-000000000001';
 const REVIEWER = '10000000-0000-4000-8000-000000000002';
 const PUBLISHER = '10000000-0000-4000-8000-000000000003';
+const ADMINISTRATOR = '10000000-0000-4000-8000-000000000004';
 
 let database: DatabaseHandle;
 let service: CurriculumService;
@@ -73,6 +74,17 @@ beforeEach(() => {
 	user(AUTHOR, '00001');
 	user(REVIEWER, '00002');
 	user(PUBLISHER, '00003');
+	user(ADMINISTRATOR, '00004');
+	database.sqlite
+		.prepare(
+			"INSERT OR IGNORE INTO roles (id, code, display_name, created_at) VALUES ('10000000-0000-4000-8000-000000000099', 'administrator', 'Administrator', ?)"
+		)
+		.run(AT.toISOString());
+	database.sqlite
+		.prepare(
+			"INSERT INTO user_roles (user_id, role_id, granted_at) SELECT ?, id, ? FROM roles WHERE code = 'administrator'"
+		)
+		.run(ADMINISTRATOR, AT.toISOString());
 	sequence = 10;
 	audits = [];
 	service = createService();
@@ -114,6 +126,42 @@ describe('curriculum hierarchy and immutable identity', () => {
 });
 
 describe('version review, publication, and retirement', () => {
+	it('lets a true administrator publish authored draft content directly with a fixed audit reason', () => {
+		const phase = service.createNode(ADMINISTRATOR, {
+			type: 'phase',
+			parentVersionId: null,
+			name: 'Administrator-authored phase'
+		});
+		expect(phase.ok).toBe(true);
+		if (!phase.ok) throw new Error(phase.error);
+		expect(
+			service.publishVersion(ADMINISTRATOR, {
+				versionId: phase.value.latestVersion.id,
+				effectiveFrom: AT.toISOString()
+			}).ok
+		).toBe(true);
+		expect(audits.at(-1)?.after).toMatchObject({ reason: 'administrator_direct_publish' });
+	});
+
+	it('lets a true administrator review authored content without weakening non-admin separation', () => {
+		const phase = service.createNode(ADMINISTRATOR, {
+			type: 'phase',
+			parentVersionId: null,
+			name: 'Administrator-reviewed phase'
+		});
+		expect(phase.ok).toBe(true);
+		if (!phase.ok) throw new Error(phase.error);
+		expect(service.submitForReview(ADMINISTRATOR, phase.value.latestVersion.id).ok).toBe(true);
+		expect(
+			service.reviewVersion(ADMINISTRATOR, {
+				versionId: phase.value.latestVersion.id,
+				decision: 'approve',
+				rationale: 'Administrator override'
+			}).ok
+		).toBe(true);
+		expect(audits.at(-1)?.after).toMatchObject({ reason: 'administrator_review_override' });
+	});
+
 	it('requires a fresh distinct approval and a publisher distinct from the author', () => {
 		const phase = createNode('phase', null);
 		const id = phase.latestVersion.id;

@@ -41,7 +41,7 @@ Allowed transitions are:
 - review → published after explicit approval; and
 - published → retired after a fresh dependency preview.
 
-Approval requires a reviewer distinct from the author and records reviewer UUID
+Approval requires a reviewer distinct from the author unless the actor is a true Administrator, and records reviewer UUID
 and timestamp. A return clears current approval fields; attribution for the
 return remains in the audit event. Publication requires both a recorded distinct
 approval and a publisher distinct from the author. Publication records canonical

@@ -50,7 +50,9 @@ future consumers. Safe displays omit `keyLetter` and correctness fields.
 Question identities and content-version identities are immutable UUIDs; version
 numbers increase within an identity. Drafts alone are editable. Review can
 approve or return to draft. Publication requires a prior distinct reviewer and
-an actor other than the author. Published/referenced history is immutable and
+a publisher other than the author for non-administrators. A true Administrator
+may self-review or publish a valid draft directly with an attributable fixed
+audit reason. Published/referenced history is immutable and
 retired; only an attributable, unreferenced draft can be hard-deleted after a
 fresh dependency revision.
 

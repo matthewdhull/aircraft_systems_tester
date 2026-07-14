@@ -85,6 +85,20 @@
       "when": 1783983949624,
       "tag": "0011_phase7_test_modeling",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "6",
+      "when": 1783999643218,
+      "tag": "0012_administrator_direct_publish",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "6",
+      "when": 1784000569463,
+      "tag": "0013_administrator_review_override",
+      "breakpoints": true
     }
   ]
 }

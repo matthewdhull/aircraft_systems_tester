@@ -120,6 +120,7 @@ export interface TemplateDependencies {
 			entityId: string;
 			occurredAt: Date;
 			status?: string;
+			reason?: string;
 			version?: number;
 		}
 	): void;

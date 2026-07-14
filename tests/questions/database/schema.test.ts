@@ -15,10 +15,10 @@ afterEach(() => {
 });
 
 describe('Phase 6 ordered question-bank migration', () => {
-	it('initializes 65 application tables through 0011 with integrity intact', () => {
+	it('initializes 65 application tables through 0013 with integrity intact', () => {
 		const handle = database();
 		expect(handle.sqlite.prepare('SELECT count(*) FROM __drizzle_migrations').pluck().get()).toBe(
-			12
+			14
 		);
 		expect(
 			handle.sqlite
@@ -44,7 +44,7 @@ describe('Phase 6 ordered question-bank migration', () => {
 		);
 	});
 
-	it('enforces distinct review attribution and publication completeness', () => {
+	it('permits attributable administrator review while enforcing publication completeness', () => {
 		const handle = database();
 		const at = '2026-07-13T16:00:00.000Z';
 		const author = '10000000-0000-4000-8000-000000000001';
@@ -63,7 +63,7 @@ describe('Phase 6 ordered question-bank migration', () => {
 		handle.sqlite
 			.prepare('INSERT INTO questions (id, created_at) VALUES (?, ?)')
 			.run('20000000-0000-4000-8000-000000000001', at);
-		expect(() =>
+		expect(
 			handle.sqlite
 				.prepare(
 					`INSERT INTO question_versions
@@ -78,8 +78,8 @@ describe('Phase 6 ordered question-bank migration', () => {
 					author,
 					at,
 					at
-				)
-		).toThrow(/CHECK/);
+				).changes
+		).toBe(1);
 		expect(() =>
 			handle.sqlite
 				.prepare(

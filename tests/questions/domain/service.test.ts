@@ -13,6 +13,7 @@ const AT = new Date('2026-07-13T16:00:00.000Z');
 const AUTHOR = '10000000-0000-4000-8000-000000000001';
 const REVIEWER = '10000000-0000-4000-8000-000000000002';
 const PUBLISHER = '10000000-0000-4000-8000-000000000003';
+const ADMINISTRATOR = '10000000-0000-4000-8000-000000000004';
 const AIRCRAFT = '30000000-0000-4000-8000-000000000001';
 
 let database: DatabaseHandle;
@@ -123,6 +124,17 @@ beforeEach(() => {
 	user(AUTHOR, '00001');
 	user(REVIEWER, '00002');
 	user(PUBLISHER, '00003');
+	user(ADMINISTRATOR, '00004');
+	database.sqlite
+		.prepare(
+			"INSERT OR IGNORE INTO roles (id, code, display_name, created_at) VALUES ('10000000-0000-4000-8000-000000000099', 'administrator', 'Administrator', ?)"
+		)
+		.run(AT.toISOString());
+	database.sqlite
+		.prepare(
+			"INSERT INTO user_roles (user_id, role_id, granted_at) SELECT ?, id, ? FROM roles WHERE code = 'administrator'"
+		)
+		.run(ADMINISTRATOR, AT.toISOString());
 	database.sqlite
 		.prepare(
 			`INSERT INTO aircraft_variants
@@ -264,6 +276,36 @@ describe('question identity, safe projections, and version ownership', () => {
 });
 
 describe('review, publication, dependencies, and transaction ownership', () => {
+	it('lets a true administrator directly publish an authored draft with a fixed audit reason', () => {
+		const result = service.createQuestion(ADMINISTRATOR, command());
+		expect(result.ok).toBe(true);
+		if (!result.ok) throw new Error(result.error);
+		expect(
+			service.publishVersion(ADMINISTRATOR, {
+				versionId: result.value.latestVersion.id,
+				effectiveFrom: AT.toISOString()
+			}).ok
+		).toBe(true);
+		expect(audits.at(-1)?.after).toMatchObject({ reason: 'administrator_direct_publish' });
+	});
+
+	it('lets a true administrator review an authored question without changing non-admin policy', () => {
+		const result = service.createQuestion(ADMINISTRATOR, command());
+		expect(result.ok).toBe(true);
+		if (!result.ok) throw new Error(result.error);
+		expect(
+			service.submitReview(ADMINISTRATOR, { versionId: result.value.latestVersion.id }).ok
+		).toBe(true);
+		expect(
+			service.reviewVersion(ADMINISTRATOR, {
+				versionId: result.value.latestVersion.id,
+				decision: 'approve',
+				rationale: 'Administrator override'
+			}).ok
+		).toBe(true);
+		expect(audits.at(-1)?.after).toMatchObject({ reason: 'administrator_review_override' });
+	});
+
 	it('requires a distinct reviewer and publisher and supports return to draft', () => {
 		const question = created();
 		const versionId = question.latestVersion.id;
