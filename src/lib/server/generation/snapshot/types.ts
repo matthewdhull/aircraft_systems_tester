@@ -48,6 +48,7 @@ export interface SnapshotDependencies {
 	seedProtector: SeedProtector;
 	accessCodeProtector: AccessCodeProtector;
 	secureEntropy(size: number): Uint8Array;
+	retryDelay?(milliseconds: number): void;
 	now(): Date;
 	uuid(): string;
 	authorize(tx: FoundationDatabase, actorUserId: string, permission: 'exams.publish'): void;

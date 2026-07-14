@@ -2,7 +2,7 @@
 	import { resolve } from '$app/paths';
 	import ErrorSummary from '$lib/components/ErrorSummary.svelte';
 	import GeneratedExamSummary from '$lib/components/generated-tests/GeneratedExamSummary.svelte';
-	import { tick } from 'svelte';
+	import { onMount, tick } from 'svelte';
 	import type { ActionData, PageData } from './$types';
 	let { data, form }: { data: PageData; form: ActionData } = $props();
 	const error = $derived(
@@ -24,6 +24,21 @@
 					.querySelector<HTMLElement>(form.success ? '#access-code' : '.error-summary')
 					?.focus()
 			);
+	});
+	onMount(() => {
+		const scrubCode = () => {
+			const output = document.querySelector<HTMLOutputElement>('#access-code output');
+			if (output) output.textContent = '';
+		};
+		const reloadRestoredPage = (event: PageTransitionEvent) => {
+			if (event.persisted) location.reload();
+		};
+		addEventListener('pagehide', scrubCode);
+		addEventListener('pageshow', reloadRestoredPage);
+		return () => {
+			removeEventListener('pagehide', scrubCode);
+			removeEventListener('pageshow', reloadRestoredPage);
+		};
 	});
 </script>
 

@@ -172,3 +172,23 @@ export function getGeneratedExam(
 	}
 	return { ...summary, questions: [...questions.values()] };
 }
+
+export function auditGeneratedExamView(input: {
+	database: DatabaseHandle;
+	principal: AuthenticatedPrincipal;
+	examId: string;
+	questionCount: number;
+	keyView: boolean;
+	now?: Date;
+}): void {
+	input.database.transaction((tx) =>
+		recordAuditEvent(tx, {
+			actorUserId: input.principal.userId,
+			action: input.keyView ? 'exam.answer_key.viewed' : 'exam.previewed',
+			entityType: 'exam_instance',
+			entityId: input.examId,
+			occurredAt: input.now ?? new Date(),
+			after: { keyView: input.keyView, questionCount: input.questionCount }
+		})
+	);
+}

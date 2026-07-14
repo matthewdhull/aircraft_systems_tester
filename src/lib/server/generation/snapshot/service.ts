@@ -10,6 +10,10 @@ import type {
 	SnapshotRule
 } from './types.js';
 
+function sleep(milliseconds: number): void {
+	Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, milliseconds);
+}
+
 interface TemplateRow {
 	id: string;
 	configuredLength: number;
@@ -84,7 +88,7 @@ function loadTemplate(tx: FoundationDatabase, id: string, now: string): Template
 function loadRules(tx: FoundationDatabase, templateVersionId: string): SnapshotRule[] {
 	return tx.$client
 		.prepare(
-			`SELECT id, position, subtask_version_id AS subtaskVersionId,
+			`SELECT id, position + 1 AS position, subtask_version_id AS subtaskVersionId,
 			 question_count AS count FROM test_template_rules
 			 WHERE test_template_version_id = ? ORDER BY position, id`
 		)
@@ -97,7 +101,7 @@ function loadMandatory(
 ): SnapshotMandatoryElement[] {
 	return tx.$client
 		.prepare(
-			`SELECT id, position, element_version_id AS elementVersionId,
+			`SELECT id, position + 1 AS position, element_version_id AS elementVersionId,
 			 subtask_version_id AS subtaskVersionId FROM test_template_required_elements
 			 WHERE test_template_version_id = ? ORDER BY position, id`
 		)
@@ -258,13 +262,19 @@ export class SnapshotGenerationService {
 	) {}
 
 	generate(input: GenerateExamInput): GenerateExamResult {
-		try {
-			return this.database.transaction((tx) => this.generateInsideTransaction(tx, input));
-		} catch (error) {
-			if (error instanceof GenerationError) throw error;
-			if (error instanceof Error && /busy|locked/i.test(error.message))
-				throw new GenerationError('DATABASE_BUSY');
-			throw error;
+		const retryDelays = [50, 150, 450] as const;
+		for (let attempt = 0; ; attempt += 1) {
+			try {
+				return this.database.transaction((tx) => this.generateInsideTransaction(tx, input));
+			} catch (error) {
+				const busy =
+					(error instanceof GenerationError && error.code === 'DATABASE_BUSY') ||
+					(error instanceof Error && /busy|locked/i.test(error.message));
+				if (!busy) throw error;
+				const delay = retryDelays[attempt];
+				if (delay === undefined) throw new GenerationError('DATABASE_BUSY');
+				(this.dependencies.retryDelay ?? sleep)(delay);
+			}
 		}
 	}
 

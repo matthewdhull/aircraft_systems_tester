@@ -5,7 +5,8 @@ import { GenerationError } from '$lib/server/generation/snapshot';
 import { createGenerationService, listGeneratedExams } from '$lib/server/generation/service';
 import type { Actions, PageServerLoad } from './$types';
 
-export const load: PageServerLoad = ({ locals }) => {
+export const load: PageServerLoad = ({ locals, setHeaders }) => {
+	setHeaders({ 'cache-control': 'no-store, private, max-age=0', pragma: 'no-cache' });
 	const principal = requirePermission(locals, PERMISSIONS.EXAMS_PUBLISH, 'browser');
 	const all = principal.permissions.has(PERMISSIONS.RECORDS_ALL_MANAGE) ? 1 : 0;
 	return {
@@ -28,7 +29,8 @@ export const load: PageServerLoad = ({ locals }) => {
 };
 
 export const actions: Actions = {
-	generate: async ({ locals, request }) => {
+	generate: async ({ locals, request, setHeaders }) => {
+		setHeaders({ 'cache-control': 'no-store, private, max-age=0', pragma: 'no-cache' });
 		const principal = requirePermission(locals, PERMISSIONS.EXAMS_PUBLISH);
 		const data = await request.formData();
 		try {
